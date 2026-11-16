@@ -2,7 +2,7 @@
 
 This is an experimental Android source project. Start with [README.md](README.md)
 and the [installation guide](docs/installation.md)
-([한국어](docs/installation.ko.md)); [docs/building.md](docs/building.md) is the
+([Korean guide](docs/installation.ko.md)); [docs/building.md](docs/building.md) is the
 developer reference. Contributions should make a concrete
 behavior or a reproducible check better; broader device support remains experimental.
 
@@ -21,7 +21,7 @@ actual execution.
 
 ## Checks
 
-Run from the source root with Python3.12+, a C compiler and JDK21:
+Run from the source root with Python 3.12+, a C compiler and JDK 21:
 
 ```sh
 python3 tools/check_android_portability.py

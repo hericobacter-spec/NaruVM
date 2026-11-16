@@ -66,8 +66,8 @@
     },
     {
       "path": "CONTRIBUTING.md",
-      "sha256": "0b0eed91858dd820aba3cf64c4c43bf0f33b8f27f74ed1abc674f126ed7fd922",
-      "bytes": 2358
+      "sha256": "6ee4723f52dbc92a4959321941576f5492ba58320396cc2557538dfdabd8a34e",
+      "bytes": 2363
     },
     {
       "path": "LICENSE",
@@ -186,8 +186,8 @@
     },
     {
       "path": "README.md",
-      "sha256": "c8943ba38e8e2516c07281d21070f30847d1e6081e55f76c68086161ee2ba6cd",
-      "bytes": 12131
+      "sha256": "8935684d701617d7b706a14db10ef4dd4566ac4491367b37338e513bdeef13b2",
+      "bytes": 12045
     },
     {
       "path": "SECURITY.md",
@@ -1401,8 +1401,8 @@
     },
     {
       "path": "docs/building.md",
-      "sha256": "7fd9f67ad0b3118ea32d0ab9c0b4dddd2cd00e53bc4b0935821dfd0277eb2776",
-      "bytes": 13317
+      "sha256": "6c29b93edc4bc87cbaece07dc65f2160c5416542bf2c3d3481be4f551c727f9e",
+      "bytes": 13223
     },
     {
       "path": "docs/installation.ko.md",
@@ -1411,8 +1411,8 @@
     },
     {
       "path": "docs/installation.md",
-      "sha256": "940a35465a7e68a07ae759c0177398479e58596045179ac63f4c829abccf807f",
-      "bytes": 18874
+      "sha256": "7057e23de28eacfc6ece20c5ecc74b5e20f7a648b21a9ffeddd53e26e255f4fe",
+      "bytes": 18873
     },
     {
       "path": "docs/licensing.md",

@@ -1,6 +1,6 @@
 # NaruVM
 
-[한국어 안내](README.ko.md) · [Installation guide](docs/installation.md) · [Troubleshooting](docs/installation.md#troubleshooting)
+[Korean guide](README.ko.md) · [Installation guide](docs/installation.md) · [Troubleshooting](docs/installation.md#troubleshooting)
 
 An independent, experimental Android port of [Henge](https://github.com/Leviidev/Henge).
 It retains Henge's ARM64-to-ARM64 JIT, software MMU and virtual devices, with
@@ -102,14 +102,14 @@ The graphics build includes an experimental download → fresh install → first
 action; the complete automatic installation still needs real-device verification.
 
 The conservative starting allocation is **2 vCPU / 2048 MiB guest RAM / 384 MiB JIT**.
-The CPU control offers1–4 vCPU; RAM offers2048/3072/4096 MiB. The384 MiB JIT cache
+The CPU control offers 1–4 vCPU; RAM offers 2048/3072/4096 MiB. The 384 MiB JIT cache
 is a runtime default, not a home-screen allocation control.
 The app lets users choose CPU, RAM and graphics for the next launch. Leave host
 memory headroom, especially on phones. Normal guest sessions stop manually with
-**Mac 종료**; they have no automatic duration limit or restart. Disk-free
+**Stop Mac**; they have no automatic duration limit or restart. Disk-free
 diagnostics have separate limits.
 
-With a graphics build, run **기기 호환성 검사 · 디스크 사용 안 함** before opening
+With a graphics build, run **Check device compatibility** before opening
 a guest. It checks host CPU/JIT conditions and an authored shared-memory 4096-pixel
 result. A pass is a prerequisite, not macOS or driver-stability certification.
 
@@ -141,7 +141,7 @@ Catalog metadata was observed from Apple CDN on 2026-11-16. A selectable version
 or available file does not establish Android compatibility. The app estimates
 storage headroom before starting; larger images/restore writes can require more.
 Keep the app open during installation. If Android pauses a background download,
-return and retry. There is no automatic VM duration deadline. With an empty download cache, current source estimates are about49.7/60.4/73.8 GiB
+return and retry. There is no automatic VM duration deadline. With an empty download cache, current source estimates are about 49.7/60.4/73.8 GiB
 free internal app storage for the three versions respectively, not total device
 capacity. Use the app's current estimate and allow for retained incomplete disks. Read
 [installation details](docs/installation.md#7-download-and-install-a-fresh-macos-guest) and
@@ -163,7 +163,7 @@ The Mac display forwards Android-recognized USB/Bluetooth keyboard and mouse
 input while focused. Click the display first. Movement, left/right/middle buttons,
 dragging and horizontal/vertical wheels have handlers. Hardware movement no longer
 divides travel by display zoom; a 0.5×–3× speed selector defaults to 1×. The tools button
-**외부 마우스 잠금 · Esc로 해제** (English: **Capture external mouse · Esc to release**) enables relative pointer capture; Escape releases it.
+**Lock external mouse · Esc to release** enables relative pointer capture; Escape releases it.
 Meta/Windows maps to Command, Alt to Option and Ctrl to Control. macOS chooses
 the input source; Android-reserved system shortcuts may be intercepted.
 

@@ -1,7 +1,7 @@
 # Build and verification scopes
 
 For the complete source → APK → USB install → guest setup sequence, start with
-[the installation guide](installation.md) / [한국어 설치 안내](installation.ko.md).
+[the installation guide](installation.md) / [Korean installation guide](installation.ko.md).
 This page is the developer reference for build variants and verification scopes.
 
 Audience: developers who can use a shell, Python, C and Git. English and Korean
@@ -147,8 +147,8 @@ does not establish permission under Apple's macOS license.
 
 Build a graphics configuration above, install it with your local key and open
 NaruVM. On an empty installation, choose a **macOS version** and press
-**Download, install & start** (한국어: **다운로드·설치 후 실행**). With an existing
-Mac, expand **Install another Mac** / **다른 Mac 설치**. Installation uses a fresh
+**Download, install & start**. With an existing
+Mac, expand **Install another Mac**. Installation uses a fresh
 app-private `machines/BUILD-UUID/` directory and a separate machine identity;
 it does not restore over the existing guest. Use **Stop installation** to stop.
 Downloads can resume from `.part`; an interrupted restore remains a separate
@@ -157,8 +157,8 @@ incomplete disk, and retry creates a new disk. There is no automatic retry loop.
 The pinned catalog in `android/src/dev/henge/research/MacRelease.java` includes
 15.6.1 (24G90), 26.6.2 (25G83), and 27.2 (26B123). Direct Apple CDN size/digest
 metadata was checked on 2026-11-16. **26 and 27 are Android untested**: neither
-installation nor boot is established. Prior15.6.1 desktop runs do not verify
-this new complete installation flow. Host35 HTTP/cache/integrity fixture checks,
+installation nor boot is established. Prior macOS 15.6.1 desktop runs do not verify
+this new complete installation flow. The 35 host HTTP/cache/integrity fixture checks,
 11 native disk-guard scenarios and an actual small Apple ROM decode passed;
 no full restore-image download or automatic guest install was used in those checks.
 
@@ -172,9 +172,9 @@ machine. If the app is foreground, it automatically starts the first graphical
 boot with the saved CPU/RAM/GPU settings; otherwise return to the app to start (or use its notification when
 notification permission is granted). Finish setup/account choices in macOS.
 
-Run **Check device compatibility** / **기기 호환성 검사** before experiments.
+Run **Check device compatibility** before experiments.
 A basic diagnostic APK lacks the graphics runner and disables installation.
-Start with2vCPU /2048MiB guest RAM /384MiB JIT. Normal VM and UI restore sessions
+Start with 2 vCPU / 2048 MiB guest RAM / 384 MiB JIT. Normal VM and UI restore sessions
 have no duration deadline; disk-free diagnostics retain separate bounds. Apple
 signing availability, networking, virtual-device compatibility and storage errors
 can still prevent installation. The app does not bypass them.
@@ -183,12 +183,12 @@ The flow follows upstream Henge's `Installer.swift`, `BootROM.swift` and
 `RangedDownload.swift` structure, adapted to Android foreground services. CPU
 instruction/JIT/page conditions are capability-gated; GPU selection follows
 actual disk-free pixel checks. CPU/RAM controls apply to the first graphical
-boot. Restoration currently uses1vCPU/2GiB; it does not modify the Apple image
-for each SoC. No all-device or26/27 compatibility follows from this wiring.
+boot. Restoration currently uses 1 vCPU / 2 GiB; it does not modify the Apple image
+for each SoC. No all-device or macOS 26/27 compatibility follows from this wiring.
 
 ## External input verification
 
-The Mac display must own focus. Use the tools button **외부 마우스 잠금 · Esc로 해제**
+The Mac display must own focus. Use the tools button **Lock external mouse · Esc to release**
 for captured relative mouse movement; press Escape to release capture. Focus loss
 releases held guest keys/buttons. Android may intercept system shortcuts before
 they reach the app. Meta/Windows = Command, Alt = Option, Ctrl = Control; input
@@ -214,7 +214,7 @@ and `INSTRUMENTATION_CODE: -1`. This does not use an actual mouse/keyboard or gu
 Physical USB/Bluetooth devices, pointer-capture acceptance and macOS end-to-end
 behavior require separate device testing; they are not proven by this marker.
 
-The home button **오픈소스 라이선스 · 소스 정보** opens offline packaged notices,
+The **Licenses and source** button in Logs opens offline packaged notices,
 license texts, combination selection and source/replacement instructions.
 A public source-download destination is not configured in this local build.
 

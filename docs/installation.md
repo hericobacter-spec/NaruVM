@@ -1,6 +1,6 @@
 # Install and try NaruVM
 
-[한국어](installation.ko.md) · [Project overview](../README.md) · [Developer build reference](building.md)
+[Korean guide](installation.ko.md) · [Project overview](../README.md) · [Developer build reference](building.md)
 
 Audience: developers comfortable with a terminal who want to build the Android
 app and try it on their own device. This guide describes the checked-in source
@@ -289,10 +289,10 @@ as a troubleshooting step.
   is offline. After reaching the desktop, test a web page to check guest networking.
 - Click/tap the Mac display to give it focus. Direct touch and trackpad modes
   are available; the latter moves the pointer by swiping. The tools include Tab,
-  Return and **Switch input source (⌃Space)**. Select ABC/another Latin input
+  Enter and **Switch input source (⌃Space)**. Select ABC/another Latin input
   source inside macOS when entering Latin text; Android's IME alone does not
   change the guest input source.
-- Connect USB/Bluetooth input devices to Android normally. Use **Capture external
+- Connect USB/Bluetooth input devices to Android normally. Use **Lock external
   mouse · Esc to release** for relative movement. Try 1× first, then adjust mouse
   gain if travel is too small. Meta/Windows maps to Command, Alt to Option and
   Ctrl to Control. Android can intercept system shortcuts. Physical HID-to-guest
