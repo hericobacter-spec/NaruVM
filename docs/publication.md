@@ -56,7 +56,9 @@ staged diff and attribution before making any public action. In exported Git
 checkouts, the checker also rejects tracked files outside the inspected selection.
 Automated screening
 has finite patterns; it cannot prove the absence of every secret, personal detail
-or copyright issue. Private research logs, captures, guest data, tool caches,
+or copyright issue. Only the three individually reviewed PNGs in `PUBLIC_MEDIA` are included as
+documentation media; see [capture context](images/README.md). Private research
+logs, other captures, guest data, tool caches,
 signing keys, compiled artifacts, the old iOS release workflow and Git history
 are outside the export. Do not replace this isolated tree with a blanket add of
 the research checkout.
@@ -81,7 +83,7 @@ python3 tools/verify_github_ready.py --output android/artifacts/source-gate.json
 Use a new JSON output name on later runs. Expected final marker:
 `GITHUB_SOURCE_GATE_RESULT failures=0 scope=source-only` with
 `binary_release_ready=0 published=0`. The gate runs CPU/resource/backend/input
-policy checks, 14 publication-boundary tests, seven dependency-integrity tests,
+policy checks, 16 publication-boundary tests, seven dependency-integrity tests,
 six origin tests and eight archive tests, Git object integrity, and two
 byte-identical source archive builds. It checks the actual Git index blobs
 against the reviewed worktree and manifest before and after execution. It

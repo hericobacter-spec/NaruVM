@@ -1,6 +1,10 @@
 # NaruVM
 
-[Korean guide](README.ko.md) · [Installation guide](docs/installation.md) · [Troubleshooting](docs/installation.md#troubleshooting)
+[Korean guide](README.ko.md) · [Screenshots](#screenshots) · [Install](docs/installation.md) · [Compatibility](#status-and-devices) · [FAQ](#faq)
+
+[![Android source checks](https://github.com/hericobacter-spec/NaruVM/actions/workflows/android-source.yml/badge.svg?branch=main)](https://github.com/hericobacter-spec/NaruVM/actions/workflows/android-source.yml)
+
+**[v0.1 source release](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1)** · **[APK release status](docs/binary-release.md)** · [Troubleshooting](docs/installation.md#troubleshooting)
 
 An independent, experimental Android port of [Henge](https://github.com/Leviidev/Henge).
 It retains Henge's ARM64-to-ARM64 JIT, software MMU and virtual devices, with
@@ -11,6 +15,28 @@ Vulkan graphics path. It is not an official Android release from upstream Henge.
 interaction remain unresolved. No near-native performance or everyday stability
 claim is made. The publication set contains source, patches and notices, not an
 APK, Apple image, guest disk, account data or signing key.
+
+## Screenshots
+
+Existing captures from the **single TB373FU macOS 15 research device**, before
+v0.1. These are guest screens, not the current Android home. They demonstrate
+individual observed screens, not complete automatic installation, sustained
+stability or native-like speed. The guest UI in these captures is Korean.
+
+| VS Code open in the guest | Safari displaying example.com |
+| --- | --- |
+| ![Historical macOS 15 guest displaying VS Code in Restricted Mode](docs/images/macos-vscode.png) | ![Historical macOS 15 guest displaying example.com in Safari](docs/images/macos-safari.png) |
+
+<details>
+<summary>Setup Assistant and capture context</summary>
+
+![Historical macOS Setup Assistant language and input-source screen](docs/images/macos-setup.png)
+
+The setup capture predates the new one-action Android installer. Existing
+captures were copied without editing; no new guest session was run for this
+update. [Capture provenance and limitations](docs/images/README.md).
+
+</details>
 
 ## What NaruVM runs
 
@@ -33,6 +59,13 @@ independent display name is NaruVM.
 **There is no APK in the v0.1 release.** The [prerelease](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1)
 contains source and checksums. You currently build a local APK; installing that
 app and installing a macOS guest are separate steps.
+[Why the research APK is not attached yet, and what remains](docs/binary-release.md).
+
+For a first attempt: **build a graphics profile → install the APK → choose
+CPU/RAM/backend and run preflight → explicitly download/install a new guest →
+finish macOS setup**. Start with 2 vCPU / 2048 MiB; use profile C for TB373FU
+Auto/PanVK, or explicitly choose CPU rendering with profile B. The full guide
+contains the prerequisites and commands for every step.
 
 | You want to… | Start here |
 | --- | --- |
@@ -171,6 +204,57 @@ Observed: authored host checks and Android framework event-dispatch tests on
 TB373FU pass. **Physical USB/Bluetooth-to-macOS interaction remains untested.**
 This forwards input events, not arbitrary USB devices. See
 [input verification](docs/building.md#external-input-verification).
+
+## FAQ
+
+**Can I download an APK instead of building?** Not yet. v0.1 is source-only.
+The [binary release page](docs/binary-release.md) records actual checks, remaining
+source/build/signing work and the planned downloadable bundle.
+
+**Does it need a remote Mac or root on Android?** Guest execution is local.
+The documented build host is an Apple Silicon Mac; Android runs the app through
+its ordinary app/JIT/driver paths. Passing the app's CPU/GPU checks is still
+required. This is not an Android hardware hypervisor.
+
+**Will my Y700 or Snapdragon Galaxy work?** The source includes portable
+selection paths, but those devices have not been tested. Report the exact
+model/SoC, Android version, page size and backend; a product family or Vulkan
+version is not enough. Use the [device report](https://github.com/hericobacter-spec/NaruVM/issues/new?template=device_report.yml).
+
+**Why is Wi-Fi missing in macOS?** The guest gets a virtual Ethernet adapter
+through Android NAT/DNS. It does not control the tablet's Wi-Fi radio. See the
+[network troubleshooting table](docs/installation.md#troubleshooting).
+
+**Are macOS 26/27 or the screenshots proof of the new installer?** No. The
+screenshots show earlier macOS 15 research runs. The new full automatic install
+and 26/27 installation/boot remain unverified.
+
+**What should I do about crashes or poor speed?** Treat this as an experiment.
+GPU faults, tablet reboots and slow interaction remain unresolved. Keep the
+selected backend/build profile in your report, stop normally when possible,
+and attach a sanitized [session log](docs/installation.md#collect-a-useful-report).
+Increasing CPU/RAM is not a demonstrated universal fix.
+
+## Help improve NaruVM
+
+Useful contributions include measured CPU/JIT performance work, reproducible
+GPU/lifecycle failures, exact-model device reports and closure of the
+[APK source/build requirements](docs/binary-release.md). Start with
+[CONTRIBUTING](CONTRIBUTING.md) and an isolated reproducible case. Report bugs
+through the [bug form](https://github.com/hericobacter-spec/NaruVM/issues/new?template=bug_report.yml).
+Never attach guest disks, credentials, private captures or signing keys.
+
+## Related projects
+
+- [Henge](https://github.com/Leviidev/Henge): the upstream CPU/MMU/device foundation.
+- [UTM](https://github.com/utmapp/UTM): QEMU-based system emulation and virtualization on Apple platforms.
+- [Winlator](https://github.com/brunodev85/winlator): Wine/Box-based Windows application execution on Android.
+- [Termux](https://github.com/termux/termux-app): Android terminal and Linux environment.
+
+Their runtime architectures and supported guests differ. UTM's screenshot and
+install/developer separation, Winlator's concise install/tips and Termux's
+installation/debugging structure informed this documentation; their download
+availability or popularity is not evidence of NaruVM compatibility.
 
 ## Licenses and attribution
 

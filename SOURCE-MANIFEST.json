@@ -181,13 +181,13 @@
     },
     {
       "path": "README.ko.md",
-      "sha256": "a9783221f11371a163b7bd8b47a8c0802411d647681773ed72dd0dd5910442d6",
-      "bytes": 12256
+      "sha256": "61cf20b2a10b207366d5c956ec2af4f47eaab12277aad3536e0034154318a50b",
+      "bytes": 17156
     },
     {
       "path": "README.md",
-      "sha256": "8935684d701617d7b706a14db10ef4dd4566ac4491367b37338e513bdeef13b2",
-      "bytes": 12045
+      "sha256": "6f8733a1a07dd21598ff66990286fcb9f0666c5fa02a1264ff615e42ece54bff",
+      "bytes": 16820
     },
     {
       "path": "SECURITY.md",
@@ -1051,8 +1051,8 @@
     },
     {
       "path": "android/tests/test_publication.py",
-      "sha256": "c04cbd1eb9a03480d0654aaa6e7730ff3908bca59e080f837649de5913ba133a",
-      "bytes": 6380
+      "sha256": "b36bf480d86f18e64be03faae9641bea0a644cf8b4a0fdd1b558e3043d9aea46",
+      "bytes": 7077
     },
     {
       "path": "android/tests/test_publication_sources.py",
@@ -1400,19 +1400,49 @@
       "bytes": 3487
     },
     {
+      "path": "docs/binary-release.ko.md",
+      "sha256": "20460a71d02b84584c33b17cccea0f6f4cb529b6fe00c473aa5107affdc95d34",
+      "bytes": 5563
+    },
+    {
+      "path": "docs/binary-release.md",
+      "sha256": "d665a8343e087aae290f1f7efea36e72ad52cf2abef013b65de5c0a05fb6a669",
+      "bytes": 5529
+    },
+    {
       "path": "docs/building.md",
       "sha256": "6c29b93edc4bc87cbaece07dc65f2160c5416542bf2c3d3481be4f551c727f9e",
       "bytes": 13223
     },
     {
+      "path": "docs/images/README.md",
+      "sha256": "4b06c6e30a3abdf30557a86a5a9a4d0989d534e91fadf3b020962f1c0465983b",
+      "bytes": 1367
+    },
+    {
+      "path": "docs/images/macos-safari.png",
+      "sha256": "5b0e7db7b6fbe7ac8ab413efcb6b82f60e1291f7a46f3fc5e3a4f4132e61bdd4",
+      "bytes": 288027
+    },
+    {
+      "path": "docs/images/macos-setup.png",
+      "sha256": "08425798d37c43fa3ae57ec97c1530bb3fb72a87f99473bd04dc5af2d132cdbe",
+      "bytes": 496076
+    },
+    {
+      "path": "docs/images/macos-vscode.png",
+      "sha256": "59bd64e82044890ab43c0789c2acbe5d60bd2b297bd15962f94b8bceac513882",
+      "bytes": 404045
+    },
+    {
       "path": "docs/installation.ko.md",
-      "sha256": "c051b9fd9c20adc0ca195e3417c036908b38bdeb4c724a7292b624bfe7f9fece",
-      "bytes": 21885
+      "sha256": "d46660e5f159152f85de28a6911adebcbd4d2ef2e61f0cbad64c9094b975e457",
+      "bytes": 22003
     },
     {
       "path": "docs/installation.md",
-      "sha256": "7057e23de28eacfc6ece20c5ecc74b5e20f7a648b21a9ffeddd53e26e255f4fe",
-      "bytes": 18873
+      "sha256": "1f388e4730ebec98d2f5678d459f5697b5b13e85a9a602fe22bc45fcbe15ab9b",
+      "bytes": 18942
     },
     {
       "path": "docs/licensing.md",
@@ -1426,8 +1456,8 @@
     },
     {
       "path": "docs/publication.md",
-      "sha256": "8b682f3aab00160bc8b30958590480a6e57dd945bb402b66d60c23cd3ff8b402",
-      "bytes": 14847
+      "sha256": "a9776c757c87f992878c4aba315a51466a70b940f842c8d59ab1befecf687c5e",
+      "bytes": 14991
     },
     {
       "path": "docs/source-correspondence.md",
@@ -5606,13 +5636,13 @@
     },
     {
       "path": "tools/check_publication.py",
-      "sha256": "0708cf486e45f6ff650a38abe4a6462d09434a1643e5ccfba630330fd9533e82",
-      "bytes": 10740
+      "sha256": "438793b9945af835549ae441057dfc87b1c7afb0704e558e37379ed05ae857b6",
+      "bytes": 10769
     },
     {
       "path": "tools/export_android_source.py",
-      "sha256": "45fa686a3b048bfd9338897ff125eb298065483eb8b49848e2a66c905d94eb0b",
-      "bytes": 9549
+      "sha256": "38155deaec73e10b2749db6d66501cfd6a9916dbd37a8a2bf21ea1e42a222fe1",
+      "bytes": 10009
     },
     {
       "path": "tools/prepare_github.py",

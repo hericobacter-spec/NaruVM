@@ -1,10 +1,34 @@
 # NaruVM
 
-[English](README.md) · [설치·첫 실행 안내](docs/installation.ko.md) · [문제 해결](docs/installation.ko.md#문제-해결)
+[English](README.md) · [스크린샷](#스크린샷) · [설치 안내](docs/installation.ko.md) · [호환성](#현재-상태) · [자주 묻는 질문](#자주-묻는-질문)
+
+[![Android 소스 검사](https://github.com/hericobacter-spec/NaruVM/actions/workflows/android-source.yml/badge.svg?branch=main)](https://github.com/hericobacter-spec/NaruVM/actions/workflows/android-source.yml)
+
+**[v0.1 소스 릴리스](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1)** · **[APK 배포 준비 상태](docs/binary-release.ko.md)** · [문제 해결](docs/installation.ko.md#문제-해결)
 
 Henge의 ARM64 JIT·소프트웨어 MMU·가상 장치를 Android NDK/Bionic 앱으로 옮긴 **독립 실험 포트**입니다. 그래픽은 Reims → metal2vulkan → Vulkan 경로를 사용합니다. 원본 Henge의 공식 Android 지원 제품은 아닙니다.
 
 현재 v0.1은 **소스 미리보기**로 공개했습니다. [릴리스](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1)에는 소스와 체크섬이 있으며 **설치용 APK는 없습니다**. APK·Apple ROM/IPSW·게스트 디스크·계정·서명키는 공개 구성에 포함하지 않습니다. APK 배포에는 별도의 대응 소스·라이선스 검증이 남아 있습니다.
+
+## 스크린샷
+
+v0.1 이전 **TB373FU 한 대의 macOS 15 연구 실행**에서 촬영한 기존 화면입니다.
+현재 Android 홈이 아닌 게스트 화면이며, 개별 화면의 관측 사례입니다.
+전체 자동 설치·장기 안정성·네이티브 수준 속도가 검증됐다는 뜻은 아닙니다.
+
+| 게스트에서 연 VS Code | Safari의 example.com 페이지 |
+| --- | --- |
+| ![과거 macOS 15 게스트의 VS Code 제한 모드 화면](docs/images/macos-vscode.png) | ![과거 macOS 15 게스트의 Safari 웹 페이지 화면](docs/images/macos-safari.png) |
+
+<details>
+<summary>초기 설정 화면과 촬영 맥락</summary>
+
+![과거 macOS 초기 설정의 언어·입력 소스 화면](docs/images/macos-setup.png)
+
+새 Android 원샷 설치기 이전의 화면입니다. 이번 보완에서는 기존 파일을 수정 없이
+복사했으며 새 게스트 실행은 하지 않았습니다. [촬영 자료와 한계](docs/images/README.md).
+
+</details>
 
 ## 어떤 방식으로 실행하나요?
 
@@ -37,6 +61,13 @@ NaruVM이며 내부 `henge` 경로와 `dev.henge.research` 패키지는 이력·
 설치 안내에 소스 복제·고정 도구 준비·정확한 빌드 명령·USB 디버깅·서명 업데이트·
 호환성 검사·저장 공간·계정 설정·입력·네트워크 순서를 담았습니다.
 [개발자 빌드 참고](docs/building.md)는 드라이버·소스 재현과 검사 세부 사항을 다룹니다.
+
+처음 시험하는 순서는 **그래픽 구성 빌드 → APK 설치 → CPU·RAM·그래픽 선택과
+호환성 검사 → 새 게스트 다운로드·설치 시작 → macOS 초기 설정**입니다.
+2코어 / RAM 2048 MiB부터 시작하세요. TB373FU의 자동/PanVK는 빌드 C를 사용하고,
+빌드 B라면 CPU 렌더링을 직접 선택해야 합니다. 각 단계의 준비물과 명령은
+[전체 설치 안내](docs/installation.ko.md)에 있습니다. 공개 APK가 없는 이유와
+남은 작업은 [배포 준비 상태](docs/binary-release.ko.md)를 확인하세요.
 
 ## 현재 상태
 
@@ -124,3 +155,41 @@ Henge/Android 변경의 GPL-2.0-or-later와 구성요소별 원본 고지를 유
 [현재 APK 소스 대응 검사](docs/source-correspondence.md): 네이티브53개 출처와 Java·Manifest·리소스를 대조했습니다. 패키지 원본 일치와 전체 소스 대응 입증은 구분하며, APK 공개 배포 준비 완료를 뜻하지 않습니다.
 
 [최종 소스 공개 검사](docs/publication.md#3-run-the-final-offline-source-gate)는 실제 Git 스테이징 내용, 호스트 검사, 실패 경계 검사와 동일한 소스 압축 파일 재생성을 검증합니다. CI도 같은 명령을 실행합니다. 소스 저장소 게시 준비와 APK 공개 배포 조건은 각각 판정합니다.
+
+## 자주 묻는 질문
+
+**빌드 대신 APK를 받을 수 있나요?** 아직은 소스 배포입니다.
+[APK 배포 준비 문서](docs/binary-release.ko.md)에 실제 검사 결과, 대응 소스·빌드·서명
+준비 항목과 향후 첨부할 파일을 정리했습니다.
+
+**원격 Mac이나 Android 루팅이 필요한가요?** 게스트는 Android 안에서 실행합니다.
+문서의 빌드 컴퓨터는 Apple Silicon Mac 기준이며 앱은 일반 앱·JIT·드라이버 경로를
+사용합니다. CPU·GPU 사전 검사를 통과해야 합니다. Android 하드웨어 하이퍼바이저는 아닙니다.
+
+**Y700·스냅드래곤 갤럭시에서도 되나요?** 선택 경로는 구현했지만 해당 실기기는
+미검증입니다. [기기 보고](https://github.com/hericobacter-spec/NaruVM/issues/new?template=device_report.yml)에
+정확한 모델·SoC·Android 버전·페이지 크기·그래픽 백엔드를 남겨주세요.
+제품군 이름이나 Vulkan 버전만으로 실행 가능하다고 볼 수 없습니다.
+
+**macOS에서 Wi-Fi가 안 보여요.** Android NAT/DNS에 연결된 가상 이더넷을 사용합니다.
+태블릿의 Wi-Fi 무선 장치를 직접 넘기지 않습니다. [문제 해결](docs/installation.ko.md#문제-해결)을 확인하세요.
+
+**스크린샷이면 새 설치기와 macOS 26·27도 확인된 건가요?** 아닙니다.
+과거 macOS 15 연구 화면이며 새 전체 자동 설치, 26·27 설치·부팅은 미검증입니다.
+
+**느리거나 튕기면 어떻게 하나요?** GPU 오류·태블릿 재부팅·느린 반응은 미해결입니다.
+가능하면 정상 종료하고 빌드 구성·백엔드와 [개인 정보를 제외한 로그](docs/installation.ko.md#문제-보고용-기록-저장)를
+함께 남겨주세요. CPU·RAM을 늘리면 모든 기기에서 해결된다는 근거는 없습니다.
+
+## 기여와 관련 프로젝트
+
+측정에 근거한 CPU/JIT 성능 개선, 재현 가능한 GPU·앱 수명 주기 오류,
+정확한 모델별 시험 보고와 [APK 대응 소스 준비](docs/binary-release.ko.md)를 환영합니다.
+[기여 안내](CONTRIBUTING.md)와 [오류 보고 양식](https://github.com/hericobacter-spec/NaruVM/issues/new?template=bug_report.yml)을
+이용하세요. 게스트 디스크·암호·개인 정보가 있는 캡처·서명 키는 첨부하지 마세요.
+
+기반 프로젝트는 [Henge](https://github.com/Leviidev/Henge)입니다.
+문서 구성에는 [UTM](https://github.com/utmapp/UTM)의 스크린샷·설치/개발 분리,
+[Winlator](https://github.com/brunodev85/winlator)의 간결한 설치·팁,
+[Termux](https://github.com/termux/termux-app)의 설치 경로·서명·디버깅 안내를 참고했습니다.
+각 프로젝트의 실행 구조와 대상 OS는 다르며, 인기나 APK 제공 여부가 NaruVM 호환성을 입증하지 않습니다.

@@ -13,7 +13,7 @@ import re
 import subprocess
 import sys
 from urllib.parse import unquote, urlsplit
-from export_android_source import ROOT, collect, manifest_entries, PUBLIC_DOCS, PUBLIC_GITHUB, PUBLIC_TOOLS, ROOT_FILES
+from export_android_source import ROOT, collect, manifest_entries, PUBLIC_DOCS, PUBLIC_MEDIA, PUBLIC_GITHUB, PUBLIC_TOOLS, ROOT_FILES
 
 
 def digest(path):
@@ -43,7 +43,7 @@ def check_index(root, files):
 
 def check(root, deny_literals, staged=False):
     files = collect(root, deny_literals)
-    required = ROOT_FILES | PUBLIC_DOCS | PUBLIC_GITHUB | PUBLIC_TOOLS | {
+    required = ROOT_FILES | PUBLIC_DOCS | PUBLIC_MEDIA | PUBLIC_GITHUB | PUBLIC_TOOLS | {
         'android/tests/test_publication.py',
         'android/publication/licenses.json', 'android/publication/dependencies.json',
         'android/publication/termux-sources.json', 'android/publication/license-selection.json',

@@ -29,6 +29,8 @@ from a separate research installation.
 All profiles write the same APK filename and use the same local signing key.
 The **last successful build** determines which profile that file contains.
 
+See the [APK release status and remaining work](binary-release.md).
+
 ## 2. Check prerequisites
 
 | Item | Requirement or observed limit |
