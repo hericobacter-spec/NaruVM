@@ -1,0 +1,140 @@
+{
+  "label": "observed",
+  "base_project": "https://github.com/Leviidev/Henge",
+  "base_commit": "e98920ce3b108d17f98acaff87f74e5a477ec4b2",
+  "tracked_upstream_changes": [
+    {
+      "path": "core/dispatch.c",
+      "upstream_sha256": "f1b8b009b82b88f4000682505aa587ba50bd25cf6f97019502d8ff7272dfbe57",
+      "modified": "2026-11-14/2026-11-16",
+      "notice": "Android port adaptations; retained upstream license, no rights transfer"
+    },
+    {
+      "path": "core/machine.c",
+      "upstream_sha256": "52161816028dfa36209822006a9a45a88afa6bb9e9de3a783c48002ef44c61b2",
+      "modified": "2026-11-14/2026-11-16",
+      "notice": "Android port adaptations; retained upstream license, no rights transfer"
+    },
+    {
+      "path": "core/machine.h",
+      "upstream_sha256": "8e833c16fdfc120dd0b25916c8a54944b67c5b5bd38822c13e38a8e539b67230",
+      "modified": "2026-11-14/2026-11-16",
+      "notice": "Android port adaptations; retained upstream license, no rights transfer"
+    },
+    {
+      "path": "core/sysreg.c",
+      "upstream_sha256": "ae8588e9bc9e6c7ec6e20c755a4730652af8e20c08112fa50f8027e91aaf7608",
+      "modified": "2026-11-14/2026-11-16",
+      "notice": "Android port adaptations; retained upstream license, no rights transfer"
+    },
+    {
+      "path": "core/translate.c",
+      "upstream_sha256": "80bae22389575e44635a2d8fe07ffd008289dda1cd0b94d3dec339f9e8ee9239",
+      "modified": "2026-11-14/2026-11-16",
+      "notice": "Android port adaptations; retained upstream license, no rights transfer"
+    },
+    {
+      "path": "core/translate.h",
+      "upstream_sha256": "0391e3dfb5711220a4026c20cc14ea2b485fc7e622c1f7eaf78ae34ea3fc0b73",
+      "modified": "2026-11-14/2026-11-16",
+      "notice": "Android port adaptations; retained upstream license, no rights transfer"
+    },
+    {
+      "path": "devices/aes.c",
+      "upstream_sha256": "32fd889eccad2a28a9a1e5fd6e8092c545eca7a1bc1efed99edb0d799fda8a94",
+      "modified": "2026-11-14/2026-11-16",
+      "notice": "Android port adaptations; retained upstream license, no rights transfer"
+    },
+    {
+      "path": "devices/pvg_lite.c",
+      "upstream_sha256": "be723d70db3a233317d22e9be40856d38d6e0a952b8eb6cd1e80f4607e584c03",
+      "modified": "2026-11-14/2026-11-16",
+      "notice": "Android port adaptations; retained upstream license, no rights transfer"
+    },
+    {
+      "path": "devices/virtio_balloon.c",
+      "upstream_sha256": "1b28476c068f7afaed5e3ea195e0d84da43e7544e84faaabaf1d2a3db2478596",
+      "modified": "2026-11-14/2026-11-16",
+      "notice": "Android port adaptations; retained upstream license, no rights transfer"
+    },
+    {
+      "path": "devices/virtio_usb.c",
+      "upstream_sha256": "b34f316f39e5c4aaa503caeb5116373ac61b550e128bdd17842006cca8165d7c",
+      "modified": "2026-11-14/2026-11-16",
+      "notice": "Android port adaptations; retained upstream license, no rights transfer"
+    },
+    {
+      "path": "devices/vmapple.c",
+      "upstream_sha256": "cf02d2566fcdb871706e5f1a6fd0bd4c13b2ddcf71807448b6db482618501148",
+      "modified": "2026-11-14/2026-11-16",
+      "notice": "Android port adaptations; retained upstream license, no rights transfer"
+    },
+    {
+      "path": "devices/vmapple.h",
+      "upstream_sha256": "b497731867a92fc9654186e4355676a23cfde86ce9fd5502d2d7984ef847fd15",
+      "modified": "2026-11-14/2026-11-16",
+      "notice": "Android port adaptations; retained upstream license, no rights transfer"
+    },
+    {
+      "path": "devices/xhci.c",
+      "upstream_sha256": "52b05f9d1e09397edb2383b955f4ef54e8ba203d783c6ee206e635431bcdfa79",
+      "modified": "2026-11-14/2026-11-16",
+      "notice": "Android port adaptations; retained upstream license, no rights transfer"
+    },
+    {
+      "path": "devices/xhci.h",
+      "upstream_sha256": "b5308f6bc10f9a2e588ce05d088f5e545314ff5f03ff9ce1252f1c2692c49d21",
+      "modified": "2026-11-14/2026-11-16",
+      "notice": "Android port adaptations; retained upstream license, no rights transfer"
+    },
+    {
+      "path": "host/disk.c",
+      "upstream_sha256": "becf5888737dcfba30f81da4baa39abcd70ecd7bab94a7e67fb10d08df131570",
+      "modified": "2026-11-14/2026-11-16",
+      "notice": "Android port adaptations; retained upstream license, no rights transfer"
+    },
+    {
+      "path": "host/enter.S",
+      "upstream_sha256": "840c72cbf9f988e40ff4df6b1aa0f56608d55eee4cf03192cdead1b57c534c00",
+      "modified": "2026-11-14/2026-11-16",
+      "notice": "Android port adaptations; retained upstream license, no rights transfer"
+    },
+    {
+      "path": "host/install.c",
+      "upstream_sha256": "237169af64667e9603c6911716a054d6ec8c397772e9f90baa3c7e208dcd9b2b",
+      "modified": "2026-11-14/2026-11-16",
+      "notice": "Android port adaptations; retained upstream license, no rights transfer"
+    },
+    {
+      "path": "host/jit_region.c",
+      "upstream_sha256": "7ff850d267c0bce5c8bbaeb5e5b5abb06be9260cd04c0bed2ee153da88dcc6cb",
+      "modified": "2026-11-14/2026-11-16",
+      "notice": "Android port adaptations; retained upstream license, no rights transfer"
+    },
+    {
+      "path": "host/libusb_shim.c",
+      "upstream_sha256": "914281cfff4aba105d7da1ef40717e99e53d275e4c4b2fdf396706e937c209ba",
+      "modified": "2026-11-14/2026-11-16",
+      "notice": "Android port adaptations; retained upstream license, no rights transfer"
+    },
+    {
+      "path": "host/net_slirp.c",
+      "upstream_sha256": "a5df1dc33a7de99d6857977f93abb5b528b3be963cff39327000763fd8bd387b",
+      "modified": "2026-11-14/2026-11-16",
+      "notice": "Android port adaptations; retained upstream license, no rights transfer"
+    }
+  ],
+  "new_port_paths": [
+    "android/",
+    "host/platform.h",
+    "host/zero_array.h",
+    "tests/test_mempath.c",
+    "tools/bootstrap_android.py",
+    "tools/check_android_portability.py",
+    "tools/export_android_source.py",
+    "tools/prepare_github.py",
+    "tools/check_publication.py",
+    "tools/verify_github_ready.py"
+  ],
+  "scope": "Modified upstream source list at preparation time; new project tooling/docs carry the root grant unless stated otherwise"
+}

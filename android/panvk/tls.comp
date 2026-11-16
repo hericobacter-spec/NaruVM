@@ -1,0 +1,12 @@
+#version 450
+// Authored private-array fixture for grow-on-fault shader scratch.
+layout(local_size_x = 64) in;
+layout(set = 0, binding = 0, std430) readonly buffer Source { uint source[]; };
+layout(set = 0, binding = 1, std430) writeonly buffer Destination { uint destination[]; };
+void main() {
+    uint i = gl_GlobalInvocationID.x;
+    uint values[256];
+    uint x = source[i];
+    for (uint j = 0; j < 256; ++j) values[j] = x + j * 17u;
+    destination[i] = (x * 3u + 7u) ^ values[i & 255u];
+}

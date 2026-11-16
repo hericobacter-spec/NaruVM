@@ -1,0 +1,37 @@
+[
+  {
+    "package": "platform-tools",
+    "url": "https://dl.google.com/android/repository/platform-tools_r37.0.3-darwin.zip",
+    "checksum": "eca4effbe35f4968139b051bbb16753302a3c33c",
+    "destination": "android-sdk/platform-tools",
+    "algorithm": "sha1"
+  },
+  {
+    "package": "platforms;android-36",
+    "url": "https://dl.google.com/android/repository/platform-36_r02.zip",
+    "checksum": "2c1a80dd4d9f7d0e6dd336ec603d9b5c55a6f576",
+    "destination": "android-sdk/platforms/android-36",
+    "algorithm": "sha1"
+  },
+  {
+    "package": "build-tools;36.0.0",
+    "url": "https://dl.google.com/android/repository/build-tools_r36_macosx.zip",
+    "checksum": "199ae0047ee61e842f8ee0c6d3918e44fb9a1f83",
+    "destination": "android-sdk/build-tools/36.0.0",
+    "algorithm": "sha1"
+  },
+  {
+    "package": "ndk;30.0.16248370",
+    "url": "https://dl.google.com/android/repository/android-ndk-r30-darwin.zip",
+    "checksum": "c060be96767eefbb8e0a27796d6f43115fc1a0c4",
+    "destination": "android-sdk/ndk/30.0.16248370",
+    "algorithm": "sha1"
+  },
+  {
+    "package": "temurin-jdk-21",
+    "url": "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.13%2B9/OpenJDK21U-jdk_aarch64_mac_hotspot_21.0.13_9.tar.gz",
+    "checksum": "bf036b35b071bfb2f54f2c0af8ee8d88afa95ee6eb3dce02c0f94cfc2524d04a",
+    "destination": "jdk-21",
+    "algorithm": "sha256"
+  }
+]

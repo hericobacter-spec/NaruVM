@@ -1,0 +1,25 @@
+build/
+
+.tools/
+android/build/
+android/artifacts/
+*.keystore
+__pycache__/
+android/gpu/target/
+android/gpu/check.metallib
+android/private-backups/
+memory/
+.claude/
+AGENTS.md
+CLAUDE.md
+.env
+.env.*
+*.jks
+*.p12
+*.pfx
+*.raw
+*.ipsw
+AVPBooter*.bin
+
+# Local design exploration and review evidence
+.impeccable/

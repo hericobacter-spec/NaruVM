@@ -1,0 +1,11 @@
+{
+  "base_commit": "219f01365dc4c8eb346816c405b5b17403793764",
+  "patch_sha256": "6e6a474319c968b2bf610d9ded8ce0f6fdabcdbd995255838f9757894525228c",
+  "files": {
+    "crates/metal2vulkan-runtime/src/buffer_descriptor.rs": "7d236ab3836ab3155014274ccfef9afa9fb6fbeac7b0a11bcc4cdc2e96d279a0",
+    "crates/metal2vulkan-runtime/src/copied.rs": "b1e07bcc501abd5891f48cded7884b08235aea9c8defedf7c53f9fefa845a4eb",
+    "crates/metal2vulkan-runtime/src/host_memory.rs": "76ba921640a003cbd2bd843b94d286ea28bf41fd06abb4e7235ca84efbd3157d",
+    "crates/metal2vulkan-runtime/src/work_counts.rs": "de5bcfc5399b4618dc74c36513891151d60887d7ccf6cc09625f3c71efa8e393"
+  },
+  "status": "experimental, not used by the macOS worker"
+}

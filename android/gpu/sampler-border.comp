@@ -1,0 +1,5 @@
+#version 450
+layout(local_size_x=8) in;
+layout(set=0,binding=0) uniform sampler2D tex;
+layout(set=0,binding=1,std430) buffer Result { vec4 pixels[]; } result;
+void main() { result.pixels[gl_GlobalInvocationID.x] = textureLod(tex, vec2(2.0), 0.0); }

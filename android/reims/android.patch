@@ -1,0 +1,980 @@
+diff --git a/crates/reims-vgpu-c/src/ffi/catch.rs b/crates/reims-vgpu-c/src/ffi/catch.rs
+index 599c7a0..6d55500 100644
+--- a/crates/reims-vgpu-c/src/ffi/catch.rs
++++ b/crates/reims-vgpu-c/src/ffi/catch.rs
+@@ -1,12 +1,12 @@
+ //! The catch around a call of a host function ([`super::host_call`]), in one file per OS with the
+ //! same function: `catch(f)` runs `f` and answers its value, or `Err(())` for what the host threw.
+ 
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ mod linux;
+ #[cfg(target_os = "macos")]
+ mod macos;
+ 
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ pub(super) use linux::catch;
+ #[cfg(target_os = "macos")]
+ pub(super) use macos::catch;
+diff --git a/crates/reims-vgpu-c/src/frame.rs b/crates/reims-vgpu-c/src/frame.rs
+index ae5bcf1..d272077 100644
+--- a/crates/reims-vgpu-c/src/frame.rs
++++ b/crates/reims-vgpu-c/src/frame.rs
+@@ -105,7 +105,10 @@ pub unsafe extern "C" fn rvg_frame_target_create(
+         let Some(format) = PixelFormat::from_metal(c.format) else {
+             return RVG_ERR_INVALID_ARGUMENT;
+         };
+-        match device.device.new_frame_target(c.width, c.height, format) {
++        match device
++            .device
++            .new_frame_target_with_readback(c.width, c.height, format)
++        {
+             Ok(t) => {
+                 let h = handle::new(RvgFrameTarget { target: t });
+                 // SAFETY: checked non-NULL; the caller's contract.
+diff --git a/crates/reims-vgpu-c/src/lib.rs b/crates/reims-vgpu-c/src/lib.rs
+index 4bf0da5..421568c 100644
+--- a/crates/reims-vgpu-c/src/lib.rs
++++ b/crates/reims-vgpu-c/src/lib.rs
+@@ -61,8 +61,13 @@ pub use status::RvgStatus;
+ #[global_allocator]
+ static ALLOCATOR: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
+ 
+-#[cfg(all(target_os = "linux", not(feature = "vulkan")))]
+-compile_error!("on Linux, reims-vgpu-c builds only with the `vulkan` feature (VulkanPlatform)");
++#[cfg(all(
++    any(target_os = "linux", target_os = "android"),
++    not(feature = "vulkan")
++))]
++compile_error!(
++    "on Linux and Android, reims-vgpu-c builds only with the `vulkan` feature (VulkanPlatform)"
++);
+ 
+ /// The platform every handle is made on.
+ #[cfg(not(any(test, feature = "vulkan")))]
+diff --git a/crates/reims-vgpu-core/src/iosurface/descriptor.rs b/crates/reims-vgpu-core/src/iosurface/descriptor.rs
+index 122b9d1..8fa250a 100644
+--- a/crates/reims-vgpu-core/src/iosurface/descriptor.rs
++++ b/crates/reims-vgpu-core/src/iosurface/descriptor.rs
+@@ -498,7 +498,7 @@ pub(super) fn surface_spec<P: Platform>(
+         log::debug!("the surface is host-only");
+         return Some(spec);
+     }
+-    let page = p.vm().page_size();
++    let page = super::device::mapper_page_size(p);
+     spec.client_address_ranges = Some(
+         slot.pages
+             .iter()
+diff --git a/crates/reims-vgpu-core/src/iosurface/device.rs b/crates/reims-vgpu-core/src/iosurface/device.rs
+index 98fdd2d..c313cb5 100644
+--- a/crates/reims-vgpu-core/src/iosurface/device.rs
++++ b/crates/reims-vgpu-core/src/iosurface/device.rs
+@@ -42,6 +42,19 @@ use crate::raise::{Kept, keep_forever};
+ use crate::rt::queue::{Executor, SerialQueue};
+ use crate::rt::signal::CoalescingSignal;
+ 
++// Android arm64 hosts commonly have 4 KiB kernel pages, while this device's guest
++// ABI uses APV_PAGE_SIZE (16 KiB). Descriptor table indexing and physical page
++// numbers must follow that guest ABI; the POSIX VM still maps native host pages.
++#[cfg(target_os = "android")]
++pub(super) fn mapper_page_size<P: Platform>(_: &P) -> u64 {
++    crate::guest::records::APV_PAGE_SIZE
++}
++
++#[cfg(not(target_os = "android"))]
++pub(super) fn mapper_page_size<P: Platform>(platform: &P) -> u64 {
++    platform.vm().page_size()
++}
++
+ /// What the queue works on: the ring, the descriptor table and its cached pages, and the 8192
+ /// surface slots. The mappings behind the ring, the table and the pages are [`Mappings`].
+ pub(super) struct QueueState<P: Platform> {
+@@ -273,7 +286,7 @@ impl<P: Platform> IoSurfaceHostDevice<P> {
+         platform: &Arc<P>,
+         descriptor: &IoSurfaceHostDeviceDescriptor,
+     ) -> Result<HostDeviceHandle<P>, IoSurfaceRefusal> {
+-        let page = platform.vm().page_size();
++        let page = mapper_page_size(platform.as_ref());
+         let table_len = page / const { NonZeroU64::new(TABLE_ENTRY_SIZE).unwrap() };
+         let descriptors_per_page = page / Form::First.size();
+         let mmio_length = descriptor.mmio_length;
+@@ -376,14 +389,21 @@ impl<P: Platform> HostDeviceCore<P> {
+             })
+     }
+ 
+-    /// The VM page size.
++    /// The mapper's guest page size; Android's kernel can use smaller host pages.
+     pub(super) fn page_size(&self) -> u64 {
+-        self.platform.vm().page_size()
++        mapper_page_size(self.platform.as_ref())
+     }
+ 
+     /// The VM page shift.
+     pub(super) fn page_shift(&self) -> u32 {
+-        self.platform.vm().page_shift()
++        #[cfg(target_os = "android")]
++        {
++            crate::guest::records::APV_PAGE_SHIFT
++        }
++        #[cfg(not(target_os = "android"))]
++        {
++            self.platform.vm().page_shift()
++        }
+     }
+ 
+     /// Another reference to the IOSurface mapped at `mapping_id`, made on the device's queue;
+diff --git a/crates/reims-vgpu-vulkan/Cargo.toml b/crates/reims-vgpu-vulkan/Cargo.toml
+index c31e3c9..b084af6 100644
+--- a/crates/reims-vgpu-vulkan/Cargo.toml
++++ b/crates/reims-vgpu-vulkan/Cargo.toml
+@@ -26,7 +26,7 @@ reims-vgpu-metal.workspace = true
+ 
+ # On Linux the OS services are this crate's own (`os/linux.rs`): threads, clocks, the views of
+ # guest pages over the memory map's files, and IOSurface's stand-in.
+-[target.'cfg(target_os = "linux")'.dependencies]
++[target.'cfg(any(target_os = "linux", target_os = "android"))'.dependencies]
+ libc.workspace = true
+ # The driver manifests the host's GPUs are read through (`host_gpus.rs`), as the loader reads them.
+ serde_json.workspace = true
+diff --git a/crates/reims-vgpu-vulkan/src/answer.rs b/crates/reims-vgpu-vulkan/src/answer.rs
+index e57223f..1cd838d 100644
+--- a/crates/reims-vgpu-vulkan/src/answer.rs
++++ b/crates/reims-vgpu-vulkan/src/answer.rs
+@@ -1593,7 +1593,7 @@ pub fn hearing<T>(call: impl FnOnce() -> T) -> (T, Vec<rt::Degradation>) {
+ /// one: neither relayed, counted, kept nor dying. A kind the runtime announces once per device
+ /// is announced at every occurrence where a probe may meet it ([`crate::platform`]'s
+ /// `announced_each`), so that the probe's takes no later occurrence's line.
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ pub(crate) fn unheard<T>(call: impl FnOnce() -> T) -> T {
+     /// Puts back the outer state on drop, an unwinding call's included.
+     struct Restore(bool);
+diff --git a/crates/reims-vgpu-vulkan/src/answer/census.rs b/crates/reims-vgpu-vulkan/src/answer/census.rs
+index caa55e5..36547a5 100644
+--- a/crates/reims-vgpu-vulkan/src/answer/census.rs
++++ b/crates/reims-vgpu-vulkan/src/answer/census.rs
+@@ -41,7 +41,7 @@ const PERIOD: Duration = Duration::from_secs(30);
+ pub const OUTSIDE: &str = "(outside every call)";
+ 
+ /// Whether census mode can be on in this build: on Linux alone (module docs).
+-const ON_THIS_OS: bool = cfg!(target_os = "linux");
++const ON_THIS_OS: bool = cfg!(any(target_os = "linux", target_os = "android"));
+ 
+ /// The census's directory, read once per process ([`chosen`]).
+ fn dir() -> Option<&'static Path> {
+@@ -374,7 +374,7 @@ mod tests {
+     /// The variable turns census mode on on Linux alone; unset or empty, it is off everywhere
+     #[test]
+     fn census_mode_is_linux_s_alone() {
+-        let linux = cfg!(target_os = "linux");
++        let linux = cfg!(any(target_os = "linux", target_os = "android"));
+         assert_eq!(
+             chosen(Some("/census".to_owned())),
+             linux.then(|| PathBuf::from("/census"))
+diff --git a/crates/reims-vgpu-vulkan/src/api.rs b/crates/reims-vgpu-vulkan/src/api.rs
+index 4a1bb2a..8a771d7 100644
+--- a/crates/reims-vgpu-vulkan/src/api.rs
++++ b/crates/reims-vgpu-vulkan/src/api.rs
+@@ -7,6 +7,11 @@ use reims_vgpu_core::num::ToU64;
+ use crate::answer::{get, plain};
+ use crate::gpu::resource::VulkanTexture;
+ 
++#[cfg(target_os = "android")]
++mod frame_readback;
++#[cfg(target_os = "android")]
++pub use frame_readback::FrameReadback;
++
+ /// Copies the whole of `texture`'s first level and slice into `dst`: `height` rows of `width * 4`
+ /// bytes, each `bytes_per_row` after the last, the bytes between rows left as they are
+ /// (`getBytes:bytesPerRow:fromRegion:mipmapLevel:`). The caller has checked that `dst` holds
+diff --git a/crates/reims-vgpu-vulkan/src/api/frame_readback.rs b/crates/reims-vgpu-vulkan/src/api/frame_readback.rs
+new file mode 100644
+index 0000000..75c5f9f
+--- /dev/null
++++ b/crates/reims-vgpu-vulkan/src/api/frame_readback.rs
+@@ -0,0 +1,70 @@
++//! Library-owned frame targets read through a reused shared buffer. The copy is part of the
++//! frame's command buffer, not a new submission that could wait behind guest event work.
++use metal2vulkan_runtime as rt;
++use reims_vgpu_core::num::ToUsize as _;
++
++use crate::answer::{get, plain};
++use crate::gpu::command::VulkanCommandBuffer;
++use crate::gpu::resource::VulkanTexture;
++
++/// A frame target's shared readback buffer, retained by every command that copies into it.
++/// This is only for the embedding host's frame targets, never a guest texture's `getBytes`.
++pub struct FrameReadback {
++    buffer: rt::Buffer,
++    width: u64,
++    height: u64,
++}
++
++impl FrameReadback {
++    /// Allocate once for a frame target's checked dimensions. A new shared buffer reads zero.
++    pub fn new(texture: &VulkanTexture) -> Self {
++        let width = plain(|| texture.raw.width());
++        let height = plain(|| texture.raw.height());
++        let length = width * height * 4;
++        let buffer = get("newBufferWithLength:options:", || {
++            texture
++                .device
++                .raw
++                .new_buffer(length, rt::ResourceOptions::shared())
++        });
++        eprintln!("REIMS_FRAME_READBACK method=same_batch_buffer bytes={length}");
++        Self {
++            buffer,
++            width,
++            height,
++        }
++    }
++
++    /// Append a whole-image copy after the frame draw. Completion of this same command buffer
++    /// covers the GPU writes and host visibility; no queue is waited on while encoding.
++    pub fn encode(&self, command: &VulkanCommandBuffer, texture: &VulkanTexture) {
++        let mut blit = get("blitCommandEncoder", || command.raw.blit_command_encoder());
++        get("copyFromTexture:toBuffer:", || {
++            blit.copy_from_texture_to_buffer(
++                &texture.raw,
++                0,
++                0,
++                rt::Origin::new(0, 0, 0),
++                rt::Size::new(self.width, self.height, 1),
++                &self.buffer,
++                0,
++                self.width * 4,
++                self.width * self.height * 4,
++                rt::BlitOption::None,
++            )
++        });
++        get("endEncoding", || blit.end_encoding());
++    }
++
++    /// Copy after the host waited for the frame. Its caller checked the row stride and extent.
++    pub fn read_pixels(&self, dst: &mut [u8], bytes_per_row: usize) {
++        let pointer =
++            plain(|| self.buffer.contents()).expect("shared frame buffer is host visible");
++        let row = (self.width * 4).to_usize();
++        for y in 0..self.height.to_usize() {
++            // SAFETY: shared coherent buffer, frame complete, extent checked by FrameTarget.
++            let source = unsafe { std::slice::from_raw_parts(pointer.as_ptr().add(y * row), row) };
++            dst[y * bytes_per_row..y * bytes_per_row + row].copy_from_slice(source);
++        }
++    }
++}
+diff --git a/crates/reims-vgpu-vulkan/src/gpu/device.rs b/crates/reims-vgpu-vulkan/src/gpu/device.rs
+index 44aac23..dbf3b2f 100644
+--- a/crates/reims-vgpu-vulkan/src/gpu/device.rs
++++ b/crates/reims-vgpu-vulkan/src/gpu/device.rs
+@@ -251,7 +251,7 @@ pub fn adopt(raw: rt::Device) -> VulkanDevice {
+     }
+     metal_space::count_sampler_ids(&raw);
+     crate::answer::native::device_made(raw.properties());
+-    #[cfg(target_os = "linux")]
++    #[cfg(any(target_os = "linux", target_os = "android"))]
+     crate::os::learn_view_imports(&raw);
+     let made = Obj::new(DeviceObject {
+         raw,
+@@ -2060,7 +2060,7 @@ pub(crate) mod tests {
+     /// command buffer completes, and the memory is unmapped once the import was freed. The command
+     /// buffer reads another texture through its ID, so no command of it names the surface's.
+     /// Linux's: on macOS IOSurface's memory is the surface's own
+-    #[cfg(target_os = "linux")]
++    #[cfg(any(target_os = "linux", target_os = "android"))]
+     #[test]
+     fn a_released_surface_texture_keeps_the_surfaces_memory_while_imported() {
+         use std::sync::atomic::{AtomicU32, Ordering};
+@@ -2283,7 +2283,7 @@ pub(crate) mod tests {
+     /// own twin. Counted by the process's mappings of the guest's pages' file, which every view of
+     /// them mapped from it takes (`/proc/self/maps`), a view through dma-bufs none, a twin always
+     /// a mapping a run. Linux's: on macOS IOSurface maps the surface
+-    #[cfg(target_os = "linux")]
++    #[cfg(any(target_os = "linux", target_os = "android"))]
+     #[test]
+     fn textures_over_a_surface_map_its_pages_once_more_at_most() {
+         use reims_vgpu_core::host::PhysicalMemoryRange;
+diff --git a/crates/reims-vgpu-vulkan/src/gpu/encode_compute.rs b/crates/reims-vgpu-vulkan/src/gpu/encode_compute.rs
+index 243bffd..1724fcf 100644
+--- a/crates/reims-vgpu-vulkan/src/gpu/encode_compute.rs
++++ b/crates/reims-vgpu-vulkan/src/gpu/encode_compute.rs
+@@ -596,7 +596,7 @@ mod tests {
+     /// by its slot writes, or the buffer is made resident for writing: on Linux the runtime
+     /// imports a writable twin of the pages, which the write would reach, where Metal's GPU drops
+     /// it ([`crate::gpu::writes::kept_write`]). The pages stay zeros
+-    #[cfg(target_os = "linux")]
++    #[cfg(any(target_os = "linux", target_os = "android"))]
+     #[test]
+     fn a_dispatch_through_read_only_pages_dies_on_linux() {
+         use reims_vgpu_core::platform::os::vm::HostVm as _;
+diff --git a/crates/reims-vgpu-vulkan/src/gpu/encode_render.rs b/crates/reims-vgpu-vulkan/src/gpu/encode_render.rs
+index baf8a76..e3f4583 100644
+--- a/crates/reims-vgpu-vulkan/src/gpu/encode_render.rs
++++ b/crates/reims-vgpu-vulkan/src/gpu/encode_render.rs
+@@ -4682,7 +4682,7 @@ pub(crate) mod tests {
+     /// vertex function's slot 2 too, a `device` pointer, the draw dies where it is encoded: on
+     /// Linux the runtime imports a writable twin of the pages, which the write would reach
+     /// ([`crate::gpu::writes::kept_write`]). The pages stay zeros
+-    #[cfg(target_os = "linux")]
++    #[cfg(any(target_os = "linux", target_os = "android"))]
+     #[test]
+     fn a_draw_through_read_only_pages_at_slots_it_cannot_write_draws_on_linux() {
+         use reims_vgpu_core::platform::os::vm::HostVm as _;
+diff --git a/crates/reims-vgpu-vulkan/src/gpu/frame_cost.rs b/crates/reims-vgpu-vulkan/src/gpu/frame_cost.rs
+index 049e5ee..9b980a2 100644
+--- a/crates/reims-vgpu-vulkan/src/gpu/frame_cost.rs
++++ b/crates/reims-vgpu-vulkan/src/gpu/frame_cost.rs
+@@ -143,7 +143,7 @@ fn cpu_now() -> [u64; 3] {
+     // `CLOCK_THREAD_CPUTIME_ID`, `CLOCK_PROCESS_CPUTIME_ID`, `CLOCK_MONOTONIC`.
+     #[cfg(target_os = "macos")]
+     const CLOCKS: [i32; 3] = [16, 12, 6];
+-    #[cfg(target_os = "linux")]
++    #[cfg(any(target_os = "linux", target_os = "android"))]
+     const CLOCKS: [i32; 3] = [3, 2, 1];
+     CLOCKS.map(|clock| {
+         let mut at = Timespec { sec: 0, nsec: 0 };
+diff --git a/crates/reims-vgpu-vulkan/src/gpu/resource.rs b/crates/reims-vgpu-vulkan/src/gpu/resource.rs
+index 2b01a22..365987a 100644
+--- a/crates/reims-vgpu-vulkan/src/gpu/resource.rs
++++ b/crates/reims-vgpu-vulkan/src/gpu/resource.rs
+@@ -2080,7 +2080,7 @@ pub(crate) mod tests {
+     /// A no-copy buffer over `pages` pages of zeros mapped read-only, which the runtime imports
+     /// through a writable twin of them on Linux, and the pages' first byte, which the caller
+     /// frees once the buffer is gone.
+-    #[cfg(target_os = "linux")]
++    #[cfg(any(target_os = "linux", target_os = "android"))]
+     pub(crate) fn over_read_only_pages(pages: u64) -> (VulkanBuffer, HostPtr) {
+         use reims_vgpu_core::platform::os::vm::{HostVm as _, VmProt};
+ 
+@@ -2106,7 +2106,7 @@ pub(crate) mod tests {
+     /// runtime imports a writable twin of the pages, which the fill would reach, where Metal
+     /// drops the write (`os/linux/import.rs`, [`crate::gpu::writes::kept_write`]). The rest of
+     /// the command buffer runs, and the pages stay zeros
+-    #[cfg(target_os = "linux")]
++    #[cfg(any(target_os = "linux", target_os = "android"))]
+     #[test]
+     fn a_fill_into_read_only_pages_dies_on_linux() {
+         use reims_vgpu_core::platform::blit::{BlitCmd, BlitEncoder as _};
+diff --git a/crates/reims-vgpu-vulkan/src/gpu/states.rs b/crates/reims-vgpu-vulkan/src/gpu/states.rs
+index b37c38a..f38acc4 100644
+--- a/crates/reims-vgpu-vulkan/src/gpu/states.rs
++++ b/crates/reims-vgpu-vulkan/src/gpu/states.rs
+@@ -471,6 +471,9 @@ pub(crate) fn new_render_pipeline_state(
+     let mut d =
+         RenderPipelineDescriptor::new(StageSource::Function(desc.vertex.function_descriptor()));
+     d.fragment = Some(StageSource::Function(desc.fragment.function_descriptor()));
++    // Android's Vulkan runtime enforces the limited single-primitive pass contract.
++    // Native interlock remains preferred and full ROG capability is not advertised.
++    d.ordered_fragment_primitives = cfg!(target_os = "android");
+     d.color_attachments[0] = color_attachment(desc.color0_pixel_format);
+     if desc.blend_over
+         && let Some(c) = d.color_attachments[0].as_mut()
+@@ -710,7 +713,8 @@ pub(crate) fn new_render_pipeline_state_from_descriptor(
+     if let Some(raw) = &descriptor.raw_format {
+         raw.dies(sel);
+     }
+-    let (d, placement) = plain(|| (descriptor.desc.lock().clone(), descriptor.placement()));
++    let (mut d, placement) = plain(|| (descriptor.desc.lock().clone(), descriptor.placement()));
++    d.ordered_fragment_primitives = cfg!(target_os = "android");
+     let options = pipeline_options(options, placement, descriptor.label.clone());
+     timing::creation(
+         sel,
+diff --git a/crates/reims-vgpu-vulkan/src/gpu/writes.rs b/crates/reims-vgpu-vulkan/src/gpu/writes.rs
+index f32c86e..c6827d8 100644
+--- a/crates/reims-vgpu-vulkan/src/gpu/writes.rs
++++ b/crates/reims-vgpu-vulkan/src/gpu/writes.rs
+@@ -249,11 +249,11 @@ pub(crate) fn set_kept(flag: &AtomicBool, kept: bool) {
+ 
+ /// One surface counted in [`KEPT_NOW`] while this lives: one whose GPU writes never reach its
+ /// memory ([`surface_kept`]), which every object made on it holds.
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ #[derive(Debug)]
+ pub(crate) struct Keeping(());
+ 
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ impl Keeping {
+     /// A count of one, from now on.
+     pub(crate) fn new() -> Keeping {
+@@ -262,7 +262,7 @@ impl Keeping {
+     }
+ }
+ 
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ impl Drop for Keeping {
+     fn drop(&mut self) {
+         KEPT_NOW.fetch_sub(1, Ordering::SeqCst);
+diff --git a/crates/reims-vgpu-vulkan/src/lib.rs b/crates/reims-vgpu-vulkan/src/lib.rs
+index 21ef548..98bc077 100644
+--- a/crates/reims-vgpu-vulkan/src/lib.rs
++++ b/crates/reims-vgpu-vulkan/src/lib.rs
+@@ -26,7 +26,7 @@
+ pub mod answer;
+ pub mod api;
+ pub mod gpu;
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ pub mod host_gpus;
+ pub mod os;
+ pub mod platform;
+diff --git a/crates/reims-vgpu-vulkan/src/os.rs b/crates/reims-vgpu-vulkan/src/os.rs
+index a0921ae..ec23acf 100644
+--- a/crates/reims-vgpu-vulkan/src/os.rs
++++ b/crates/reims-vgpu-vulkan/src/os.rs
+@@ -6,6 +6,9 @@
+ //! - **Linux** (`os/linux.rs`): the clocks (`CLOCK_BOOTTIME`, `CLOCK_REALTIME`), threads, a host
+ //!   VM over `mmap` that makes views of the guest's pages by mapping their files (the backing
+ //!   table), and IOSurface's stand-in over that memory.
++//! - **Android** reuses Linux's POSIX memory, clock and thread services. Its headless embedding
++//!   requests no window extensions (`os/android/wsi.rs`). Linux's dma-buf maker still needs
++//!   `/dev/udmabuf`; Android guest memory imports are not implemented by this OS selection.
+ //!
+ //! Either way the platform's VM reports the pages it changes to the runtime
+ //! ([`crate::remap::VulkanVm`]), and a display's window presents through a swapchain over the
+@@ -13,14 +16,18 @@
+ //! its loader, and fetching an image's drawable ahead where the driver needs it
+ //! (`Drawables`: MoltenVK's, on macOS).
+ 
+-#[cfg(target_os = "linux")]
++#[cfg(any(any(target_os = "linux", target_os = "android"), target_os = "android"))]
+ mod linux;
+ #[cfg(target_os = "macos")]
+ mod macos;
+ mod surface;
++#[cfg(not(target_os = "android"))]
++mod wsi;
++#[cfg(target_os = "android")]
++#[path = "os/android/wsi.rs"]
+ mod wsi;
+ 
+-#[cfg(target_os = "linux")]
++#[cfg(any(any(target_os = "linux", target_os = "android"), target_os = "android"))]
+ use linux as host_os;
+ #[cfg(target_os = "macos")]
+ use macos as host_os;
+@@ -30,22 +37,25 @@ use std::sync::Arc;
+ 
+ /// The dirty source's side on Linux: the device's log, the harvester's interface, and the
+ /// per-import answers the runtime asks (`os/linux/dirty.rs`).
+-#[cfg(target_os = "linux")]
++#[cfg(any(any(target_os = "linux", target_os = "android"), target_os = "android"))]
+ pub use host_os::dirty;
+ /// Learns whether a device imports views of guest pages mapped through dma-bufs, on Linux
+ /// (`os/linux/import.rs`).
+-#[cfg(target_os = "linux")]
++#[cfg(any(any(target_os = "linux", target_os = "android"), target_os = "android"))]
+ pub(crate) use host_os::learn_view_imports;
+ /// The loader the runtime opens, for `crate::host_gpus`'s own instances.
+-#[cfg(target_os = "linux")]
++#[cfg(any(any(target_os = "linux", target_os = "android"), target_os = "android"))]
+ pub(crate) use host_os::open_loader;
+ /// Whether a view of several runs of pages made now is mapped through dma-bufs, on Linux
+ /// (`os/linux/import.rs`).
+-#[cfg(all(test, target_os = "linux"))]
++#[cfg(all(
++    test,
++    any(any(target_os = "linux", target_os = "android"), target_os = "android")
++))]
+ pub(crate) use host_os::views_through_dma_bufs;
+ /// A surface's memory lent to a device outside the runtime, on Linux (`os/linux/device_lend.rs`),
+ /// and what a host attaches to a surface for as long as it lives.
+-#[cfg(target_os = "linux")]
++#[cfg(any(any(target_os = "linux", target_os = "android"), target_os = "android"))]
+ pub use host_os::{DeviceLend, LendRefusal, LentDmaBuf, attachment, lend_to_devices};
+ pub(crate) use host_os::{
+     Drawables, ImportView, TWINS_READ_ONLY, allocate_aliasable, allocate_zeros, dma_buf_refusal,
+diff --git a/crates/reims-vgpu-vulkan/src/os/android/wsi.rs b/crates/reims-vgpu-vulkan/src/os/android/wsi.rs
+new file mode 100644
+index 0000000..4874cd6
+--- /dev/null
++++ b/crates/reims-vgpu-vulkan/src/os/android/wsi.rs
+@@ -0,0 +1,11 @@
++//! Android's embedding app receives frames through the display API. No library window or
++//! swapchain is implemented here, so the device requests no window-system extensions.
++use metal2vulkan_runtime as rt;
++
++/// Headless embedding requests no window-system extensions.
++pub fn add_window_extensions(_options: &mut rt::DeviceOptions) {}
++
++/// No library-owned swapchain exists on Android.
++pub fn present_fences(_options: &rt::DeviceOptions) -> bool {
++    false
++}
+diff --git a/crates/reims-vgpu-vulkan/src/platform.rs b/crates/reims-vgpu-vulkan/src/platform.rs
+index 3e76571..f25a024 100644
+--- a/crates/reims-vgpu-vulkan/src/platform.rs
++++ b/crates/reims-vgpu-vulkan/src/platform.rs
+@@ -295,6 +295,8 @@ fn announced_each(every_dies: bool) -> std::collections::BTreeSet<rt::Degradatio
+ pub(crate) fn device_options() -> &'static rt::DeviceOptions {
+     static OPTIONS: LazyLock<rt::DeviceOptions> = LazyLock::new(|| {
+         let mut options = rt::DeviceOptions::default();
++        // Offscreen embedders may choose a separate ICD adapter (for example a CPU renderer).
++        options.loader = std::env::var_os("REIMS_VGPU_VULKAN_LOADER").map(PathBuf::from);
+         crate::os::add_window_extensions(&mut options);
+         options.gpu_times_from_host = true;
+         options.policy = exact_policy(std::env::var("REIMS_VGPU_EXACT").ok().as_deref());
+@@ -314,9 +316,15 @@ pub(crate) fn device_options() -> &'static rt::DeviceOptions {
+                 options.announce_each = rt::Degradation::ALL.iter().copied().collect();
+             }
+         }
+-        if let Some(home) = std::env::var_os("HOME") {
+-            options.shader_cache =
+-                rt::ShaderCacheOptions::in_directory(PathBuf::from(home).join(SHADER_CACHE));
++        // Android app processes have no HOME. The embedder may supply an absolute,
++        // app-private directory without changing the process's home or XDG environment.
++        let cache = std::env::var_os("REIMS_VGPU_SHADER_CACHE_DIR")
++            .map(PathBuf::from)
++            .or_else(|| {
++                std::env::var_os("HOME").map(|home| PathBuf::from(home).join(SHADER_CACHE))
++            });
++        if let Some(directory) = cache {
++            options.shader_cache = rt::ShaderCacheOptions::in_directory(directory);
+         }
+         options.shader_cache.capacity = SHADER_CACHE_CAPACITY;
+         options
+@@ -419,9 +427,13 @@ const SHADER_CACHE: &str = ".cache/reims-vgpu-vulkan";
+ /// hold the pipeline too. An entry this cache drops past its capacity is compiled again at the
+ /// next boot that draws with it, unless the driver's cache still holds it: a freeze of 13 to 26 s
+ /// there.
+-#[cfg(not(test))]
++#[cfg(not(any(test, target_os = "android")))]
+ const SHADER_CACHE_CAPACITY: u64 = rt::DEFAULT_CAPACITY;
+ 
++/// Android app storage is also where the virtual disk lives. Bound shader records to 1 GiB.
++#[cfg(all(not(test), target_os = "android"))]
++const SHADER_CACHE_CAPACITY: u64 = 1 << 30;
++
+ /// The unit tests' capacity, 1 GiB: their directory holds what the tests compile and nothing a
+ /// guest's boot reuses, so it is kept small on disk.
+ #[cfg(test)]
+diff --git a/crates/reims-vgpu-vulkan/src/remap.rs b/crates/reims-vgpu-vulkan/src/remap.rs
+index 22da52d..02d9262 100644
+--- a/crates/reims-vgpu-vulkan/src/remap.rs
++++ b/crates/reims-vgpu-vulkan/src/remap.rs
+@@ -660,7 +660,10 @@ mod tests {
+         }
+         let anonymous = vm.allocate_anywhere(page).unwrap();
+         let refused = vm.remap_shared_overwrite(view, anonymous, page);
+-        assert_eq!(refused.is_err(), cfg!(target_os = "linux"));
++        assert_eq!(
++            refused.is_err(),
++            cfg!(any(target_os = "linux", target_os = "android"))
++        );
+         for (range, length) in [(view, 2 * page), (at, 2 * page), (anonymous, page)] {
+             assert!(vm.deallocate(range, length).is_success());
+         }
+diff --git a/crates/reims-vgpu-window/src/native.rs b/crates/reims-vgpu-window/src/native.rs
+index 1438394..e5b6ab6 100644
+--- a/crates/reims-vgpu-window/src/native.rs
++++ b/crates/reims-vgpu-window/src/native.rs
+@@ -32,3 +32,12 @@ pub(crate) use macos::{
+     key_input_captured, launched, monitored_events, now, open, quit_requested, release_key_input,
+     screens_changed,
+ };
++
++#[cfg(target_os = "android")]
++mod android;
++#[cfg(target_os = "android")]
++pub use android::FrameSink;
++#[cfg(target_os = "android")]
++pub(crate) use android::{
++    Surface, close, cursor_changed, guest_mode_changed, host_screens, now, open,
++};
+diff --git a/crates/reims-vgpu-window/src/native/android.rs b/crates/reims-vgpu-window/src/native/android.rs
+new file mode 100644
+index 0000000..e5ba2c3
+--- /dev/null
++++ b/crates/reims-vgpu-window/src/native/android.rs
+@@ -0,0 +1,49 @@
++//! Android has no library-owned desktop window. The embedding app presents display frames
++//! through the display API. A request for a library window is explicitly refused and closed.
++
++use crate::handle::Window;
++use crate::screens::HostScreen;
++use crate::{Presenter, VulkanTarget};
++use reims_vgpu_core::platform::os::MonoTime;
++use std::sync::{Arc, OnceLock};
++use std::time::Instant;
++
++/// What a host window would ask of a Vulkan display sink. Android's app owns presentation.
++pub trait FrameSink: Send + Sync {
++    /// A presenter if the embedding host supplies a native window target.
++    fn presenter(&self, target: &dyn VulkanTarget) -> Option<Box<dyn Presenter>>;
++    /// The display cursor, absent where the sink cannot read it.
++    fn guest_cursor_position(&self) -> Option<(u16, u16)> {
++        None
++    }
++}
++
++/// No native window or render thread exists on Android.
++#[derive(Debug, Default)]
++pub(crate) struct Surface;
++impl Surface {
++    pub(crate) fn new() -> Self {
++        Self
++    }
++    pub(crate) fn request_draw(&self) {}
++    pub(crate) fn close(&self) {}
++}
++
++pub(crate) fn open(window: &Arc<Window>) {
++    log::warn!(
++        "Android has no library-owned window; use display frame callbacks in the embedding app"
++    );
++    window.close();
++}
++pub(crate) fn close(_id: u64) {}
++pub(crate) fn cursor_changed(_id: u64) {}
++pub(crate) fn guest_mode_changed(_id: u64) {}
++pub(crate) fn host_screens() -> Vec<HostScreen> {
++    Vec::new()
++}
++pub(crate) fn now() -> MonoTime {
++    static START: OnceLock<Instant> = OnceLock::new();
++    MonoTime::from_nanos(
++        u64::try_from(START.get_or_init(Instant::now).elapsed().as_nanos()).unwrap_or(u64::MAX),
++    )
++}
+diff --git a/crates/reims-vgpu/src/device.rs b/crates/reims-vgpu/src/device.rs
+index 004c0cb..e4abf5c 100644
+--- a/crates/reims-vgpu/src/device.rs
++++ b/crates/reims-vgpu/src/device.rs
+@@ -364,6 +364,25 @@ impl<P: ApiPlatform> Device<P> {
+     pub fn new_display(&self, config: DisplayConfig) -> Result<Display<P>, Error> {
+         Display::new(self, config)
+     }
++
++    /// A host frame target with this platform's optional buffer readback. Dimensions and
++    /// pixel semantics are those of [`Self::new_frame_target`]; a platform without one reads
++    /// its texture as before. The frame's own completion covers its copy.
++    pub fn new_frame_target_with_readback(
++        &self,
++        width: u32,
++        height: u32,
++        format: PixelFormat,
++    ) -> Result<FrameTarget<P>, Error> {
++        FrameTarget::new(
++            self.platform(),
++            self.handle.mtl_device_ref(),
++            width,
++            height,
++            format,
++            |texture| self.platform().frame_readback(texture),
++        )
++    }
+ }
+ 
+ impl<P: Platform> Device<P> {
+@@ -514,6 +533,7 @@ impl<P: Platform> Device<P> {
+             width,
+             height,
+             format,
++            |_| None,
+         )
+     }
+ }
+diff --git a/crates/reims-vgpu/src/display.rs b/crates/reims-vgpu/src/display.rs
+index 0592bc5..ca3e87a 100644
+--- a/crates/reims-vgpu/src/display.rs
++++ b/crates/reims-vgpu/src/display.rs
+@@ -491,6 +491,7 @@ impl<P: Platform> Display<P> {
+             if !encoded {
+                 return Err(Error::InvalidArgument);
+             }
++            target.encode_readback(&command_buffer);
+             Ok(Frame::new(command_buffer, target.clone_ref()))
+         })
+     }
+diff --git a/crates/reims-vgpu/src/frame.rs b/crates/reims-vgpu/src/frame.rs
+index 55801c1..78c3f75 100644
+--- a/crates/reims-vgpu/src/frame.rs
++++ b/crates/reims-vgpu/src/frame.rs
+@@ -22,7 +22,7 @@ use reims_vgpu_core::raise::{OnFault, RaiseResult};
+ use crate::DefaultPlatform;
+ use crate::entry;
+ use crate::error::Error;
+-use crate::platform::ApiPlatform;
++use crate::platform::{ApiPlatform, FrameReadback};
+ use crate::retained::Ours;
+ 
+ /// The largest width or height of a frame target.
+@@ -90,6 +90,7 @@ pub struct Region {
+ /// What a frame target holds.
+ struct Target<P: Platform> {
+     texture: P::Texture,
++    readback: Option<Box<dyn FrameReadback<P>>>,
+     width: u32,
+     height: u32,
+     format: PixelFormat,
+@@ -121,6 +122,7 @@ impl<P: Platform> FrameTarget<P> {
+         width: u32,
+         height: u32,
+         format: PixelFormat,
++        readback: impl FnOnce(&P::Texture) -> Option<Box<dyn FrameReadback<P>>>,
+     ) -> Result<FrameTarget<P>, Error> {
+         entry::run(|_| {
+             let size = 1..=MAX_FRAME_TARGET_SIZE;
+@@ -140,8 +142,10 @@ impl<P: Platform> FrameTarget<P> {
+             let texture = no_catch(device.new_texture(OnFault::Die, &td));
+             drop(td);
+             let texture = texture.ok_or(Error::Metal)?;
++            let readback = readback(&texture);
+             let target = Target {
+                 texture,
++                readback,
+                 width,
+                 height,
+                 format,
+@@ -181,6 +185,13 @@ impl<P: Platform> FrameTarget<P> {
+         &self.inner.texture
+     }
+ 
++    /// Copy after the draw on this same frame; its completion covers both operations.
++    pub(crate) fn encode_readback(&self, command: &P::CommandBuffer) {
++        if let Some(readback) = &self.inner.readback {
++            readback.encode(command, &self.inner.texture);
++        }
++    }
++
+     /// Whether both are references to one target.
+     pub fn ptr_eq(&self, other: &FrameTarget<P>) -> bool {
+         Arc::ptr_eq(&self.inner, &other.inner)
+@@ -207,9 +218,13 @@ impl<P: ApiPlatform> FrameTarget<P> {
+                 return Err(Error::InvalidArgument);
+             }
+             let dst = dst.get_mut(..extent).ok_or(Error::InvalidArgument)?;
+-            self.inner
+-                .platform
+-                .read_pixels(&self.inner.texture, dst, bytes_per_row);
++            if let Some(readback) = &self.inner.readback {
++                readback.read_pixels(dst, bytes_per_row);
++            } else {
++                self.inner
++                    .platform
++                    .read_pixels(&self.inner.texture, dst, bytes_per_row);
++            }
+             Ok(())
+         })
+     }
+diff --git a/crates/reims-vgpu/src/lib.rs b/crates/reims-vgpu/src/lib.rs
+index a88d015..f1a9b11 100644
+--- a/crates/reims-vgpu/src/lib.rs
++++ b/crates/reims-vgpu/src/lib.rs
+@@ -29,7 +29,10 @@
+ // limit of 128 (E0275), as the C crate's does.
+ #![recursion_limit = "256"]
+ 
+-#[cfg(all(target_os = "linux", not(feature = "vulkan")))]
++#[cfg(all(
++    any(target_os = "linux", target_os = "android"),
++    not(feature = "vulkan")
++))]
+ compile_error!("on Linux the library is the Vulkan platform's: build it with the `vulkan` feature");
+ 
+ mod device;
+@@ -80,8 +83,8 @@ pub use video::{
+ /// The platform every handle is made on by default: `MetalPlatform` on macOS.
+ #[cfg(target_os = "macos")]
+ pub type DefaultPlatform = MetalPlatform;
+-/// The platform every handle is made on by default: `VulkanPlatform` on Linux.
+-#[cfg(target_os = "linux")]
++/// The platform every handle is made on by default: `VulkanPlatform` on Linux and Android.
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ pub type DefaultPlatform = VulkanPlatform;
+ pub use reims_vgpu_window::{
+     BUTTON_EXTRA, BUTTON_LEFT, BUTTON_MIDDLE, BUTTON_RIGHT, BUTTON_SIDE, CloseFn, KeyFn,
+diff --git a/crates/reims-vgpu/src/platform.rs b/crates/reims-vgpu/src/platform.rs
+index f669a6e..eb09ceb 100644
+--- a/crates/reims-vgpu/src/platform.rs
++++ b/crates/reims-vgpu/src/platform.rs
+@@ -39,6 +39,16 @@ use reims_vgpu_video_core::device_memory::DeviceMemory;
+ 
+ use crate::device::MemoryMap;
+ 
++/// A frame target's optional readback: its copy is encoded after the display draw, before
++/// the frame is committed, and read only once that frame has completed.
++pub trait FrameReadback<P: Platform>: Send + Sync {
++    /// Append the target's copy to the same command buffer, with no submission or wait.
++    fn encode(&self, command: &P::CommandBuffer, texture: &P::Texture);
++
++    /// Copy completed pixels into the checked destination, leaving row padding untouched.
++    fn read_pixels(&self, dst: &mut [u8], bytes_per_row: usize);
++}
++
+ /// What the API asks of a platform beyond core's: the process's instance, the Metal device a
+ /// config names, a frame target's pixels, and what it holds of the guest's RAM.
+ pub trait ApiPlatform: Platform {
+@@ -53,6 +63,13 @@ pub trait ApiPlatform: Platform {
+     /// `bytes_per_row` after the last. The caller has checked that `dst` holds them.
+     fn read_pixels(&self, texture: &Self::Texture, dst: &mut [u8], bytes_per_row: usize);
+ 
++    /// An optional buffer readback for a library-owned frame target. Other textures never
++    /// take it. By default pixels are read from the texture through [`Self::read_pixels`].
++    fn frame_readback(&self, texture: &Self::Texture) -> Option<Box<dyn FrameReadback<Self>>> {
++        let _ = texture;
++        None
++    }
++
+     /// What the platform holds of the guest's RAM while a device made over `map` lives: the
+     /// device takes it as it is created and drops it after core's teardown. `dirty` is the
+     /// device's dirty log, for a device with a dirty source: where the platform keeps copies of
+@@ -315,7 +332,7 @@ mod tests {
+     /// The Vulkan platform's lease of the guest's RAM lets views be made of the pages the host
+     /// names a file behind, showing the file from its offset, while it lives; never of a range
+     /// without a file
+-    #[cfg(all(feature = "vulkan", target_os = "linux"))]
++    #[cfg(all(feature = "vulkan", any(target_os = "linux", target_os = "android")))]
+     #[test]
+     fn the_vulkan_lease_lets_views_be_made_of_the_guests_ram() {
+         use std::os::fd::{AsRawFd as _, FromRawFd as _, OwnedFd};
+diff --git a/crates/reims-vgpu/src/platform/vulkan.rs b/crates/reims-vgpu/src/platform/vulkan.rs
+index a30c30e..f4d7fe2 100644
+--- a/crates/reims-vgpu/src/platform/vulkan.rs
++++ b/crates/reims-vgpu/src/platform/vulkan.rs
+@@ -9,7 +9,7 @@ use reims_vgpu_vulkan::os::GuestRamFile;
+ 
+ use super::*;
+ 
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ mod lent_memory;
+ 
+ /// The platform over metal2vulkan's runtime (architecture 2.2): the runtime's devices, and on
+@@ -41,6 +41,16 @@ impl ApiPlatform for VulkanPlatform {
+         reims_vgpu_vulkan::api::read_pixels(texture, dst, bytes_per_row);
+     }
+ 
++    #[cfg(target_os = "android")]
++    fn frame_readback(&self, texture: &Self::Texture) -> Option<Box<dyn FrameReadback<Self>>> {
++        if std::env::var("REIMS_VGPU_FRAME_READBACK").as_deref() != Ok("buffer") {
++            return None;
++        }
++        Some(Box::new(reims_vgpu_vulkan::api::FrameReadback::new(
++            texture,
++        )))
++    }
++
+     /// The files behind the map's ranges, registered while the device lives
+     /// (`reims_vgpu_vulkan::os::lease_guest_memory`): on Linux the platform makes its views of the
+     /// guest's pages of them. A range without a file is not registered, and a view of its pages
+@@ -106,7 +116,7 @@ impl ApiPlatform for VulkanPlatform {
+     /// udmabuf and as the surface's view of them, with an identity attached to the surface
+     /// (`platform/vulkan/lent_memory.rs`). On macOS none: there the Metal platform lends a
+     /// surface's IOSurface to VideoToolbox (`platform/metal/lent_memory.rs`).
+-    #[cfg(target_os = "linux")]
++    #[cfg(any(target_os = "linux", target_os = "android"))]
+     fn surface_device_memory(
+         &self,
+         surface: &<Self as Platform>::Surface,
+@@ -114,3 +124,18 @@ impl ApiPlatform for VulkanPlatform {
+         lent_memory::lent_memory(surface).map(|lent| Box::new(lent) as Box<dyn DeviceMemory>)
+     }
+ }
++
++#[cfg(target_os = "android")]
++impl FrameReadback<VulkanPlatform> for reims_vgpu_vulkan::api::FrameReadback {
++    fn encode(
++        &self,
++        command: &<VulkanPlatform as Platform>::CommandBuffer,
++        texture: &<VulkanPlatform as Platform>::Texture,
++    ) {
++        self.encode(command, texture);
++    }
++
++    fn read_pixels(&self, dst: &mut [u8], bytes_per_row: usize) {
++        self.read_pixels(dst, bytes_per_row);
++    }
++}
+diff --git a/crates/reims-vgpu/src/window/vulkan.rs b/crates/reims-vgpu/src/window/vulkan.rs
+index c16496a..c5b8a56 100644
+--- a/crates/reims-vgpu/src/window/vulkan.rs
++++ b/crates/reims-vgpu/src/window/vulkan.rs
+@@ -2,7 +2,7 @@
+ //! the window's swapchain, on either OS (`swapchain.rs`), and each OS's window asks the sink for
+ //! it its own way (`linux.rs`, `macos.rs`).
+ 
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ mod linux;
+ #[cfg(target_os = "macos")]
+ mod macos;
+diff --git a/docs/accuracy-ledger.md b/docs/accuracy-ledger.md
+index b674fc9..5e3dadb 100644
+--- a/docs/accuracy-ledger.md
++++ b/docs/accuracy-ledger.md
+@@ -123,3 +123,11 @@ fix, and it is un-ignored at the pin that carries that commit.
+ 
+ None is open at the pinned commit. An entry says what the guest gets instead of Metal's answer, the
+ runtime's fix, and its test.
++
++
++On Android, render-pipeline creation permits the translator's explicit
++`ordered_fragment_primitives` contract when native interlock is absent. The runtime draws
++single-sample, single-layer triangle lists one primitive per render-pass instance with full
++memory dependencies. Unsupported draw shapes, wireframe, base-vertex/base-instance/primitive-ID
++reads and rerendering remain typed refusals; this does not advertise complete ROG support.
++Native interlock remains preferred. The extra passes can cost substantial GPU time.
+diff --git a/docs/android.md b/docs/android.md
+new file mode 100644
+index 0000000..127e8a9
+--- /dev/null
++++ b/docs/android.md
+@@ -0,0 +1,55 @@
++# Android embedding research port
++
++The Android target selects Vulkan (`--no-default-features --features vulkan`). It
++reuses Linux POSIX clocks, threads, file-backed VM views and IOSurface stand-ins;
++its own window module explicitly closes a library-owned window request. Embed
++through display callbacks and frame targets. No SDL or AppKit is linked.
++
++`REIMS_VGPU_FRAME_READBACK=buffer` selects a reused shared buffer for embedding frame
++targets. Each frame appends its whole-image copy to its own draw command buffer, so
++the normal frame wait covers the copy; reading pixels copies completed coherent buffer
++bytes and preserves row padding. It adds one target-sized allocation per frame target.
++The default reads the texture as before. No guest texture's CPU-copy behavior changes.
++
++Set `REIMS_VGPU_SHADER_CACHE_DIR` to an absolute app-private directory before the
++first library call. Android app processes generally have no `HOME`; the explicit
++directory takes precedence over the desktop default. Android's shader records
++are bounded to 1 GiB. No guest shaders are bundled by this port.
++
++The current aarch64 raw accesses contain LSE and RCpc instructions and rely on
++LSE2 for unaligned atomics. This research build uses `-C target-feature=+lse,+rcpc`.
++The embedding host must check `AT_HWCAP` for atomics, lrcpc and uscat before loading
++it. It is not a generic ARM64 Android build.
++
++Observed 2026-11-14: cross-target cargo check and a shared-library link passed on
++an arm64 Mac with Rust1.98.1 and Android NDK30. An initial C API run on one Lenovo
++TB373FU stopped at the missing shader cache directory; the explicit directory
++option addresses that observed initialization failure. Guest GPU commands and
++macOS desktop rendering remain untested. Desktop Mac/Linux regression suites
++have not been run for this research patch; it is not claimed merge-ready.
++
++Memory remains a separate integration task. Linux's imports of memfd layouts
++need `VK_EXT_external_memory_host` or `/dev/udmabuf`. This tablet lists no former
++extension and has no latter node. A separate authored Android HardwareBuffer
++probe imported 64 KiB into raw Vulkan and read16384 GPU-filled words through a
++CPU lock, but this does not implement arbitrary aliases of guest pages. No
++copy degradation or guest-visible semantic guard is disabled here.
++
++For an explicitly selected offscreen loader, set `REIMS_VGPU_VULKAN_LOADER` to its
++absolute shared-library path before the first call. Leaving it unset keeps the
++platform's own Vulkan loader. This permits testing a CPU ICD independently of
++the hardware driver; it does not imply hardware acceleration.
++
++Observed on the first Henge guest boot: the arm64 mapper's descriptor-table write
++attempted a 4 KiB view, failing core's `memory.map.mapping_length_unaligned` guard
++before any GPU register writes. Android's mapper now uses the existing guest
++`APV_PAGE_SIZE`/`APV_PAGE_SHIFT` for descriptor counts, table views and guest page
++numbers. The POSIX VM retains the real host kernel page size. The mapping guard
++is unchanged; Mac/Linux mapper behavior is unchanged. This separation needs a
++fresh real-guest run; it is not a completed-desktop claim.
++
++The follow-up guest run passed mapper initialization and negotiated protocol209,
++then refused surface creation. The same distinction also applies to
++`surface_spec`'s client ranges: one host address per guest page must carry16KiB,
++not4KiB. Android now uses the mapper's guest page size for those range lengths as
++well; the Linux surface backend retains its host-page checks and exact aliases.

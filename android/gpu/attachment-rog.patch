@@ -1,0 +1,1216 @@
+diff --git a/crates/metal2vulkan-runtime/README.md b/crates/metal2vulkan-runtime/README.md
+index 43bade8..ad3ee54 100644
+--- a/crates/metal2vulkan-runtime/README.md
++++ b/crates/metal2vulkan-runtime/README.md
+@@ -474,3 +474,13 @@ option) any later version, at your choice (`GPL-2.0-or-later OR LGPL-3.0-or-late
+ [LICENSE](LICENSE) is the notice; [LICENSE-GPL-2.0](LICENSE-GPL-2.0),
+ [LICENSE-LGPL-3.0](LICENSE-LGPL-3.0) and [LICENSE-GPL-3.0](LICENSE-GPL-3.0) (which the LGPL v3
+ incorporates) are the texts.
++
++
++`RenderPipelineDescriptor::ordered_fragment_primitives` opts into a limited raster-order-group
++fallback for devices without native fragment interlock. When the compiler returns the
++`OrderedFragmentPrimitives` dependency, direct and indexed single-sample, single-layer triangle lists run
++one primitive per render-pass instance with full memory dependencies. A single triangle retains
++all draw IDs; longer indexed lists retain base vertex and, for one instance, base instance.
++Other draws reading base IDs or primitive ID, indirect draws, meshes and tessellation are refused
++as `RuntimeGap::OrderedFragmentPrimitives`. This does not advertise native interlock or complete
++ROG support and can add a render pass for each primitive.
+diff --git a/crates/metal2vulkan-runtime/src/device/mod.rs b/crates/metal2vulkan-runtime/src/device/mod.rs
+index 380f21f..5c89d94 100644
+--- a/crates/metal2vulkan-runtime/src/device/mod.rs
++++ b/crates/metal2vulkan-runtime/src/device/mod.rs
+@@ -527,6 +527,15 @@ pub(super) struct DeviceShared {
+ }
+ 
+ impl DeviceShared {
++    /// Bound idle command pools where the driver retains large per-pool TLS allocations.
++    /// Other drivers keep their high-water mark, including NVIDIA's destruction workaround.
++    pub(super) fn command_pool_spare_limit(&self) -> Option<usize> {
++        match self.properties.description.driver_id {
++            Some(metal2vulkan::vk::DriverId::MESA_PANVK) => Some(2),
++            _ => None,
++        }
++    }
++
+     /// Whether `kind`, met while lowering a render encoder's call after it returned, refuses the
+     /// call (`DeviceOptions::lowering_refuses`).
+     pub(crate) fn lowering_refuses(&self, kind: Degradation) -> bool {
+diff --git a/crates/metal2vulkan-runtime/src/error.rs b/crates/metal2vulkan-runtime/src/error.rs
+index 947835a..90635a8 100644
+--- a/crates/metal2vulkan-runtime/src/error.rs
++++ b/crates/metal2vulkan-runtime/src/error.rs
+@@ -1361,6 +1361,10 @@ pub enum RuntimeGap {
+     ExtensionEnable(VkExtension),
+     /// Render pipelines, passes and draws.
+     Render,
++    /// Raster-order groups under the single-primitive render-pass contract, for a draw other
++    /// than a direct or indexed triangle list of one sample and layer, or one whose builtin
++    /// reads decomposition cannot preserve. Indirect commands, meshes and tessellation are not built.
++    OrderedFragmentPrimitives,
+     /// A texture over a buffer whose texels run past the buffer's length, which Metal makes over
+     /// bytes its buffer's allocation has past the length (a 2D texture, a texture buffer and a 2D
+     /// array alike, up to the allocation, past which Metal answers nil:
+diff --git a/crates/metal2vulkan-runtime/src/render.rs b/crates/metal2vulkan-runtime/src/render.rs
+index ddb9332..4641102 100644
+--- a/crates/metal2vulkan-runtime/src/render.rs
++++ b/crates/metal2vulkan-runtime/src/render.rs
+@@ -7047,6 +7047,172 @@ impl RenderLowering {
+         draw: DrawCall,
+         buffers: DrawBuffers<'_>,
+         empty: bool,
++    ) -> Result<(), Error> {
++        use metal2vulkan::pipeline::RuntimeFact;
++        let ordered = self.pipeline.as_ref().is_some_and(|p| match p.kind() {
++            RenderStateKind::Graphics(state) => state
++                .base()
++                .dependencies
++                .iter()
++                .any(|d| d.fact == RuntimeFact::OrderedFragmentPrimitives),
++            _ => false,
++        });
++        if !ordered || empty {
++            return self.draw_one(call, assembly, draw, buffers, empty);
++        }
++        self.draw_ordered_primitives(call, assembly, draw, buffers)
++    }
++
++    /// The checked single-primitive pass contract. List decomposition retains vertex and
++    /// instance IDs. A single triangle also retains primitive and base IDs; decomposition that
++    /// changes a builtin the pipeline reads is refused.
++    fn draw_ordered_primitives(
++        &mut self,
++        call: &'static str,
++        assembly: Assembly,
++        draw: DrawCall,
++        buffers: DrawBuffers<'_>,
++    ) -> Result<(), Error> {
++        use metal2vulkan::pipeline::RuntimeFact;
++        let gap = || {
++            if metal2vulkan::env_vars::log_pipelines() {
++                eprintln!(
++                    "M2V_ORDERED_DRAW_REFUSAL triangle_list={} triangle_strip={} draw={draw:?}",
++                    assembly == Assembly::Primitives(PrimitiveType::Triangle),
++                    assembly == Assembly::Primitives(PrimitiveType::TriangleStrip)
++                );
++            }
++            Error::NotImplemented(RuntimeGap::OrderedFragmentPrimitives)
++        };
++        let pipeline = match self.pipeline.as_ref().map(RenderPipelineState::kind) {
++            Some(RenderStateKind::Graphics(state)) => state,
++            _ => return Err(gap()),
++        };
++        let base = pipeline.base();
++        if self.replaying
++            || self.rerouting
++            || !self.state.fills_triangles()
++            || self.layout.layers != 1
++            || base.graphics.rasterization_samples.as_raw() != 1
++            || base.graphics.max_vertex_amplification_count != 1
++            || base.graphics.tessellation.is_some()
++            || base.graphics.mesh_records.is_some()
++            || assembly != Assembly::Primitives(PrimitiveType::Triangle)
++        {
++            return Err(gap());
++        }
++        let single = matches!(
++            draw,
++            DrawCall::Primitives {
++                vertex_count: 3,
++                instance_count: 1,
++                ..
++            } | DrawCall::Indexed {
++                index_count: 3,
++                instance_count: 1,
++                ..
++            }
++        );
++        if single {
++            self.barrier_before_next_draw();
++            self.draw_one(call, assembly, draw, buffers, false)?;
++            self.barrier_before_next_draw();
++            return Ok(());
++        }
++        if base.graphics.reads_primitive_id {
++            return Err(gap());
++        }
++        let reads_base = base
++            .dependencies
++            .iter()
++            .any(|d| d.fact == RuntimeFact::BaseVertexInstance);
++        match draw {
++            DrawCall::Primitives {
++                vertex_start,
++                vertex_count,
++                instance_count,
++                base_instance,
++            } => {
++                if reads_base || !vertex_count.is_multiple_of(3) {
++                    return Err(gap());
++                }
++                // Check arithmetic before recording anything, so a refusal leaves no partial draw.
++                vertex_start.checked_add(vertex_count).ok_or_else(gap)?;
++                base_instance.checked_add(instance_count).ok_or_else(gap)?;
++                for instance in base_instance..base_instance + instance_count {
++                    for vertex in (vertex_start..vertex_start + vertex_count).step_by(3) {
++                        self.barrier_before_next_draw();
++                        self.draw_one(
++                            call,
++                            assembly,
++                            DrawCall::Primitives {
++                                vertex_start: vertex,
++                                vertex_count: 3,
++                                instance_count: 1,
++                                base_instance: instance,
++                            },
++                            DrawBuffers::default(),
++                            false,
++                        )?;
++                    }
++                }
++            }
++            DrawCall::Indexed {
++                index_type,
++                index_count,
++                instance_count,
++                base_vertex,
++                base_instance,
++                ..
++            } => {
++                if !index_count.is_multiple_of(3) || (reads_base && instance_count != 1) {
++                    return Err(gap());
++                }
++                let index_type = match index_type {
++                    t if t == metal2vulkan::vk::IndexType::UINT16 => IndexType::UInt16,
++                    t if t == metal2vulkan::vk::IndexType::UINT32 => IndexType::UInt32,
++                    _ => return Err(gap()),
++                };
++                let source = buffers.index.as_ref().ok_or_else(gap)?;
++                let size = index_size(index_type);
++                source
++                    .offset
++                    .checked_add(u64::from(index_count) * size)
++                    .ok_or_else(gap)?;
++                base_instance.checked_add(instance_count).ok_or_else(gap)?;
++                // Rebuild each triangle's source through the ordinary path: its ownership,
++                // alignment and zero-padding rules apply unchanged, without a CPU index read.
++                for instance in base_instance..base_instance + instance_count {
++                    for index in (0..index_count).step_by(3) {
++                        self.draw_indexed(
++                            call,
++                            IndexedDraw {
++                                primitive_type: PrimitiveType::Triangle.into(),
++                                index_count: 3,
++                                index_type,
++                                instance_count: 1,
++                                base_vertex,
++                                base_instance: instance,
++                            },
++                            source.buffer,
++                            source.offset + u64::from(index) * size,
++                        )?;
++                    }
++                }
++            }
++            _ => return Err(gap()),
++        }
++        self.barrier_before_next_draw();
++        Ok(())
++    }
++
++    fn draw_one(
++        &mut self,
++        call: &'static str,
++        assembly: Assembly,
++        draw: DrawCall,
++        buffers: DrawBuffers<'_>,
++        empty: bool,
+     ) -> Result<(), Error> {
+         self.sync_heaps();
+         // And whether it rasterizes, without which its primitives reach no tile (`no_raster_t11`).
+@@ -7162,6 +7328,16 @@ impl RenderLowering {
+         let Some(pipeline) = drawn_by(call, self.pipeline.as_ref(), assembly, empty)? else {
+             return Ok(());
+         };
++        // Rerendering an extended-range shadow must not replay this contract's memory writes.
++        if self.rerouting
++            && pipeline
++                .base()
++                .dependencies
++                .iter()
++                .any(|d| d.fact == metal2vulkan::pipeline::RuntimeFact::OrderedFragmentPrimitives)
++        {
++            return Err(Error::NotImplemented(RuntimeGap::OrderedFragmentPrimitives));
++        }
+         let tessellation = crate::tessellation::patches(&pipeline.base().graphics);
+         let tessellated = tessellation.is_some();
+         let meshes = pipeline.descriptor().vertex().is_none();
+diff --git a/crates/metal2vulkan-runtime/src/render_state.rs b/crates/metal2vulkan-runtime/src/render_state.rs
+index a5efa4e..35dd804 100644
+--- a/crates/metal2vulkan-runtime/src/render_state.rs
++++ b/crates/metal2vulkan-runtime/src/render_state.rs
+@@ -397,6 +397,11 @@ impl EncoderState {
+         self.alpha_test_reference = Some(value);
+     }
+ 
++    /// A triangle generates filled coverage, not several potentially overlapping edge lines.
++    pub(super) fn fills_triangles(&self) -> bool {
++        self.fill_mode == TriangleFillMode::Fill
++    }
++
+     /// `setTriangleFillMode:`: `Lines` needs `fillModeNonSolid`.
+     pub(super) fn set_fill_mode(
+         &mut self,
+diff --git a/crates/metal2vulkan-runtime/src/spares.rs b/crates/metal2vulkan-runtime/src/spares.rs
+index 5a4ad4e..e3060cf 100644
+--- a/crates/metal2vulkan-runtime/src/spares.rs
++++ b/crates/metal2vulkan-runtime/src/spares.rs
+@@ -5,7 +5,11 @@
+ //! to 48 us and a descriptor pool 23 to 26 us on RADV (Radeon 780M), 7 to 8 and 3 on ANV, against
+ //! 0.2 and 0.02, and 1.3 and 0.1, reset.
+ //!
+-//! - **Command pools are kept, never released while the device lives**. Every command pool a
++//! - **PanVK keeps at most two spare command pools per queue family.** Its command pools
++//!   retain per-core TLS scratch allocations sized for their largest dispatch, even after work
++//!   completes. Excess idle spares are destroyed outside the spares lock; live and pending pools
++//!   are never evicted. Other drivers retain the high-water mark described below.
++//! - **Other drivers keep command pools while the device lives**. Every command pool a
+ //!   command buffer gives back is kept, whatever its status, and every command buffer dropped with
+ //!   one gives it back too: the runtime calls `vkDestroyCommandPool` on a command buffer's pool
+ //!   only as the device is torn down, after its queues are idle.
+@@ -336,7 +340,7 @@ impl Spares {
+     /// submitted: nothing of it is pending, and nothing else holds it; `settled` where the
+     /// command buffer completed and ended every command buffer of it handed out, so none is
+     /// recording (the module docs). A pool that made no secondary command buffer makes one
+-    /// first. Never released here.
++    /// first. PanVK releases excess idle spares (the module docs).
+     pub(super) fn give_command_pool(
+         &self,
+         device: &DeviceShared,
+@@ -345,7 +349,7 @@ impl Spares {
+     ) {
+         pool.recording = !settled;
+         pool.stock(device);
+-        keep_command_pool(&mut lock(&self.command_pools), pool);
++        self.keep_pool(device, pool);
+     }
+ 
+     /// Begin a primary ahead in the spare command pool `raw` of `device`, where it is still a
+@@ -358,12 +362,26 @@ impl Spares {
+             return;
+         };
+         let begun = pool.begin_ahead(device);
+-        keep_command_pool(&mut lock(&self.command_pools), pool);
++        self.keep_pool(device, pool);
+         if begun {
+             device.counts.primary_begun_ahead();
+         }
+     }
+ 
++    /// Keep an idle pool, releasing an excess spare only after unlocking the list.
++    fn keep_pool(&self, device: &DeviceShared, pool: CommandPool) {
++        let family = pool.family;
++        let released = {
++            let mut pools = lock(&self.command_pools);
++            keep_command_pool(&mut pools, pool);
++            excess_command_pool(&mut pools, family, device.command_pool_spare_limit())
++        };
++        if let Some(pool) = released {
++            // SAFETY: only idle, exclusively owned pools enter the spare list.
++            unsafe { release_in_section(device, pool.raw) };
++        }
++    }
++
+     /// A spare descriptor pool of `device`, reset, with room for one set of `needs`, the newest
+     /// such: a command buffer's arena's, or, for a fitted arena (`fitted`, the most descriptors
+     /// it takes a spare of), one of the fitted arenas' own; `None` when there is none, or this
+@@ -479,6 +497,21 @@ pub(super) fn keep_command_pool(pools: &mut Vec<CommandPool>, pool: CommandPool)
+     pools.push(pool);
+ }
+ 
++/// The oldest idle spare of `family` beyond `limit`, removed for destruction. Other
++/// families are independent, and no bound leaves the historical high-water mark intact.
++pub(super) fn excess_command_pool(
++    pools: &mut Vec<CommandPool>,
++    family: u32,
++    limit: Option<usize>,
++) -> Option<CommandPool> {
++    let limit = limit?;
++    if pools.iter().filter(|pool| pool.family == family).count() <= limit {
++        return None;
++    }
++    let at = pools.iter().position(|pool| pool.family == family)?;
++    Some(pools.remove(at))
++}
++
+ /// The newest of the spare descriptor pools `pools` (oldest first) with room for one set of
+ /// `needs`, and of at most `most` descriptors where given, taken out.
+ pub(super) fn take_descriptor_pool(
+diff --git a/crates/metal2vulkan-runtime/src/tests/copied_log.rs b/crates/metal2vulkan-runtime/src/tests/copied_log.rs
+index b08e036..af21d37 100644
+--- a/crates/metal2vulkan-runtime/src/tests/copied_log.rs
++++ b/crates/metal2vulkan-runtime/src/tests/copied_log.rs
+@@ -21,7 +21,7 @@ use crate::{DirtyPages, DirtyStamp};
+ use std::num::NonZeroU64;
+ use std::ops::Range;
+ use std::ptr::NonNull;
+-use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
++use std::sync::atomic::{AtomicBool, AtomicU64, AtomicUsize, Ordering};
+ use std::sync::{Arc, Mutex};
+ 
+ const BLOCK: u64 = SYNC_BLOCK as u64;
+@@ -469,22 +469,38 @@ fn a_cpu_write_the_gpu_did_not_make_survives_both_ways_logged_or_not() {
+         let cpu_byte = BLOCK as usize + 100;
+         let stop = Arc::new(AtomicBool::new(false));
+         let pages = pair.pages.as_mut_ptr() as usize;
++        // Bound the test log: an unconstrained writer can append faster than copy_in
++        // scans it, making the fixture grow without a bound instead of exercising races.
++        let allowed = Arc::new(AtomicUsize::new(1));
++        let written = Arc::new(AtomicUsize::new(0));
+         let writer = {
+             let (stop, own) = (Arc::clone(&stop), Arc::clone(&own));
++            let (allowed, written) = (Arc::clone(&allowed), Arc::clone(&written));
+             std::thread::spawn(move || {
+                 let mut value = 0u8;
++                let mut count = 0;
+                 while !stop.load(Ordering::SeqCst) {
++                    if count >= allowed.load(Ordering::SeqCst) {
++                        std::thread::yield_now();
++                        continue;
++                    }
+                     value = value.wrapping_add(1) | 1;
+                     // SAFETY: a byte of the test's pages, which outlive the thread (joined
+                     // below); the runtime's reads of it race as the CPU's and the GPU's do.
+                     unsafe { std::ptr::write_volatile((pages as *mut u8).add(cpu_byte), value) };
+                     own.told(BLOCK..2 * BLOCK, 0);
++                    count += 1;
++                    written.store(count, Ordering::SeqCst);
+                 }
+                 value
+             })
+         };
++        while written.load(Ordering::SeqCst) == 0 {
++            std::thread::yield_now();
++        }
+         let copy = pair.copy.as_mut_ptr();
+         for round in 0..2000_usize {
++            allowed.store(round + 2, Ordering::SeqCst);
+             // The GPU writes the bytes beside the CPU's (in the copy), and never the CPU's.
+             for at in [cpu_byte - 1, cpu_byte + 1, round % (BLOCK as usize)] {
+                 // SAFETY: bytes of the test's copy.
+@@ -495,6 +511,7 @@ fn a_cpu_write_the_gpu_did_not_make_survives_both_ways_logged_or_not() {
+         }
+         stop.store(true, Ordering::SeqCst);
+         let last = writer.join().unwrap();
++        assert!((1..=2001).contains(&written.load(Ordering::SeqCst)));
+         buffers.copy_in(&counts, &tally);
+         assert_eq!(
+             pair.pages[cpu_byte], last,
+diff --git a/crates/metal2vulkan-runtime/src/tests/spares.rs b/crates/metal2vulkan-runtime/src/tests/spares.rs
+index b318ee7..7e742bf 100644
+--- a/crates/metal2vulkan-runtime/src/tests/spares.rs
++++ b/crates/metal2vulkan-runtime/src/tests/spares.rs
+@@ -3,8 +3,9 @@
+ 
+ use crate::descriptor_arena::{Room, SetNeeds};
+ use crate::spares::{
+-    keep_command_pool, keep_descriptor_pool, take_command_pool, take_descriptor_pool,
+-    take_to_begin, CommandPool, DescriptorPool, DESCRIPTORS, DESCRIPTOR_POOLS,
++    excess_command_pool, keep_command_pool, keep_descriptor_pool, take_command_pool,
++    take_descriptor_pool, take_to_begin, CommandPool, DescriptorPool, DESCRIPTORS,
++    DESCRIPTOR_POOLS,
+ };
+ use ash::vk::{self, Handle};
+ use std::collections::VecDeque;
+@@ -284,3 +285,38 @@ fn a_spare_command_pool_begins_ahead_out_of_the_spares() {
+     assert!(take_to_begin(&mut pools, vk::CommandPool::from_raw(3)).is_none());
+     assert_eq!(pools.len(), 2, "a pool that may not begin one stays");
+ }
++
++/// A bounded cache releases only its oldest idle spare of the returning pool's family.
++#[test]
++fn bounded_command_pools_keep_newest_per_family() {
++    let mut pools = Vec::new();
++    for (raw, family) in [(1, 0), (2, 1), (3, 0), (4, 1)] {
++        keep_command_pool(
++            &mut pools,
++            CommandPool::new(vk::CommandPool::from_raw(raw), family),
++        );
++        assert!(excess_command_pool(&mut pools, family, Some(2)).is_none());
++    }
++    keep_command_pool(
++        &mut pools,
++        CommandPool::new(vk::CommandPool::from_raw(5), 0),
++    );
++    assert!(excess_command_pool(&mut pools, 0, None).is_none());
++    assert_eq!(
++        excess_command_pool(&mut pools, 0, Some(2))
++            .expect("oldest excess")
++            .raw,
++        vk::CommandPool::from_raw(1)
++    );
++    assert!(excess_command_pool(&mut pools, 1, Some(2)).is_none());
++    assert_eq!(
++        take_command_pool(&mut pools, 0).expect("newest").raw,
++        vk::CommandPool::from_raw(5)
++    );
++    assert_eq!(
++        take_command_pool(&mut pools, 0).expect("second").raw,
++        vk::CommandPool::from_raw(3)
++    );
++    assert!(take_command_pool(&mut pools, 0).is_none());
++    assert_eq!(pools.len(), 2);
++}
+diff --git a/crates/metal2vulkan-validation/runtime-sources.sha256 b/crates/metal2vulkan-validation/runtime-sources.sha256
+index 29b5395..0388875 100644
+--- a/crates/metal2vulkan-validation/runtime-sources.sha256
++++ b/crates/metal2vulkan-validation/runtime-sources.sha256
+@@ -1 +1 @@
+-454d8fe9b737758074ee7e84625a6fff887a09ac5e83937ffacf7ed3c21c81ad
++a605df0e959d9ce667987cc7de3a67f6403d7f79cc1c1096cfe9cc10c9972a99
+diff --git a/crates/metal2vulkan/src/cache/codec.rs b/crates/metal2vulkan/src/cache/codec.rs
+index 6aaa5bf..b721a19 100644
+--- a/crates/metal2vulkan/src/cache/codec.rs
++++ b/crates/metal2vulkan/src/cache/codec.rs
+@@ -1264,6 +1264,7 @@ codec_enum! {
+         QuadPrimitiveIds,
+         PrivateList,
+         YCbCrInPlace { slot, samplers, device },
++        OrderedFragmentPrimitives,
+     }
+     UniformViewChoice { Viewed, Spare, Kept }
+     Mechanism {
+diff --git a/crates/metal2vulkan/src/cache/mod.rs b/crates/metal2vulkan/src/cache/mod.rs
+index 2a184f0..9384289 100644
+--- a/crates/metal2vulkan/src/cache/mod.rs
++++ b/crates/metal2vulkan/src/cache/mod.rs
+@@ -60,7 +60,7 @@ mod tests;
+ /// unchanged version, and its bless records the version. Independent of the crate's version and of
+ /// [`ARTIFACT_FORMAT_VERSION`]. The commit that bumps it says what changed; this comment keeps no
+ /// history.
+-pub const SEMANTICS_VERSION: u32 = 1929;
++pub const SEMANTICS_VERSION: u32 = 1931;
+ 
+ /// The byte-layout version of encoded artifacts (`CompiledFunction::to_bytes` and the
+ /// [`PipelineArtifact`] encodings). Every encoded artifact carries it, and a decode under another
+@@ -70,7 +70,7 @@ pub const SEMANTICS_VERSION: u32 = 1929;
+ /// re-typed in an encoded type, its `codec` body or its `envelope`. A variant removed while its tag
+ /// stays unused needs no bump: an entry holding it fails to decode, which is a miss. The commit that
+ /// bumps it says what changed; this comment keeps no history.
+-pub const ARTIFACT_FORMAT_VERSION: u32 = 479;
++pub const ARTIFACT_FORMAT_VERSION: u32 = 480;
+ 
+ /// The version of what this crate's runtime does with a compiled pipeline: instantiating a binding
+ /// plan (`BindingPlan::instantiate_*`: descriptor ranges, push bytes, root, argument, and handle
+@@ -93,7 +93,7 @@ pub const ARTIFACT_FORMAT_VERSION: u32 = 479;
+ /// changes no behaviour, and then updates that hash alone with the commit saying why, or changes
+ /// behaviour and also bumps this version. The commit that bumps it says what changed; this comment
+ /// keeps no history.
+-pub const RUNTIME_VERSION: u32 = 1709;
++pub const RUNTIME_VERSION: u32 = 1712;
+ 
+ /// The digest of the sources this build of the crate was compiled from: SHA-256, as lowercase hex,
+ /// of the manifest, the build script, and exactly the files the crate roots' module tree compiles
+diff --git a/crates/metal2vulkan/src/device/mechanism.rs b/crates/metal2vulkan/src/device/mechanism.rs
+index 067fcde..3b31270 100644
+--- a/crates/metal2vulkan/src/device/mechanism.rs
++++ b/crates/metal2vulkan/src/device/mechanism.rs
+@@ -10,6 +10,7 @@ use crate::pipeline::facts::{Mechanism, RuntimeFact};
+ pub fn mechanism(fact: &RuntimeFact, profile: &DeviceProfile) -> Mechanism {
+     let f = profile.fields();
+     match *fact {
++        RuntimeFact::OrderedFragmentPrimitives => Mechanism::RenderPassContract,
+         RuntimeFact::ThreadsPerThreadgroup => Mechanism::Specialization,
+         // Arena layout is the exact sum of the Metal allocations, no sink.
+         RuntimeFact::ThreadgroupMemoryLength { .. } => Mechanism::Specialization,
+diff --git a/crates/metal2vulkan/src/device/tests/mechanism.rs b/crates/metal2vulkan/src/device/tests/mechanism.rs
+index e392c89..d83aa75 100644
+--- a/crates/metal2vulkan/src/device/tests/mechanism.rs
++++ b/crates/metal2vulkan/src/device/tests/mechanism.rs
+@@ -153,6 +153,7 @@ fn every_fact() -> Vec<RuntimeFact> {
+         RuntimeFact::FoldedGroups,
+         RuntimeFact::ReplayBindings,
+         RuntimeFact::MergedDraws,
++        RuntimeFact::OrderedFragmentPrimitives,
+         RuntimeFact::QuadPrimitiveIds,
+         RuntimeFact::RotatedWeights,
+         RuntimeFact::PrivateList,
+@@ -350,6 +351,7 @@ fn variant(f: &RuntimeFact) -> usize {
+         RuntimeFact::WordInputMerge { .. } => 87,
+         RuntimeFact::ReplayBindings => 88,
+         RuntimeFact::MergedDraws => 72,
++        RuntimeFact::OrderedFragmentPrimitives => 89,
+         RuntimeFact::QuadPrimitiveIds => 58,
+         RuntimeFact::RotatedWeights => 82,
+         RuntimeFact::PrivateList => 86,
+@@ -362,7 +364,7 @@ fn variant(f: &RuntimeFact) -> usize {
+ fn mechanism_is_total_over_every_fact_and_profile() {
+     let facts = every_fact();
+     let covered: std::collections::BTreeSet<usize> = facts.iter().map(variant).collect();
+-    assert_eq!(covered, (0..89).collect(), "every_fact misses a variant");
++    assert_eq!(covered, (0..90).collect(), "every_fact misses a variant");
+     for (stem, _) in super::committed_profiles() {
+         let dev = device(&stem);
+         let p = dev.profile();
+@@ -480,7 +482,8 @@ fn mechanism_is_total_over_every_fact_and_profile() {
+                 | RuntimeFact::ShaderStencilTest { .. }
+                 | RuntimeFact::TileImageblock { .. }
+                 | RuntimeFact::ExtendedRangeInputBlend { .. }
+-                | RuntimeFact::WordInputMerge { .. } => Mechanism::RenderPassContract,
++                | RuntimeFact::WordInputMerge { .. }
++                | RuntimeFact::OrderedFragmentPrimitives => Mechanism::RenderPassContract,
+                 RuntimeFact::ExecutionStatus => match f.buffer_access {
+                     crate::device::profile::BufferAccess::Addressed => Mechanism::PushConstant,
+                     _ => Mechanism::SyntheticBinding,
+diff --git a/crates/metal2vulkan/src/env_vars.rs b/crates/metal2vulkan/src/env_vars.rs
+index e3adf03..4990c9c 100644
+--- a/crates/metal2vulkan/src/env_vars.rs
++++ b/crates/metal2vulkan/src/env_vars.rs
+@@ -40,7 +40,8 @@ pub const REGISTRY: &[EnvVar] = &[
+         effect: "metal2vulkan-runtime's diagnostics: one line per render VkPipeline a device \
+                  makes, through the device's message sink or on stderr: its state, its key, the \
+                  key's fields that differ from the state's closest earlier pipeline, and the \
+-                 creation's time, split by the making's parts (the digests, each library made \
++                 creation's time; translator fragment-order refusals also name resource-class \
++                 counts and ordering capabilities, without shader text. Timings split by the making's parts (the digests, each library made \
+                  with its record loaded or missed or another caller's, the link) and by \
+                  MoltenVK's activities where its performance tracking is on \
+                  (MVK_CONFIG_PERFORMANCE_TRACKING=1); and once per reason, why a draw \
+diff --git a/crates/metal2vulkan/src/error/mod.rs b/crates/metal2vulkan/src/error/mod.rs
+index f3f5dd8..38dffa8 100644
+--- a/crates/metal2vulkan/src/error/mod.rs
++++ b/crates/metal2vulkan/src/error/mod.rs
+@@ -1161,7 +1161,8 @@ pub enum Feature {
+     TexelBuffer,
+ 
+     // ---- Stages and fragment (lowering B7, B9) ----
+-    /// Raster order groups without fragment shader interlock.
++    /// Raster order groups requiring fragment shader interlock, without it. Groups confined to
++    /// color attachment inputs and outputs can use ordered color attachment access instead.
+     RasterOrderGroups,
+     /// Framebuffer fetch without an ordered form on the device (rasterization-order attachment
+     /// access, or the pixel interlock's storage form where the pipeline's state lets it be
+diff --git a/crates/metal2vulkan/src/lower/fragment/coverage.rs b/crates/metal2vulkan/src/lower/fragment/coverage.rs
+index 85c1614..763bbfd 100644
+--- a/crates/metal2vulkan/src/lower/fragment/coverage.rs
++++ b/crates/metal2vulkan/src/lower/fragment/coverage.rs
+@@ -219,7 +219,7 @@ pub(super) fn plan(cx: &mut SelectCx<'_>) -> Result<(), Error> {
+         && p.workarounds
+             .contains(&DriverWorkaround::MemoryWritingFragmentsRunPerSample)
+         && !((sample_id || sample_varying) && position);
+-    let attachments = super::rog::declared(e)
++    let attachments = super::rog::declared(e, false)
+         || used(&|r| matches!(r, ParamRole::ColorInput { .. } | ParamRole::Imageblock(_)));
+     let refusal = if matches!(
+         e.ep.stage,
+diff --git a/crates/metal2vulkan/src/lower/fragment/mod.rs b/crates/metal2vulkan/src/lower/fragment/mod.rs
+index f9a7edb..d998ae2 100644
+--- a/crates/metal2vulkan/src/lower/fragment/mod.rs
++++ b/crates/metal2vulkan/src/lower/fragment/mod.rs
+@@ -341,12 +341,14 @@ pub fn finish(cx: &mut SelectCx<'_>, m: &mut Meter) -> Result<(), Error> {
+     // raster order group.
+     let shadow = cx.families.fragment.stencil.is_some();
+     let storage = !cx.families.fragment.fetch.is_empty() || shadow;
+-    let interlock =
+-        if rog::declared(cx.entry) || cx.families.fragment.imageblock.is_some() || storage {
+-            Some(rog::mode(cx)?)
+-        } else {
+-            None
+-        };
++    let interlock = if rog::declared(cx.entry, fetch::inputs_order(cx.profile))
++        || cx.families.fragment.imageblock.is_some()
++        || storage
++    {
++        rog::mode(cx)?
++    } else {
++        None
++    };
+     let snapshot = snapshot::finish(cx, interlock.is_some(), looped)?;
+     let sites: Vec<InstId> = cx.families.fragment.discards.keys().copied().collect();
+     let discard::DiscardPlan {
+diff --git a/crates/metal2vulkan/src/lower/fragment/rog.rs b/crates/metal2vulkan/src/lower/fragment/rog.rs
+index cce59a9..84460de 100644
+--- a/crates/metal2vulkan/src/lower/fragment/rog.rs
++++ b/crates/metal2vulkan/src/lower/fragment/rog.rs
+@@ -1,6 +1,6 @@
+-//! Raster order groups: a fragment function that names a raster order group on any parameter,
+-//! output it reads, or argument-buffer member runs its whole body inside a fragment-interlock
+-//! critical section.
++//! Raster order groups: accesses to buffers, textures and argument-buffer members need a
++//! fragment-interlock critical section. Color attachment accesses alone can instead use
++//! rasterization-order attachment access, which orders the input read and the output write.
+ //!
+ //! Metal orders a raster order group's accesses between fragments that cover the same pixel (the
+ //! same sample at sample rate). AIR states the group only as `air.raster_order_group` metadata on
+@@ -25,7 +25,11 @@
+ //! of its attachment) asks for no ordering beyond what a render target already has: Vulkan performs
+ //! a fragment's color writes and blending per sample in rasterization order, as Metal does. Such an
+ //! output alone does not interlock the function, so a function whose groups hold nothing else
+-//! compiles on every device, the ones without an interlock included.
++//! compiles on every device, the ones without an interlock included. A color input's group, and
++//! a grouped output whose attachment the function reads, need no separate interlock where the
++//! profile orders color attachment accesses: the framebuffer-fetch lowering records its ordered
++//! input attachment, and the runtime orders both reads and writes in the subpass and pipeline.
++//! This does not grant ordering to any other grouped resource.
+ //!
+ //! **Mode** ([`mode`]). `PixelInterlockOrderedEXT` where the profile has
+ //! `fragmentShaderPixelInterlock`: it orders every invocation covering the pixel, which covers
+@@ -78,21 +82,27 @@ fn role_layouts(role: &ParamRole) -> [Option<StructRef>; 2] {
+ /// an argument-buffer or imageblock member of a layout its parameters and outputs reach.
+ /// `e.structs` holds every layout of the module, so a layout only another function names does not
+ /// count. A group's color output the function does not read needs none ([module docs](self)).
+-pub(super) fn declared(e: &Entry) -> bool {
+-    let params = e.ep.params.iter().any(|b| role_group(&b.role).is_some());
++/// `ordered_attachments` excludes groups on color inputs and outputs from the interlock need;
++/// callers classifying all grouped accesses, rather than that need, pass false.
++pub(super) fn declared(e: &Entry, ordered_attachments: bool) -> bool {
++    let params = e.ep.params.iter().any(|b| {
++        role_group(&b.role).is_some()
++            && !(ordered_attachments && matches!(b.role, ParamRole::ColorInput { .. }))
++    });
+     let read = |attachment| {
+         e.ep.params
+             .iter()
+             .any(|b| matches!(b.role, ParamRole::ColorInput { index, .. } if index == attachment))
+     };
+-    let outputs = e.ep.outputs.iter().any(|o| match o.role {
+-        OutputRole::RenderTarget {
+-            attachment,
+-            raster_order_group: Some(_),
+-            ..
+-        } => read(attachment),
+-        _ => false,
+-    });
++    let outputs = !ordered_attachments
++        && e.ep.outputs.iter().any(|o| match o.role {
++            OutputRole::RenderTarget {
++                attachment,
++                raster_order_group: Some(_),
++                ..
++            } => read(attachment),
++            _ => false,
++        });
+     if params || outputs {
+         return true;
+     }
+@@ -145,7 +155,7 @@ fn sample_rate(objects: &[IoObject]) -> bool {
+ 
+ /// The interlock mode of a function in a raster order group, or its refusal. Called once the
+ /// stage interface is planned (`fragment::finish`).
+-pub(super) fn mode(cx: &SelectCx<'_>) -> Result<ExecMode, Error> {
++pub(super) fn mode(cx: &mut SelectCx<'_>) -> Result<Option<ExecMode>, Error> {
+     if cx.stage != Stage::Fragment {
+         // Metal orders raster order groups between fragments only.
+         return Err(Unsupported::not_implemented(Feature::RasterOrderGroups).into());
+@@ -153,10 +163,69 @@ pub(super) fn mode(cx: &SelectCx<'_>) -> Result<ExecMode, Error> {
+     let f = cx.profile.fields().fragment;
+     let per_sample = sample_rate(&cx.families.stage_io.objects);
+     if f.pixel_interlock {
+-        return Ok(ExecMode::PixelInterlockOrdered);
++        return Ok(Some(ExecMode::PixelInterlockOrdered));
+     }
+     if f.sample_interlock && per_sample {
+-        return Ok(ExecMode::SampleInterlockOrdered);
++        return Ok(Some(ExecMode::SampleInterlockOrdered));
++    }
++    let plain = cx.families.fragment.imageblock.is_none()
++        && cx.families.fragment.fetch.is_empty()
++        && cx.families.fragment.stencil.is_none();
++    let split_pixels =
++        cx.profile.fields().workarounds.contains(
++            &crate::device::profile::DriverWorkaround::ClippedTrianglesSplitPixelFragments,
++        );
++    if cx.inputs.ordered_fragment_primitives
++        && !cx.inputs.replay_bindings
++        && !cx.inputs.merged_draws
++        && !cx.inputs.multisampled
++        && !per_sample
++        && plain
++        && !split_pixels
++    {
++        cx.facts
++            .insert(crate::pipeline::facts::RuntimeFact::OrderedFragmentPrimitives);
++        return Ok(None);
++    }
++    if crate::env_vars::log_pipelines() {
++        let params = &cx.entry.ep.params;
++        let buffers = params
++            .iter()
++            .filter(|p| {
++                matches!(&p.role,
++            ParamRole::Buffer(a) | ParamRole::ArgumentBuffer(a) if a.raster_order_group.is_some())
++            })
++            .count();
++        let textures = params
++            .iter()
++            .filter(|p| {
++                matches!(&p.role,
++            ParamRole::Texture(t) if t.raster_order_group.is_some())
++            })
++            .count();
++        let colors = params
++            .iter()
++            .filter(|p| {
++                matches!(
++                    &p.role,
++                    ParamRole::ColorInput {
++                        raster_order_group: Some(_),
++                        ..
++                    }
++                )
++            })
++            .count();
++        let members = cx
++            .entry
++            .structs
++            .iter()
++            .flat_map(|s| &s.members)
++            .filter(|m| m.raster_order_group.is_some())
++            .count();
++        eprintln!("M2V_FRAGMENT_ORDER_REFUSAL grouped_buffers={buffers} grouped_textures={textures} grouped_color_inputs={colors} module_grouped_members={members} imageblock={} storage_colors={} shadow_stencil={} declared_interlock={} ordered_color={} pixel_interlock={} sample_interlock={} per_sample={per_sample}",
++            cx.families.fragment.imageblock.is_some(), cx.families.fragment.fetch.len(),
++            cx.families.fragment.stencil.is_some(), declared(cx.entry, f.rasterization_order_color_access),
++            f.rasterization_order_color_access, f.pixel_interlock, f.sample_interlock);
+     }
+     let pixel = vec![Capability::Feature(VkFeature::FragmentShaderPixelInterlock)];
+     let alternatives = if per_sample {
+diff --git a/crates/metal2vulkan/src/pipeline/api_tests.rs b/crates/metal2vulkan/src/pipeline/api_tests.rs
+index 6052dc5..4fbc1ef 100644
+--- a/crates/metal2vulkan/src/pipeline/api_tests.rs
++++ b/crates/metal2vulkan/src/pipeline/api_tests.rs
+@@ -289,6 +289,7 @@ mod serde_round_trips {
+             },
+         );
+         round_trip(&LoweringInputs {
++            ordered_fragment_primitives: true,
+             vertex_fetch: Some(VertexFetchProjection { attributes }),
+             storage_images: BTreeMap::new(),
+             psb_slots: BTreeSet::from([buffer(0), buffer(30)]),
+diff --git a/crates/metal2vulkan/src/pipeline/compile.rs b/crates/metal2vulkan/src/pipeline/compile.rs
+index 678cb8a..4d61240 100644
+--- a/crates/metal2vulkan/src/pipeline/compile.rs
++++ b/crates/metal2vulkan/src/pipeline/compile.rs
+@@ -132,6 +132,7 @@ pub(crate) static NO_PRIMITIVE_VARYINGS: BTreeSet<VaryingKey> = BTreeSet::new();
+ /// depth of its own (Metal's default, 1).
+ #[derive(Clone, Copy, Debug)]
+ pub struct FragmentPass<'a> {
++    pub(crate) ordered_fragment_primitives: bool,
+     pub(crate) color_attachments: &'a [Option<ColorAttachmentDescriptor>; 8],
+     /// The pipeline has a depth or a stencil attachment.
+     pub(crate) depth_or_stencil: bool,
+@@ -160,6 +161,7 @@ pub struct FragmentPass<'a> {
+ impl<'a> From<&'a RenderPipelineDescriptor> for FragmentPass<'a> {
+     fn from(d: &'a RenderPipelineDescriptor) -> FragmentPass<'a> {
+         FragmentPass {
++            ordered_fragment_primitives: d.ordered_fragment_primitives,
+             color_attachments: &d.color_attachments,
+             depth_or_stencil: d.depth_format.is_some() || d.stencil_format.is_some(),
+             raster_sample_count: d.raster_sample_count,
+@@ -182,6 +184,7 @@ impl<'a> From<&'a RenderPipelineDescriptor> for FragmentPass<'a> {
+ impl<'a> From<&'a MeshPipelineDescriptor> for FragmentPass<'a> {
+     fn from(d: &'a MeshPipelineDescriptor) -> FragmentPass<'a> {
+         FragmentPass {
++            ordered_fragment_primitives: false,
+             color_attachments: &d.color_attachments,
+             depth_or_stencil: d.depth_format.is_some() || d.stencil_format.is_some(),
+             raster_sample_count: d.raster_sample_count,
+@@ -2138,6 +2141,7 @@ pub(crate) fn fragment_inputs(
+ ) -> LowerInputs {
+     let mut out = v.lowering_inputs(crate::pipeline::sym::Stage::Fragment);
+     out.multisampled = d.raster_sample_count > 1 && d.rasterization_enabled;
++    out.ordered_fragment_primitives = d.ordered_fragment_primitives;
+     out.max_call_stack_depth = call_stack_input(d.max_call_stack_depth);
+     // Every attachment's, whether the function writes it or not: the map needs no decode, and the
+     // function records the entries of those it writes.
+diff --git a/crates/metal2vulkan/src/pipeline/compile/key.rs b/crates/metal2vulkan/src/pipeline/compile/key.rs
+index a02631d..72bb5bf 100644
+--- a/crates/metal2vulkan/src/pipeline/compile/key.rs
++++ b/crates/metal2vulkan/src/pipeline/compile/key.rs
+@@ -181,6 +181,9 @@ pub fn function_key(
+             .bytes(format!("{t:?}").as_bytes());
+     }
+     // Appended only when set.
++    if inputs.ordered_fragment_primitives {
++        h.bytes(b"ordered-fragment-primitives");
++    }
+     if inputs.multisampled {
+         h.bytes(b"multisampled");
+     }
+@@ -579,6 +582,7 @@ pub(crate) fn render_descriptor_key(
+     stage: impl Fn(&StageSource) -> (u64, Hash256),
+ ) -> PipelineKey {
+     let RenderPipelineDescriptor {
++        ordered_fragment_primitives,
+         vertex,
+         fragment,
+         vertex_descriptor,
+@@ -639,7 +643,7 @@ pub(crate) fn render_descriptor_key(
+         format!("{vertex_descriptor:?}"),
+         format!("{color_attachments:?}"),
+         format!("{depth_format:?} {stencil_format:?}"),
+-        format!("{raster_sample_count} {alpha_to_coverage} {alpha_to_one}"),
++        format!("{raster_sample_count} {alpha_to_coverage} {alpha_to_one} {ordered_fragment_primitives}"),
+         format!("{rasterization_enabled} {input_primitive_topology:?}"),
+         format!("{max_vertex_amplification_count} {tessellation:?}"),
+         format!("{support_indirect_command_buffers}"),
+diff --git a/crates/metal2vulkan/src/pipeline/compile/tests.rs b/crates/metal2vulkan/src/pipeline/compile/tests.rs
+index 1de5fd6..741c5d9 100644
+--- a/crates/metal2vulkan/src/pipeline/compile/tests.rs
++++ b/crates/metal2vulkan/src/pipeline/compile/tests.rs
+@@ -512,6 +512,10 @@ fn function_keys_cover_their_inputs() {
+     assert_ne!(with_true, signed(&[0]));
+     assert_ne!(signed(&[0]), signed(&[1]));
+     assert_ne!(dropped, signed(&[0]));
++    // A single-primitive ordering contract cannot reuse an unordered shader's key.
++    let mut ordered = LoweringInputs::new();
++    ordered.ordered_fragment_primitives = true;
++    assert_ne!(with_true, a.function_compile_key(&fd, &ordered));
+     // So is a multisampled pipeline's fragment input.
+     let mut multisampled = LoweringInputs::new();
+     multisampled.multisampled = true;
+@@ -662,6 +666,7 @@ fn the_inputs_encoding_is_the_earlier_derived_debug() {
+         assert_eq!(
+             inputs_encoding(&inputs),
+             derived
++                .replace("ordered_fragment_primitives: false, ", "")
+                 .replace(", emulated_simdgroups: false", "")
+                 .replace(", dropped_vertex_layer: false", "")
+                 .replace(", stage_input: None", "")
+diff --git a/crates/metal2vulkan/src/pipeline/descriptor.rs b/crates/metal2vulkan/src/pipeline/descriptor.rs
+index 01b2814..deeeb81 100644
+--- a/crates/metal2vulkan/src/pipeline/descriptor.rs
++++ b/crates/metal2vulkan/src/pipeline/descriptor.rs
+@@ -295,6 +295,11 @@ pub enum StageSource {
+ #[non_exhaustive]
+ #[derive(Clone, Debug, PartialEq, Eq)]
+ pub struct RenderPipelineDescriptor {
++    /// Permit raster-order groups to use the single-primitive render-pass contract
++    /// (`LoweringInputs::ordered_fragment_primitives`) when native interlock is absent.
++    /// This has no Metal descriptor counterpart. The runtime enforces it for direct triangle
++    /// lists, including indexed lists; other draws return `RuntimeGap::OrderedFragmentPrimitives` there.
++    pub ordered_fragment_primitives: bool,
+     pub vertex: StageSource,
+     /// The fragment function, `None` where none is set. Taken with rasterization disabled too:
+     /// Metal links it either way, so its refusals see it (a texture with indirect command buffers,
+@@ -496,6 +501,7 @@ impl RenderPipelineDescriptor {
+     /// A descriptor with Metal's defaults: one sample, rasterization on, no attachments.
+     pub fn new(vertex: StageSource) -> RenderPipelineDescriptor {
+         RenderPipelineDescriptor {
++            ordered_fragment_primitives: false,
+             vertex,
+             fragment: None,
+             vertex_descriptor: None,
+diff --git a/crates/metal2vulkan/src/pipeline/facts.rs b/crates/metal2vulkan/src/pipeline/facts.rs
+index e1e96f6..20c5f0c 100644
+--- a/crates/metal2vulkan/src/pipeline/facts.rs
++++ b/crates/metal2vulkan/src/pipeline/facts.rs
+@@ -13,6 +13,11 @@ use crate::pipeline::sym::{ImageHandleClass, SlotRef, Stage};
+ #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+ #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+ pub enum RuntimeFact {
++    /// The fragment function's raster-order groups have no shader interlock: the consumer
++    /// executes single-sample, single-layer primitives in rasterization order, at most one
++    /// primitive per render pass, with full memory dependencies between passes. It preserves
++    /// vertex/instance/primitive IDs and refuses any draw it cannot decompose exactly.
++    OrderedFragmentPrimitives,
+     /// Metal threads per threadgroup.
+     ThreadsPerThreadgroup,
+     /// Length of threadgroup-memory argument `index`.
+diff --git a/crates/metal2vulkan/src/pipeline/lower_inputs.rs b/crates/metal2vulkan/src/pipeline/lower_inputs.rs
+index f499702..ca43c71 100644
+--- a/crates/metal2vulkan/src/pipeline/lower_inputs.rs
++++ b/crates/metal2vulkan/src/pipeline/lower_inputs.rs
+@@ -26,6 +26,14 @@ use crate::vk;
+ #[derive(Clone, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
+ #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+ pub struct LoweringInputs {
++    /// The consumer orders single-sample fragment invocations by executing at most one
++    /// primitive per render pass, with full memory dependencies between passes. When this
++    /// replaces a missing native interlock, the function states
++    /// `RuntimeFact::OrderedFragmentPrimitives`; this is a required consumer contract, not
++    /// a claim that the device supports fragment interlock. Imageblock, storage framebuffer
++    /// fetch and shader-side stencil still need their native interlock.
++    #[cfg_attr(feature = "serde", serde(default))]
++    pub ordered_fragment_primitives: bool,
+     /// How each vertex attribute is fetched; `None` for non-vertex functions.
+     pub vertex_fetch: Option<VertexFetchProjection>,
+     /// The representation chosen for each storage texture slot whose format is a variant.
+diff --git a/crates/metal2vulkan/src/tests/engine_fragment.rs b/crates/metal2vulkan/src/tests/engine_fragment.rs
+index 1ebe542..abb4dc5 100644
+--- a/crates/metal2vulkan/src/tests/engine_fragment.rs
++++ b/crates/metal2vulkan/src/tests/engine_fragment.rs
+@@ -500,23 +500,20 @@ fn framebuffer_fetch_reads_in_an_ordered_form_where_the_device_has_one() {
+     for (stem, strict) in committed_profiles().expect("profiles") {
+         let frag = strict.fields().fragment;
+         for (entry, colors, formats) in entries {
+-            // A color input in a raster order group needs the interlock, where rasterization-order
+-            // access orders the read; with neither ordered form the read is refused first, naming
+-            // both (below).
+-            if entry == "fetch_ordered"
+-                && !frag.pixel_interlock
+-                && frag.rasterization_order_color_access
+-            {
+-                assert_eq!(
+-                    refusal(&bc, entry, &strict),
+-                    (Feature::RasterOrderGroups, pixel_interlock()),
+-                    "{stem}"
+-                );
+-                continue;
+-            }
+             let clean = fetch_state(colors, formats, false);
+             if frag.rasterization_order_color_access {
+                 forms[0] += 1;
++                if entry == "fetch_ordered" {
++                    let (_, module) = typed_module(&bc, entry, &strict)
++                        .unwrap_or_else(|e| panic!("{entry} on {stem}: {e}"));
++                    assert!(
++                        !module.entry().modes.iter().any(|mode| matches!(
++                            mode,
++                            ExecMode::PixelInterlockOrdered | ExecMode::SampleInterlockOrdered
++                        )),
++                        "{entry} on {stem}: attachment ordering needs no interlock"
++                    );
++                }
+                 for inputs in [LoweringInputs::new(), clean] {
+                     let a = compile_with(&bc, entry, &strict, &inputs)
+                         .unwrap_or_else(|e| panic!("{entry} on {stem}: {e}"));
+@@ -4344,9 +4341,9 @@ fn raster_order_groups_run_the_body_inside_the_interlock() {
+ /// A raster order group that holds only a color output the function does not read (`rog_output`)
+ /// needs no interlock: Vulkan already orders a fragment's color writes and blending per sample in
+ /// rasterization order, as Metal does. It compiles without an interlock mode or instruction on
+-/// every committed profile, and on a device with neither interlock, and passes L3. (A group on a
+-/// color input still needs the interlock:
+-/// `framebuffer_fetch_reads_in_an_ordered_form_where_the_device_has_one`.)
++/// every committed profile, and on a device with neither interlock, and passes L3. A group on a
++/// color input uses ordered attachment access where available, else the interlock:
++/// `framebuffer_fetch_reads_in_an_ordered_form_where_the_device_has_one`.
+ #[test]
+ fn a_group_of_color_outputs_alone_needs_no_interlock() {
+     let Some(bc) = fixture("fragment_rog") else {
+@@ -5590,3 +5587,39 @@ fn a_snapshot_read_plans_its_variant_where_the_pipeline_can() {
+     }
+     assert!(planned >= 4, "the interlocked profiles");
+ }
++
++/// A consumer promise replaces no hardware capability and remains visible in the artifact.
++#[test]
++fn ordered_primitive_fallback_requires_a_consumer_contract() {
++    let Some(bc) = fixture("fragment_rog") else {
++        return;
++    };
++    let p = moltenvk_without(&[
++        VkFeature::FragmentShaderPixelInterlock,
++        VkFeature::FragmentShaderSampleInterlock,
++    ]);
++    let mut inputs = LoweringInputs::new();
++    assert!(matches!(
++        compile_with(&bc, "rog_buffer", &p, &inputs),
++        Err(Error::Unsupported(_))
++    ));
++    inputs.ordered_fragment_primitives = true;
++    let a = compile_with(&bc, "rog_buffer", &p, &inputs).expect("ordered consumer");
++    assert!(a.facts.contains(&RuntimeFact::OrderedFragmentPrimitives));
++    link_and_validate(&a, &p).expect("valid ordinary storage accesses");
++    let (_, module) = typed_module_with(&bc, "rog_buffer", &p, &inputs).expect("typed");
++    assert!(!module.entry().modes.iter().any(|m| matches!(
++        m,
++        ExecMode::PixelInterlockOrdered | ExecMode::SampleInterlockOrdered
++    )));
++    inputs.multisampled = true;
++    assert!(matches!(
++        compile_with(&bc, "rog_buffer", &p, &inputs),
++        Err(Error::Unsupported(_))
++    ));
++    inputs.multisampled = false;
++    assert!(matches!(
++        compile_with(&bc, "rog_sample", &p, &inputs),
++        Err(Error::Unsupported(_))
++    ));
++}
+diff --git a/crates/metal2vulkan/tests/api_signatures.tsv b/crates/metal2vulkan/tests/api_signatures.tsv
+index 701fbc4..2598dec 100644
+--- a/crates/metal2vulkan/tests/api_signatures.tsv
++++ b/crates/metal2vulkan/tests/api_signatures.tsv
+@@ -4162,6 +4162,7 @@ field	metal2vulkan::pipeline::LoweringInputs.max_call_stack_depth	pub max_call_s
+ field	metal2vulkan::pipeline::LoweringInputs.merged_draws	pub merged_draws: bool
+ field	metal2vulkan::pipeline::LoweringInputs.multisampled	pub multisampled: bool
+ field	metal2vulkan::pipeline::LoweringInputs.object_payload	pub object_payload: Option<u32>
++field	metal2vulkan::pipeline::LoweringInputs.ordered_fragment_primitives	pub ordered_fragment_primitives: bool
+ field	metal2vulkan::pipeline::LoweringInputs.primitive_id_indices	pub primitive_id_indices: Option<crate::metal::IndexType>
+ field	metal2vulkan::pipeline::LoweringInputs.primitive_id_varying	pub primitive_id_varying: bool
+ field	metal2vulkan::pipeline::LoweringInputs.primitive_varyings	pub primitive_varyings: BTreeSet<VaryingKey>
+@@ -4291,6 +4292,7 @@ field	metal2vulkan::pipeline::RenderPipelineDescriptor.input_primitive_topology
+ field	metal2vulkan::pipeline::RenderPipelineDescriptor.max_fragment_call_stack_depth	pub max_fragment_call_stack_depth: u32
+ field	metal2vulkan::pipeline::RenderPipelineDescriptor.max_vertex_amplification_count	pub max_vertex_amplification_count: u32
+ field	metal2vulkan::pipeline::RenderPipelineDescriptor.max_vertex_call_stack_depth	pub max_vertex_call_stack_depth: u32
++field	metal2vulkan::pipeline::RenderPipelineDescriptor.ordered_fragment_primitives	pub ordered_fragment_primitives: bool
+ field	metal2vulkan::pipeline::RenderPipelineDescriptor.private	pub private: PrivateRenderState
+ field	metal2vulkan::pipeline::RenderPipelineDescriptor.raster_sample_count	pub raster_sample_count: u32
+ field	metal2vulkan::pipeline::RenderPipelineDescriptor.rasterization_enabled	pub rasterization_enabled: bool
+@@ -11819,6 +11821,7 @@ variant	metal2vulkan-runtime::RuntimeGap::Metal4Api	Metal4Api
+ variant	metal2vulkan-runtime::RuntimeGap::MultisampledBufferCopy	MultisampledBufferCopy
+ variant	metal2vulkan-runtime::RuntimeGap::MultisampledBufferLayout	MultisampledBufferLayout
+ variant	metal2vulkan-runtime::RuntimeGap::NonFiniteDepthBias	NonFiniteDepthBias
++variant	metal2vulkan-runtime::RuntimeGap::OrderedFragmentPrimitives	OrderedFragmentPrimitives
+ variant	metal2vulkan-runtime::RuntimeGap::OverlappingSurfaceRows	OverlappingSurfaceRows
+ variant	metal2vulkan-runtime::RuntimeGap::OverlappingTextureCopies	OverlappingTextureCopies
+ variant	metal2vulkan-runtime::RuntimeGap::PrimitiveIdIndices	PrimitiveIdIndices
+@@ -13634,6 +13637,7 @@ variant	metal2vulkan::pipeline::RuntimeFact::MergedDraws	MergedDraws
+ variant	metal2vulkan::pipeline::RuntimeFact::MeshLastFirst	MeshLastFirst
+ variant	metal2vulkan::pipeline::RuntimeFact::MovableStorageWrites	MovableStorageWrites { early_variant: bool }
+ variant	metal2vulkan::pipeline::RuntimeFact::ObjectThreadgroupArena	ObjectThreadgroupArena { static_bytes: u32, payload: Option<u32> }
++variant	metal2vulkan::pipeline::RuntimeFact::OrderedFragmentPrimitives	OrderedFragmentPrimitives
+ variant	metal2vulkan::pipeline::RuntimeFact::OutOfBoundsAlpha	OutOfBoundsAlpha { slot: SlotRef }
+ variant	metal2vulkan::pipeline::RuntimeFact::PredicationVote	PredicationVote
+ variant	metal2vulkan::pipeline::RuntimeFact::PrivateList	PrivateList
+diff --git a/crates/metal2vulkan/tests/golden_hashes.tsv b/crates/metal2vulkan/tests/golden_hashes.tsv
+index 49ef7d1..047c3a1 100644
+--- a/crates/metal2vulkan/tests/golden_hashes.tsv
++++ b/crates/metal2vulkan/tests/golden_hashes.tsv
+@@ -857,13 +857,13 @@ engine/fragment_discard_msl22.ll	01b9947022d3fd71	discard_loop	f343f621371a3f21
+ engine/fragment_discard_msl22.ll	01b9947022d3fd71	discard_simd	bdb33950ad971b40	bdb33950ad971b40	bdb33950ad971b40	bdb33950ad971b40	bdb33950ad971b40	bdb33950ad971b40	bdb33950ad971b40	bdb33950ad971b40	bdb33950ad971b40	bdb33950ad971b40	bdb33950ad971b40	Unsupported{Lowering(Fragment); AnyOf[[Feature(ShaderDemoteToHelperInvocation)]]}	af432815584e03ca	Unsupported{SubgroupOperations; AnyOf[[Feature(ShaderQuadControl)]]}	bdb33950ad971b40	bdb33950ad971b40	Unsupported{SubgroupOperations; AnyOf[[Feature(ShaderQuadControl)]]}	Unsupported{SubgroupOperations; AnyOf[[Feature(ShaderQuadControl)]]}	Unsupported{Lowering(Fragment); AnyOf[[Feature(ShaderDemoteToHelperInvocation)]]}
+ engine/fragment_discard_msl22.ll	01b9947022d3fd71	discard_terminate	aa1e376f1284ba5a	aa1e376f1284ba5a	aa1e376f1284ba5a	aa1e376f1284ba5a	aa1e376f1284ba5a	aa1e376f1284ba5a	aa1e376f1284ba5a	aa1e376f1284ba5a	aa1e376f1284ba5a	aa1e376f1284ba5a	aa1e376f1284ba5a	d00842ab4fad7f83	aa1e376f1284ba5a	aa1e376f1284ba5a	aa1e376f1284ba5a	aa1e376f1284ba5a	aa1e376f1284ba5a	aa1e376f1284ba5a	d00842ab4fad7f83
+ engine/fragment_fetch.air.ll	3b1c1ffb5b7cd4d5	fetch_blend	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	23873b830359ca40	23873b830359ca40	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	23873b830359ca40	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	f1a7536950ba0d5d	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
+-engine/fragment_fetch.air.ll	3b1c1ffb5b7cd4d5	fetch_ordered	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	0916b452b53050ca	0916b452b53050ca	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	0916b452b53050ca	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	Unsupported{RasterOrderGroups; AnyOf[[Feature(FragmentShaderPixelInterlock)]]}	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
++engine/fragment_fetch.air.ll	3b1c1ffb5b7cd4d5	fetch_ordered	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	c1086eab21201f1f	c1086eab21201f1f	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	c1086eab21201f1f	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	c1086eab21201f1f	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
+ engine/fragment_fetch.air.ll	3b1c1ffb5b7cd4d5	fetch_scalar	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	aea89ac32b7e4b04	aea89ac32b7e4b04	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	aea89ac32b7e4b04	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	aea89ac32b7e4b04	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
+ engine/fragment_fetch.ll	2cf7b16d06b7e3c3	fetch fetch_blend as [RGBA8Unorm, RGBA32Uint, RG16Float]	292d5d6fa63ee61c	292d5d6fa63ee61c	292d5d6fa63ee61c	292d5d6fa63ee61c	23873b830359ca40	23873b830359ca40	57ce61989b04aebc	9a3b633c3978b382	9a3b633c3978b382	9a3b633c3978b382	23873b830359ca40	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	7751325060f28673	2b3af6d008d1298b	63bcde3ced5b622c	63bcde3ced5b622c	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	f1a7536950ba0d5d	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
+-engine/fragment_fetch.ll	2cf7b16d06b7e3c3	fetch fetch_ordered as [RGBA16Float]	113b1c93f346b0f5	113b1c93f346b0f5	113b1c93f346b0f5	113b1c93f346b0f5	0916b452b53050ca	0916b452b53050ca	113b1c93f346b0f5	ab392c152521b1be	ab392c152521b1be	ab392c152521b1be	0916b452b53050ca	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	113b1c93f346b0f5	113b1c93f346b0f5	113b1c93f346b0f5	113b1c93f346b0f5	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	Unsupported{RasterOrderGroups; AnyOf[[Feature(FragmentShaderPixelInterlock)]]}	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
++engine/fragment_fetch.ll	2cf7b16d06b7e3c3	fetch fetch_ordered as [RGBA16Float]	113b1c93f346b0f5	113b1c93f346b0f5	113b1c93f346b0f5	113b1c93f346b0f5	c1086eab21201f1f	c1086eab21201f1f	113b1c93f346b0f5	ab392c152521b1be	ab392c152521b1be	ab392c152521b1be	c1086eab21201f1f	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	113b1c93f346b0f5	113b1c93f346b0f5	113b1c93f346b0f5	113b1c93f346b0f5	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	c1086eab21201f1f	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
+ engine/fragment_fetch.ll	2cf7b16d06b7e3c3	fetch fetch_scalar as [R32Float]	289ce8a96ae9fddb	289ce8a96ae9fddb	289ce8a96ae9fddb	289ce8a96ae9fddb	aea89ac32b7e4b04	aea89ac32b7e4b04	289ce8a96ae9fddb	28ec2dc3d700930c	28ec2dc3d700930c	28ec2dc3d700930c	aea89ac32b7e4b04	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	289ce8a96ae9fddb	289ce8a96ae9fddb	289ce8a96ae9fddb	289ce8a96ae9fddb	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	aea89ac32b7e4b04	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
+ engine/fragment_fetch.ll	2cf7b16d06b7e3c3	fetch_blend	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	23873b830359ca40	23873b830359ca40	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	23873b830359ca40	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	f1a7536950ba0d5d	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
+-engine/fragment_fetch.ll	2cf7b16d06b7e3c3	fetch_ordered	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	0916b452b53050ca	0916b452b53050ca	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	0916b452b53050ca	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	Unsupported{RasterOrderGroups; AnyOf[[Feature(FragmentShaderPixelInterlock)]]}	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
++engine/fragment_fetch.ll	2cf7b16d06b7e3c3	fetch_ordered	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	c1086eab21201f1f	c1086eab21201f1f	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	c1086eab21201f1f	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	c1086eab21201f1f	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
+ engine/fragment_fetch.ll	2cf7b16d06b7e3c3	fetch_scalar	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	aea89ac32b7e4b04	aea89ac32b7e4b04	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	aea89ac32b7e4b04	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	aea89ac32b7e4b04	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
+ engine/fragment_imageblock_views.air.ll	b581abd7c596e010	imageblock_accumulate	0af70170bf11ab45	0af70170bf11ab45	0af70170bf11ab45	0af70170bf11ab45	8054df9c7f8f78b9	8054df9c7f8f78b9	038d392306650231	038d392306650231	038d392306650231	038d392306650231	8054df9c7f8f78b9	Unsupported{Imageblocks; AnyOf[[Feature(FragmentShaderPixelInterlock)]]}	f6c623270c4fb14d	c7ecfd88415658b2	8054df9c7f8f78b9	8054df9c7f8f78b9	Unsupported{Imageblocks; AnyOf[[Feature(FragmentShaderPixelInterlock)]]}	Unsupported{Imageblocks; AnyOf[[Feature(FragmentShaderPixelInterlock)]]}	Unsupported{Imageblocks; AnyOf[[Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
+ engine/fragment_imageblock_views.air.ll	b581abd7c596e010	imageblock_aliased	Unsupported{Imageblocks; NotImplemented}	Unsupported{Imageblocks; NotImplemented}	Unsupported{Imageblocks; NotImplemented}	Unsupported{Imageblocks; NotImplemented}	Unsupported{Imageblocks; NotImplemented}	Unsupported{Imageblocks; NotImplemented}	Unsupported{Imageblocks; NotImplemented}	Unsupported{Imageblocks; NotImplemented}	Unsupported{Imageblocks; NotImplemented}	Unsupported{Imageblocks; NotImplemented}	Unsupported{Imageblocks; NotImplemented}	Unsupported{Imageblocks; NotImplemented}	Unsupported{Imageblocks; NotImplemented}	Unsupported{Imageblocks; NotImplemented}	Unsupported{Imageblocks; NotImplemented}	Unsupported{Imageblocks; NotImplemented}	Unsupported{Imageblocks; NotImplemented}	Unsupported{Imageblocks; NotImplemented}	Unsupported{Imageblocks; NotImplemented}
+diff --git a/crates/metal2vulkan/tests/public_fixture_expectations_engine.tsv b/crates/metal2vulkan/tests/public_fixture_expectations_engine.tsv
+index 7c593e7..d7016f0 100644
+--- a/crates/metal2vulkan/tests/public_fixture_expectations_engine.tsv
++++ b/crates/metal2vulkan/tests/public_fixture_expectations_engine.tsv
+@@ -999,10 +999,10 @@ engine/fragment_discard_msl22.ll	discard_loop	ok	ok	ok	ok	ok	ok	ok	ok	ok	ok	ok	o
+ engine/fragment_discard_msl22.ll	discard_simd	ok	ok	ok	ok	ok	ok	ok	ok	ok	ok	ok	Unsupported{Lowering(Fragment); AnyOf[[Feature(ShaderDemoteToHelperInvocation)]]}	ok	Unsupported{SubgroupOperations; AnyOf[[Feature(ShaderQuadControl)]]}	ok	ok	Unsupported{SubgroupOperations; AnyOf[[Feature(ShaderQuadControl)]]}	Unsupported{SubgroupOperations; AnyOf[[Feature(ShaderQuadControl)]]}	Unsupported{Lowering(Fragment); AnyOf[[Feature(ShaderDemoteToHelperInvocation)]]}
+ engine/fragment_fetch.air.ll	fetch_blend	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	ok	ok	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	ok	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	ok	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
+ engine/fragment_fetch.air.ll	fetch_scalar	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	ok	ok	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	ok	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	ok	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
+-engine/fragment_fetch.air.ll	fetch_ordered	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	ok	ok	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	ok	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	Unsupported{RasterOrderGroups; AnyOf[[Feature(FragmentShaderPixelInterlock)]]}	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
++engine/fragment_fetch.air.ll	fetch_ordered	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	ok	ok	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	ok	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	ok	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
+ engine/fragment_fetch.ll	fetch_blend	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	ok	ok	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	ok	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	ok	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
+ engine/fragment_fetch.ll	fetch_scalar	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	ok	ok	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	ok	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	ok	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
+-engine/fragment_fetch.ll	fetch_ordered	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	ok	ok	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	ok	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	Unsupported{RasterOrderGroups; AnyOf[[Feature(FragmentShaderPixelInterlock)]]}	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
++engine/fragment_fetch.ll	fetch_ordered	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	ok	ok	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	ok	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	NeedsInput{FramebufferFetch}	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock)]]}	ok	Unsupported{FramebufferFetch; AnyOf[[Feature(RasterizationOrderColorAttachmentAccess)], [Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
+ engine/fragment_imageblock_views.air.ll	imageblock_vertex	ok	ok	ok	ok	ok	ok	ok	ok	ok	ok	ok	ok	ok	ok	ok	ok	ok	ok	ok
+ engine/fragment_imageblock_views.air.ll	imageblock_transition	ok	ok	ok	ok	ok	ok	ok	ok	ok	ok	ok	Unsupported{Imageblocks; AnyOf[[Feature(FragmentShaderPixelInterlock)]]}	ok	ok	ok	ok	Unsupported{Imageblocks; AnyOf[[Feature(FragmentShaderPixelInterlock)]]}	Unsupported{Imageblocks; AnyOf[[Feature(FragmentShaderPixelInterlock)]]}	Unsupported{Imageblocks; AnyOf[[Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
+ engine/fragment_imageblock_views.air.ll	imageblock_accumulate	ok	ok	ok	ok	ok	ok	ok	ok	ok	ok	ok	Unsupported{Imageblocks; AnyOf[[Feature(FragmentShaderPixelInterlock)]]}	ok	ok	ok	ok	Unsupported{Imageblocks; AnyOf[[Feature(FragmentShaderPixelInterlock)]]}	Unsupported{Imageblocks; AnyOf[[Feature(FragmentShaderPixelInterlock)]]}	Unsupported{Imageblocks; AnyOf[[Feature(FragmentShaderPixelInterlock), Feature(FragmentStoresAndAtomics)]]}
+diff --git a/docs/API.md b/docs/API.md
+index b65ed3c..764762b 100644
+--- a/docs/API.md
++++ b/docs/API.md
+@@ -574,6 +574,19 @@ Where Metal's rules differ from Vulkan's, the pipeline gives Metal's answer:
+   view, or, where the device declares a BGRA-order format neither typed nor without a format, its
+   RGBA-order twin (the shader exchanges red and blue). A `[[stencil]]` output uses
+   `VK_EXT_shader_stencil_export`.
++- A raster order group confined to color attachment inputs and outputs uses the same ordered
++  attachment form where `rasterizationOrderColorAttachmentAccess` is enabled, without a fragment
++  interlock. Groups on buffers, textures, argument-buffer members or imageblocks still require
++  interlock support by default; this subset does not make the full raster-order-groups device
++  query true. A consumer may opt into `RenderPipelineDescriptor::ordered_fragment_primitives`
++  (or the corresponding `LoweringInputs` field). Without native interlock, ordinary grouped
++  resources then state `RuntimeFact::OrderedFragmentPrimitives`: one single-sample, single-layer
++  primitive per render pass, in rasterization order, with full memory dependencies and preserved
++  draw IDs. This does not cover imageblocks, storage framebuffer fetch or shader-side stencil.
++  The runtime implements direct and indexed triangle lists, refusing unsupported draw shapes
++  and builtin reads whose original values decomposition cannot retain. A single triangle retains
++  all draw IDs; longer indexed lists retain base vertex and, for one instance, base instance.
++  Native interlock remains preferred.
+ - `[[barycentric_coord]]` reads `BaryCoordKHR` or `BaryCoordNoPerspKHR`, whose vertex order is
+   Vulkan's first-vertex order and Metal's for every primitive type. A `float3` read takes the
+   first two weights and computes the third as `1 - (x + y)` in `float`, as Metal does, not the
+diff --git a/docs/FAST-PATHS.md b/docs/FAST-PATHS.md
+index c77768c..2bcb726 100644
+--- a/docs/FAST-PATHS.md
++++ b/docs/FAST-PATHS.md
+@@ -50,6 +50,15 @@ rows.
+ No switch gives Metal's answer here: the device lacks what an exact form needs, or no exact form is
+ known. The rest of the differences are docs/API.md section 9's precision notes.
+ 
++Raster order groups on color attachments alone use ordered attachment access where available.
++The full raster-order-groups device query stays false without native interlock. Grouped resources
++remain refused by default. The explicit `ordered_fragment_primitives` descriptor/lowering input
++permits a consumer contract that serializes single-sample primitives into separate render passes
++with full dependencies. The runtime implements direct and indexed triangle lists, refusing builtin
++reads whose original values decomposition cannot preserve. Unsupported draw shapes remain typed
++refusals. This can cost one
++render pass per primitive and does not emulate imageblocks or storage framebuffer fetch.
++
+ | What it is | Why there is no switch | Note, code |
+ |---|---|---|
+ | The maths library (`sin`, `exp`, `log`, `pow`, `sinh`, `cosh`, `tanh`, `atan2`...) on `float` and `half`, fast divisions and Metal's fast reciprocal, a `half` fused multiply-add, and a `float` one without `OpFmaKHR` are the device's instructions on every device whose `float` functions are not Metal's own (every device but MoltenVK, whose functions are Metal's in a fast-math entry; a `half` function is the `float` instruction rounded on every device); Metal's precise division (an `fdiv` without `arcp`, or on `half`) is the device's `OpFDiv` on every device. `fabs`, `sign` and `fract` are `FAbs`, `FSign` and `Fract`, their special operands (a NaN, an infinity, a signed zero, an `f32` denormal) the instruction's; the fast `sin`, `cos`, `tan`, `sinh`, `cosh`, `tanh` and `atanh` are `Sin`, `Cos`, `Tan`, `Sinh`, `Cosh`, `Tanh` and `Atanh`, not MSL Table 8.2's formulas (`fast::sin(1e7)` is the device's sine, Metal's `+0`; `fast::tanh(45)` is `1`, Metal's NaN); a `half` function's signed zeros and NaN signs are its `float` instruction's (`half` `sin(-0)` is `-0`, Metal's `+0`), and on every device a `half` `fmod`'s zero remainder is its `float` remainder's (`fmod(-2, 0.5)` is `-0`, Metal's `+0`); `pow`, `powr` and `atan2` add only C99's special values that `GLSL.std.450` leaves undefined, by the device's comparisons (`pow(x, 1)` is the device's `Pow`, Metal's `x`; a NaN operand's NaN is the device's sum of the operands); `round` is C99's from `Trunc` on every device (`round(-0.3)` is `-0`, Metal's `+0`). | The device's arithmetic is the contract: no routine computes Metal's answer, and no select reads a special operand as Metal does, where the device has an instruction. | Vulkan's precision table (`Sin` 2^-11 absolute in [-π, π], `Exp` 3 + 2·\|x\| ulp, `Log` 3 ulp or 2^-21 absolute in [0.5, 2], `Pow` from `Exp2(y · Log2 x)`, `FAbs`, `FSign` and `Fract` correct or correctly rounded, `Atan` 4096 ulp) against Metal's 4-6 ulp; division 2.5 ulp; `fma` one `half` ulp (a `float` one may round twice). `NativeTranscendentals` (`native-transcendentals`), `NativeDivision` (`native-division`), `NativeFma` (`native-fma`) |
+@@ -933,3 +942,12 @@ else.
+   around it in about 1.1e9 checks), while a loading and storing pass rewrites the whole 32x32
+   tile it draws in (`shadow.rs`, **Stored attachments**). A blit's partial writes keep the
+   kernel's rule. Not announced.
++
++## PanVK idle command-pool memory
++
++PanVK retains at most two idle command pools per queue family (`spares.rs`). A pool
++returns only after its work completed or was never submitted; destruction happens outside
++the spare-list lock, and live or pending pools are never evicted. This releases the driver's
++per-pool TLS scratch allocations after a burst. The newest pools remain reusable; exceeding
++the bound can increase pool creation cost but does not change command results. Other drivers
++keep the historical maximum number of pools, including NVIDIA's destruction-hang workaround.
+diff --git a/docs/REFUSALS.md b/docs/REFUSALS.md
+index 24e9258..3438627 100644
+--- a/docs/REFUSALS.md
++++ b/docs/REFUSALS.md
+@@ -28,7 +28,7 @@ Columns:
+ | Kind | Variants | With a site | Reach system | Reach app | Reach rare | Reach none | Unassessed |
+ |---|---|---|---|---|---|---|---|
+ | Translator and front-end refusals | 125 | 125 | 6 | 32 | 70 | 17 | 0 |
+-| Runtime gaps | 70 | 70 | 1 | 8 | 45 | 16 | 0 |
++| Runtime gaps | 71 | 71 | 2 | 8 | 45 | 16 | 0 |
+ | Apple-only calls | 5 | 5 | 0 | 0 | 0 | 5 | 0 |
+ | Binder refusals at a device limit | 9 | 9 | 0 | 1 | 7 | 1 | 0 |
+ | Translation caps | 14 | 14 | 0 | 0 | 7 | 7 | 0 |
+@@ -42,7 +42,7 @@ Columns:
+ | Kind | `metal-measured` | `metal-documented` | `metal-takes` | `device` | `ours` | `unknown` | `delegated` | `-` |
+ |---|---|---|---|---|---|---|---|---|
+ | Translator and front-end refusals | 0 | 0 | 0 | 48 | 54 | 0 | 0 | 23 |
+-| Runtime gaps | 0 | 0 | 0 | 0 | 70 | 0 | 0 | 0 |
++| Runtime gaps | 0 | 0 | 0 | 0 | 71 | 0 | 0 | 0 |
+ | Apple-only calls | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+ | Binder refusals at a device limit | 0 | 0 | 0 | 9 | 0 | 0 | 0 | 0 |
+ | Translation caps | 0 | 0 | 0 | 0 | 14 | 0 | 0 | 0 |
+@@ -106,7 +106,7 @@ Columns:
+ | `SamplerCompare` | Sampler compare functions outside what Vulkan allows for the image | devices short of a Vulkan feature the site names | `device` | 1: `crates/metal2vulkan/src/metal/sampler.rs (check_sampler)` | `app`: compare samplers a device cannot apply to the image |
+ | `PixelSamplerCompare` | A constexpr sampler with pixel coordinates and a compare function, which Apple's compiler rejects ("invalid values combination in sampler... | every device (no Vulkan mechanism) | `device` | 1: `crates/metal2vulkan/src/lower/sampler/constexpr.rs (lowered)` | `none`: Apple's compiler rejects it |
+ | `TexelBuffer` | Texture buffers beyond the device's texel-buffer limits | devices without a format's usage; every device (no Vulkan mechanism) | `device` | 3: `crates/metal2vulkan/src/bind/instantiate.rs (texel_ranges, 2 sites)`, `crates/metal2vulkan/src/bind/plan/resources.rs (plain_texture)` | `app`: texture buffers past a device's texel-buffer limits |
+-| `RasterOrderGroups` | Raster order groups without fragment shader interlock | devices without VkFeature::FragmentShaderPixelInterlock; devices without VkFeature::FragmentShaderSampleInterlock; devices without a capability the site computes (`alternatives`); every device (not implemented) | `ours` | 4: `crates/metal2vulkan/src/device/metal.rs (unsupported_features)`, `crates/metal2vulkan/src/lower/fragment/rog.rs (mode, 2 sites)` (+1) | `rare`: raster order groups |
++| `RasterOrderGroups` | Raster order groups requiring fragment shader interlock, without it | devices without VkFeature::FragmentShaderPixelInterlock; devices without VkFeature::FragmentShaderSampleInterlock; devices without a capability the site computes (`alternatives`); every device (not implemented) | `ours` | 4: `crates/metal2vulkan/src/device/metal.rs (unsupported_features)`, `crates/metal2vulkan/src/lower/fragment/rog.rs (mode, 2 sites)` (+1) | `rare`: raster order groups |
+ | `FramebufferFetch` | Framebuffer fetch without an ordered form on the device (rasterization-order attachment access, or the pixel interlock's storage form where the... | devices short of a Vulkan property the site names; devices without VkFeature::FragmentShaderPixelInterlock; devices without VkFeature::RasterizationOrderColorAttachmentAccess; devices without VkFeature::SampleRateShading; devices without a capability the site computes; devices without a capability the site computes (`alternatives`); devices without a capability the site computes (`c`); devices without a capability the site computes (`capability`); devices without a capability the site computes (`missing`); devices without a format's usage; drivers with a defect; every device (not implemented) | `ours` | 24: `crates/metal2vulkan-runtime/src/families/features.rs (state)`, `crates/metal2vulkan-runtime/src/render.rs (next_instance)` (+19) | `system`: programmable blending (framebuffer fetch); macOS 26.6.2's login reaches it (two WindowServer and RenderBox pipelines fetch RGB10A8_2P_XR10 attachments, the consumer's boots) |
+ | `PrimitiveId` | `[[primitive_id]]` in a fragment function | devices without a capability the site computes; every device (not implemented) | `ours` | 3: `crates/metal2vulkan-runtime/src/families/features.rs (state)`, `crates/metal2vulkan/src/lower/stage_io/plan.rs (finish)` (+1) | `rare`: primitive_id on a device without geometry or tessellation shaders, in an indexed draw or behind a mesh function |
+ | `PrivatePrimitives` | One of Metal's private primitive types (a line loop, a triangle fan, quads, a quad strip) drawn in the pulled list form... | - | `-` | via a helper: 1: `crates/metal2vulkan/src/lower/stage_io/plan.rs (indices_feature)` | `rare`: a private primitive type drawn in the pulled list form (a vertex function that writes memory or the primitive_id varying, a vertex start past 2^31) on a device without device addresses |
+@@ -202,6 +202,7 @@ Columns:
+ | `FeatureEnable` | A feature a created device would enable that the runtime's feature chain has no member for, or whose structure no enabled extension exposes | devices without the feature or extension it names | `ours` | 1: `crates/metal2vulkan-runtime/src/enables.rs (of)` | `none`: device creation with a feature the runtime's chain lacks |
+ | `ExtensionEnable` | An extension a created device would enable that the device lists under none of the names the runtime knows for it | devices without the feature or extension it names | `ours` | 1: `crates/metal2vulkan-runtime/src/enables.rs (of)` | `none`: device creation with an extension under an unknown name |
+ | `Render` | Render pipelines, passes and draws | every device (runtime piece not built) | `ours` | 26: `crates/metal2vulkan-runtime/src/attachment_stand_in.rs (check_copies)`, `crates/metal2vulkan-runtime/src/attachment_stand_in.rs (stand_in_as, 2 sites)` (+19) | `system`: render pass, resolve and attachment forms not built (20 sites: see the appendix) |
++| `OrderedFragmentPrimitives` | Raster-order groups under the single-primitive render-pass contract, for a draw other than a direct or indexed triangle list of one sample and... | every device (runtime piece not built) | `ours` | 2: `crates/metal2vulkan-runtime/src/render.rs (draw_ordered_primitives)`, `crates/metal2vulkan-runtime/src/render.rs (draw_resident)` | `system`: grouped resource shaders on a device without interlock using unsupported draw shapes |
+ | `TexelsPastBufferLength` | A texture over a buffer whose texels run past the buffer's length, which Metal makes over bytes its buffer's allocation has past the length (a 2D... | every device (runtime piece not built) | `ours` | 2: `crates/metal2vulkan-runtime/src/buffer_texture.rs (refusal_error)`, `crates/metal2vulkan-runtime/src/texture/surface_depth.rs (surface_depth_twin)` | `rare`: a texture over a buffer past its length |
+ | `OverlappingSurfaceRows` | A texture of an IOSurface plane (`Buffer::new_texture_with_iosurface_plane`, the stand-in for `newTextureWithDescriptor:iosurface:plane:`) whose... | every device (runtime piece not built) | `ours` | 4: `crates/metal2vulkan-runtime/src/blit_plan.rs (plan_texels_rows_copy)`, `crates/metal2vulkan-runtime/src/blit_texture.rs (copy_from_buffer_to_texture)` (+2) | `rare`: an IOSurface plane whose rows overlap |
+ | `MemorylessSurfacePlane` | A texture of an IOSurface plane (`Buffer::new_texture_with_iosurface_plane`, the stand-in for `newTextureWithDescriptor:iosurface:plane:`) whose... | every device (runtime piece not built) | `ours` | 1: `crates/metal2vulkan-runtime/src/buffer_texture.rs (refusal_error)` | `rare`: a memoryless texture over an IOSurface plane |
+@@ -699,6 +700,7 @@ Each refusal's sites, with the function that builds it.
+ - `gap::FeatureEnable`: `crates/metal2vulkan-runtime/src/enables.rs (of)`
+ - `gap::ExtensionEnable`: `crates/metal2vulkan-runtime/src/enables.rs (of)`
+ - `gap::Render`: `crates/metal2vulkan-runtime/src/attachment_stand_in.rs (check_copies)`; `crates/metal2vulkan-runtime/src/attachment_stand_in.rs (stand_in_as, 2 sites)`; `crates/metal2vulkan-runtime/src/buffer_texture.rs (attachment_twin)`; `crates/metal2vulkan-runtime/src/color_resolve.rs (of_resolve)`; `crates/metal2vulkan-runtime/src/color_resolve.rs (plan, 2 sites)`; `crates/metal2vulkan-runtime/src/depth_stencil_scratch.rs (check_sizes)`; `crates/metal2vulkan-runtime/src/kept_bytes.rs (settle)`; `crates/metal2vulkan-runtime/src/linear_attachment.rs (settle)`; `crates/metal2vulkan-runtime/src/pipeline/render.rs (imageblock_sample_length)`; `crates/metal2vulkan-runtime/src/render.rs (check_pipeline)`; `crates/metal2vulkan-runtime/src/render.rs (draw_resident)`; `crates/metal2vulkan-runtime/src/render.rs (next_instance)`; `crates/metal2vulkan-runtime/src/render/tile_dispatch.rs (scratch)`; `crates/metal2vulkan-runtime/src/render_pass.rs (attachment_format)`; `crates/metal2vulkan-runtime/src/render_pass.rs (depth_stencil)`; `crates/metal2vulkan-runtime/src/render_pass.rs (layout)`; `crates/metal2vulkan-runtime/src/render_pass.rs (target, 2 sites)`; `crates/metal2vulkan-runtime/src/resolve.rs (attach)`; `crates/metal2vulkan-runtime/src/resolve.rs (color_copy)`; `crates/metal2vulkan-runtime/src/resolve.rs (destination, 3 sites)`; `crates/metal2vulkan-runtime/src/resolve.rs (keep_samples)`
++- `gap::OrderedFragmentPrimitives`: `crates/metal2vulkan-runtime/src/render.rs (draw_ordered_primitives)`; `crates/metal2vulkan-runtime/src/render.rs (draw_resident)`
+ - `gap::TexelsPastBufferLength`: `crates/metal2vulkan-runtime/src/buffer_texture.rs (refusal_error)`; `crates/metal2vulkan-runtime/src/texture/surface_depth.rs (surface_depth_twin)`
+ - `gap::OverlappingSurfaceRows`: `crates/metal2vulkan-runtime/src/blit_plan.rs (plan_texels_rows_copy)`; `crates/metal2vulkan-runtime/src/blit_texture.rs (copy_from_buffer_to_texture)`; `crates/metal2vulkan-runtime/src/blit_texture.rs (texel_copies)`; `crates/metal2vulkan-runtime/src/buffer_texture.rs (refusal_error)`
+ - `gap::MemorylessSurfacePlane`: `crates/metal2vulkan-runtime/src/buffer_texture.rs (refusal_error)`
+diff --git a/scripts/refusal-surface/reach.tsv b/scripts/refusal-surface/reach.tsv
+index 2fbf89a..e53aa9d 100644
+--- a/scripts/refusal-surface/reach.tsv
++++ b/scripts/refusal-surface/reach.tsv
+@@ -235,3 +235,4 @@ feature	SeqCstFence	rare	a seq_cst fence in a vertex or fragment stage without i
+ gap	MultisampledBufferCopy	rare	a buffer<->multisampled-texture copy on a device without sample-rate shading, an integer multisample attachment at the count, or the copy format's storage; and, where maintenance8's depth/colour copies are missing or wrong, what the sample-rate draws cannot move: a 16-bit depth on a driver whose codes the fragment-depth draw is not measured to keep, or a depth or stencil texture they cannot sample or render to (emulated elsewhere; the consumer's Maps pans and screensaver make the copy)
+ gap	MultisampledBufferLayout	rare	a buffer<->multisampled-texture copy at a bytesPerRow of 0 from an offset that is a multiple of 16, or of pixels of 32 bytes or more at a pitch below a row or off the pixel: Metal copies these by rules not yet reduced, and its API validation rejects them
+ gap	ColorAttachmentGroups	app	in a render pass of more color attachments than the device draws at once (five or more on a device of four), or one at an index past them: a pipeline state of other colors, a tile state, an execution of render commands, a draw reading another group's attachment
++gap	OrderedFragmentPrimitives	system	grouped resource shaders on a device without interlock using unsupported draw shapes

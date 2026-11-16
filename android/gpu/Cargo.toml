@@ -1,0 +1,30 @@
+[package]
+name = "henge-gpu-check"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.98.1"
+license = "GPL-2.0-or-later"
+
+[[bin]]
+name = "henge_gpu"
+path = "src/main.rs"
+
+[[bin]]
+name = "henge_sampler_check"
+path = "src/sampler_check.rs"
+
+[dependencies]
+# android/fetch_gpu_deps.py pins the checkout, including its AIR reader.
+metal2vulkan = { path = "../../.tools/metal2vulkan-rog/crates/metal2vulkan" }
+metal2vulkan-runtime = { path = "../../.tools/metal2vulkan-rog/crates/metal2vulkan-runtime" }
+ash = { version = "0.38", default-features = false, features = ["std", "loaded"] }
+libc = "=0.2.191"
+
+[profile.release]
+debug = "line-tables-only"
+strip = "debuginfo"
+
+
+[[bin]]
+name = "henge_runtime_sampler_check"
+path = "src/runtime_sampler_check.rs"

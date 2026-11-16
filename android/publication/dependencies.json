@@ -1,0 +1,613 @@
+{
+  "format": 1,
+  "label": "observed-source-input-inventory",
+  "upstream_henge": {
+    "url": "https://github.com/Leviidev/Henge",
+    "commit": "e98920ce3b108d17f98acaff87f74e5a477ec4b2"
+  },
+  "input_manifests": [
+    {
+      "path": "tools/android-toolchain.lock.json",
+      "sha256": "4ec5e19ed16bfeced26b3595e5a862fe3d902ee5b21c8bcffa2368478a290deb"
+    },
+    {
+      "path": "android/network/dependencies.json",
+      "sha256": "2096071711bd5a15f6f514c33dd4b92d6b293c0c8201cdcd616b5fe2f2070d5a"
+    },
+    {
+      "path": "android/software/dependencies.json",
+      "sha256": "4f851471e493f72d6aac9d5e5d42e0d466d6f84b6ce2b20489a22ceab4dffa05"
+    },
+    {
+      "path": "android/gpu/dependencies.json",
+      "sha256": "f2133c395df2477b5f2fe5ecc0361af61faa81c645f80819181c8b4873cb43f9"
+    },
+    {
+      "path": "android/reims/dependencies.json",
+      "sha256": "94977aa9326238f961f151635e09c874ac665569bc6de31452a9ae894b8a1767"
+    },
+    {
+      "path": "android/panvk/dependencies.json",
+      "sha256": "0ce0d9af9d9c495f6a3b99b2ddde916b69e6d0443ee862d962045e772c1531e5"
+    },
+    {
+      "path": "android/fetch_restore_deps.py",
+      "sha256": "a8628a5d4e012268b983044b26b58853c07c3f7c50fa5d508e7657510ab8151c"
+    },
+    {
+      "path": "android/gpu/Cargo.lock",
+      "sha256": "e2a0573fa93f806efd376584322ae3f376c11525129d7ad7e67efd7d57afd5e6"
+    },
+    {
+      "path": "android/host-copy/dependencies.json",
+      "sha256": "352ef39e53570cce17991adc81d3e27ed50729eb465079654923dbf53b5f5c05"
+    },
+    {
+      "path": "android/host-copy/Cargo.lock",
+      "sha256": "046c70dc008aa42b3bef4cabf897a4c2b5b51bef638812825d750d92f84207bc"
+    },
+    {
+      "path": "android/publication/termux-sources.json",
+      "sha256": "f061e14dd0b6aebb8a0a68eb52d64be1c6e7a09822602e4e74c6fdfe5f878a81"
+    },
+    {
+      "path": "android/publication/license-selection.json",
+      "sha256": "0dadb317f5179feaf610fa815070161325d29c42666862f62eda595969a413fa"
+    },
+    {
+      "path": "android/panvk/host-tools.lock.json",
+      "sha256": "8a502ed32b074430f4d120dde8fdb0f41cdf9bf01906edca5ff3c9ac9cefeb41"
+    },
+    {
+      "path": "android/panvk/python-tools.json",
+      "sha256": "ada0be8643d1bdd856a314af97ffe9ca8a463894d424a01ed7e34a4dc2ab03f5"
+    },
+    {
+      "path": "android/panvk/linux-build.Dockerfile",
+      "sha256": "faa41a3d9710db0692edf6894891bf381760cd84e5836f78df7cbf798584bfeb"
+    },
+    {
+      "path": "android/panvk/linux-build-requirements.lock",
+      "sha256": "ef8ca8f7f1955d365d2cc5d9a49d56768799616cf086e227edffc4aff4787441"
+    },
+    {
+      "path": "android/panvk/macos-build-requirements.lock",
+      "sha256": "00749013cb21aeebf427f77d7ab01d3d7f8adda1a46e4f0203b62a6effe9c8ed"
+    },
+    {
+      "path": "android/publication/ndk-runtime.json",
+      "sha256": "407af3adf082df185bb81522dff92f6cc9f268d173e803edcf58ca581a10c451"
+    },
+    {
+      "path": "android/publication/panvk-host-observed.json",
+      "sha256": "7d9a7c1329af42bd9e33b8248544b0184cfb7f78ab1a8f12f9284d88b1955109"
+    },
+    {
+      "path": "android/publication/graphics-sources.json",
+      "sha256": "dc61df5eab01bce3c968d64999c21859e6221a39e755b3afede462e6d5a5fdaf"
+    }
+  ],
+  "external_git_sources": [
+    {
+      "url": "https://github.com/steelbrain/metal2vulkan.git",
+      "commit": "219f01365dc4c8eb346816c405b5b17403793764",
+      "license": "GPL-2.0-or-later OR LGPL-3.0-or-later"
+    },
+    {
+      "url": "https://github.com/steelbrain/reims-vgpu.git",
+      "commit": "1fe0acb68b287db36f1e6c7b9f45383940b8a76f"
+    },
+    {
+      "url": "https://github.com/JimVulkan/mali-panvk",
+      "commit": "58f2c55854bd48b18df756edb11f187af9cd2fde"
+    }
+  ],
+  "panvk_userptr_patch_sha256": "974bef744e356b45dae16ea045a20bb209cc3cd24e08aabfff317a530446d30a",
+  "external_binary_packages": [
+    {
+      "group": "network",
+      "name": "libslirp",
+      "version": "4.9.7",
+      "binary_sha256": "2dd2c214bcec7f1125fcd4040606e72768c38010ba87ed9c0365193616ba7ada",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/libs/libslirp/libslirp_4.9.7_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libslirp",
+      "source_input_ids": [
+        "libslirp-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "network",
+      "name": "glib",
+      "version": "2.90.1",
+      "binary_sha256": "132d8ce961d96a7252fd4bc2228bddd385b1b17b706a46caae6d541ae0e4b2c0",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/g/glib/glib_2.90.1_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/glib",
+      "source_input_ids": [
+        "glib-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "network",
+      "name": "pcre2",
+      "version": "10.49",
+      "binary_sha256": "c27995e5f52b8ecc9b8b3e662eb08e49f82a18bfd3f34343936acc7b23964724",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/p/pcre2/pcre2_10.49_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/pcre2",
+      "source_input_ids": [
+        "pcre2-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "network",
+      "name": "libandroid-support",
+      "version": "29-1",
+      "binary_sha256": "f2f145d6135ad4843ac9670153be3e3944dc1e6f1736d46d2306c28f2b86f517",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/liba/libandroid-support/libandroid-support_29-1_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libandroid-support",
+      "source_input_ids": [
+        "libandroid-support-0",
+        "libandroid-support-1"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "network",
+      "name": "libiconv",
+      "version": "1.19.1",
+      "binary_sha256": "a1c6323eff4f660e16ae6f5832356444b3269c19a4f61146355a49e7c4be5ed1",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/libi/libiconv/libiconv_1.19.1_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libiconv",
+      "source_input_ids": [
+        "libiconv-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "vulkan-loader-generic",
+      "version": "1.4.368",
+      "binary_sha256": "8043459b6d4efd4834b756c6eeb539e8ae184d71046ffddff3ca75e85b1fcb27",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/v/vulkan-loader-generic/vulkan-loader-generic_1.4.368_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/vulkan-loader-generic",
+      "source_input_ids": [
+        "vulkan-loader-generic-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "mesa-vulkan-icd-swrast",
+      "version": "26.2.7",
+      "binary_sha256": "09ab1392ff465a0ffc73d9fd8f77114a0238f435b1250f053c86a460dc994a28",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/m/mesa-vulkan-icd-swrast/mesa-vulkan-icd-swrast_26.2.7_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/mesa",
+      "source_input_ids": [
+        "mesa-vulkan-icd-swrast-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "zstd",
+      "version": "1.5.7-1",
+      "binary_sha256": "e1b4a5113648da8de189620ba1fce74c48b2d0833d9043391b9a1c91fb606fd3",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/z/zstd/zstd_1.5.7-1_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/zstd",
+      "source_input_ids": [
+        "zstd-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "zlib",
+      "version": "1.4",
+      "binary_sha256": "e3027565ae50bcd8ba5113c988b589754ae192c9cc3e6afbe3e4ed7c06b2598e",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/z/zlib/zlib_1.4_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/zlib",
+      "source_input_ids": [
+        "zlib-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "liblzma",
+      "version": "5.8.4",
+      "binary_sha256": "44e95e6e60dddb3705e60a344a4f009a1085a210797342b721eaff41b44033c0",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/libl/liblzma/liblzma_5.8.4_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/liblzma",
+      "source_input_ids": [
+        "liblzma-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "ncurses",
+      "version": "6.6.20260307+really6.5.20250830",
+      "binary_sha256": "f44bbfdc3d42ec0217bffa978309390e59cea5a48a9a83226d4a496c42ad0b99",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/n/ncurses/ncurses_6.6.20260307+really6.5.20250830_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/ncurses",
+      "source_input_ids": [
+        "ncurses-0",
+        "ncurses-1",
+        "ncurses-2",
+        "ncurses-3",
+        "ncurses-4"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "libwayland",
+      "version": "1.26.0",
+      "binary_sha256": "f03ea02f7d523399514e2463c5459dab234b802bbda41a61c0340b4011dc773d",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/libw/libwayland/libwayland_1.26.0_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libwayland",
+      "source_input_ids": [
+        "libwayland-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "libxml2",
+      "version": "2.15.4-1",
+      "binary_sha256": "d315861bbcf716cfb088f53cddab9fb6a96430cc66769f79774cc69c2f53bcff",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/libx/libxml2/libxml2_2.15.4-1_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libxml2",
+      "source_input_ids": [
+        "libxml2-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "libiconv",
+      "version": "1.19.1",
+      "binary_sha256": "a1c6323eff4f660e16ae6f5832356444b3269c19a4f61146355a49e7c4be5ed1",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/libi/libiconv/libiconv_1.19.1_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libiconv",
+      "source_input_ids": [
+        "libiconv-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "libandroid-glob",
+      "version": "0.6-3",
+      "binary_sha256": "2276ae8adedf0db76c2f4ffc94cc4cceb2f4f5d78e021b54e2e046d1233e7826",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/liba/libandroid-glob/libandroid-glob_0.6-3_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libandroid-glob",
+      "source_input_ids": [],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "libffi",
+      "version": "3.8.0",
+      "binary_sha256": "4f255badf74cd31f6a2801c17fa1444199c84c834b517b7c843e2fe9ebe91d77",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/libf/libffi/libffi_3.8.0_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libffi",
+      "source_input_ids": [
+        "libffi-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "libexpat",
+      "version": "2.10.0",
+      "binary_sha256": "0e4411f01f6fb664f3f04f9420289472f9afc30db01ea1c5d1e57fd9fa2354be",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/libe/libexpat/libexpat_2.10.0_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libexpat",
+      "source_input_ids": [
+        "libexpat-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "libandroid-support",
+      "version": "29-1",
+      "binary_sha256": "f2f145d6135ad4843ac9670153be3e3944dc1e6f1736d46d2306c28f2b86f517",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/liba/libandroid-support/libandroid-support_29-1_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libandroid-support",
+      "source_input_ids": [
+        "libandroid-support-0",
+        "libandroid-support-1"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "libxshmfence",
+      "version": "1.3.3-1",
+      "binary_sha256": "7644c2969c2ce4d763785bd2a85eb32ccf8e5ad40228cd92b193f7edb6398d92",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/libx/libxshmfence/libxshmfence_1.3.3-1_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libxshmfence",
+      "source_input_ids": [
+        "libxshmfence-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "libxcb",
+      "version": "1.17.0-1",
+      "binary_sha256": "191c3642b6a8c754bc75b69b94a81858ecb5f18766dc085aff55559b8087ad34",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/libx/libxcb/libxcb_1.17.0-1_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libxcb",
+      "source_input_ids": [
+        "libxcb-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "libxdmcp",
+      "version": "1.1.5-2",
+      "binary_sha256": "caea0cf5c0028af0840774094b8900ef7afffd8f9bbd7b1abfbe66851f0d6077",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/libx/libxdmcp/libxdmcp_1.1.5-2_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libxdmcp",
+      "source_input_ids": [
+        "libxdmcp-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "libxau",
+      "version": "1.0.12-2",
+      "binary_sha256": "2d86bed61ce89dd8fdb55e565aede10155f2ce3adaccb61d5f1375aec3314083",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/libx/libxau/libxau_1.0.12-2_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libxau",
+      "source_input_ids": [
+        "libxau-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "libx11",
+      "version": "1.8.14",
+      "binary_sha256": "c5206ee9cc26a63985d110b57bc24f23c7c97505e6100c4d6a8547a1aeed5532",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/libx/libx11/libx11_1.8.14_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libx11",
+      "source_input_ids": [
+        "libx11-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "xorgproto",
+      "version": "2026.1",
+      "binary_sha256": "2463651143a386eba0d7baebac87ca5d2db5239d36cf38f9b2086f3c1bfdcbce",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/x/xorgproto/xorgproto_2026.1_all.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/xorgproto",
+      "source_input_ids": [
+        "xorgproto-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "xorg-util-macros",
+      "version": "1.20.2",
+      "binary_sha256": "11765ad1a6f181e36f807464f7b4360593d847dce245202a393eb2ca156520d0",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/x/xorg-util-macros/xorg-util-macros_1.20.2_all.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/xorg-util-macros",
+      "source_input_ids": [
+        "xorg-util-macros-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "libllvm",
+      "version": "21.1.8-3",
+      "binary_sha256": "5056a73f2645fc9c0759e6f94a1bd6edcf36305acaef58dc685211ced9cc2a02",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/libl/libllvm/libllvm_21.1.8-3_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libllvm",
+      "source_input_ids": [
+        "libllvm-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "libc++",
+      "version": "30",
+      "binary_sha256": "53d0b84a7ba7459024257cb94d5b136fe13ef858567f65a8064b35950799f2ca",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/libc/libc++/libc++_30_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable; prebuilt NDK is not source",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libc++",
+      "source_input_ids": [
+        "libc++-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "libdrm",
+      "version": "2.4.134",
+      "binary_sha256": "0cbe82140cf325c15473fbf53a3711fc7a2fb88e36a3eea58a3267c461ab4a17",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/libd/libdrm/libdrm_2.4.134_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libdrm",
+      "source_input_ids": [
+        "libdrm-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    },
+    {
+      "group": "software",
+      "name": "libandroid-shmem",
+      "version": "0.7",
+      "binary_sha256": "0da3a24d558b93c92bcf8d611e0826a99ff96e396b148e6cdf33b47c47c57ff6",
+      "binary_url": "https://packages.termux.dev/apt/termux-main/pool/main/liba/libandroid-shmem/libandroid-shmem_0.7_aarch64.deb",
+      "recipe_repository": "https://github.com/termux/termux-packages",
+      "exact_recipe_commit": null,
+      "matching_source_bundle": false,
+      "status": "Version-matched recipe/files/source checksums observed; binary build-commit attestation unavailable",
+      "version_matching_recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libandroid-shmem",
+      "source_input_ids": [
+        "libandroid-shmem-0"
+      ],
+      "source_mapping": "android/publication/termux-sources.json"
+    }
+  ],
+  "binary_release_ready": false,
+  "remaining_binary_requirements": [
+    "Establish binary-producing source/recipe correspondence for the20used Termux package versions;27APK members equal their pinned raw deb files, which does not attest the producing build commit",
+    "Compile the collected NDK libc++ sources/build scripts and validate correspondence; NDK runtime plus source-built packaging tools now reproduces the entire APK library exactly",
+    "Validate all selected source/runtime/toolchain inputs and exact release configuration;94ordinarysourceinputs+4Git snapshots are a collection, not complete APK source attestation",
+    "Release-specific modified LGPL replacement/relink and installation acceptance",
+    "Exact release guest regression/endurance and physical external input acceptance"
+  ]
+}

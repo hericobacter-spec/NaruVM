@@ -1,0 +1,35 @@
+name: Bug report / 오류 제보
+description: Report an observed failure with sanitized evidence.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Experimental source preview. Do not attach guest images, passwords,
+        serial numbers, accounts, private captures or signing keys. Use SECURITY.md
+        for suspected vulnerabilities. 미시험 기기는 지원 확인으로 표시하지 않습니다.
+  - type: input
+    id: revision
+    attributes:
+      label: Source revision and build configuration
+      placeholder: Commit or source-manifest SHA256; basic / Reims / driver options
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Test environment / 시험 환경
+      description: Model/generation, SoC/GPU, Android version, page size if known, backend and CPU/RAM allocation. No device serial.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction / 재현 순서
+      description: Steps, expected behavior and what actually happened. Distinguish app exit, frozen display and whole-device reboot.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sanitized observations / 개인정보 제거한 관찰
+      description: Relevant short diagnostic output and whether it repeats. Keep unverified causes separate from observed facts.

@@ -1,0 +1,1356 @@
+{
+  "format": 1,
+  "label": "observed-official-version-and-recipe-mapping",
+  "observed": "2026-11-16",
+  "repository": {
+    "url": "https://github.com/termux/termux-packages.git",
+    "commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+    "archive_file": "termux-recipes.tar.gz",
+    "archive_sha256": "086824e9fd05e9c955dd544f51e07f9c21ee663dbea6027bd7831d84e7465855",
+    "archive_tar_sha256": "88cc8956756b735734a2c6186c29613442d1dfb9132ad12b489cbfb2d082cead"
+  },
+  "binary_package_entries": 29,
+  "unique_packages": 27,
+  "packages": [
+    {
+      "name": "glib",
+      "version": "2.90.1",
+      "manifest_scopes": [
+        "network"
+      ],
+      "recipe_path": "packages/glib",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/glib/build.sh",
+          "sha256": "8181771500b14ada8f28beae580843644fe65ca324d23dd9cd984d28d1e36a62"
+        },
+        {
+          "path": "packages/glib/gio-gdbusprivate.c.patch",
+          "sha256": "df4547609ef6ff4110319b676deb7374918988681c8efc0878014f01bb09272c"
+        },
+        {
+          "path": "packages/glib/gio-gkeyfilesettingsbackend.c.patch",
+          "sha256": "7e38f19e804d798b4020fa10c0b4f528ad4b1c3291637ab6bf4b5ee7d6627bb8"
+        },
+        {
+          "path": "packages/glib/gio-gnetworking.h.in.patch",
+          "sha256": "2d180220e4d3a57314f3f1571708ecde15976e6a0745856e517955bc7eeebf50"
+        },
+        {
+          "path": "packages/glib/gio-gunixmounts.c.patch",
+          "sha256": "176de18cebc2c58186dbf247f6da55daafba5ebd6bd8c1ed41b6431c10cfa2bc"
+        },
+        {
+          "path": "packages/glib/gio-xdgmime-xdgmime.c.patch",
+          "sha256": "30052e569438585fb085fc57aa0e0162ef806ef2a12d6cb8aa6cede56cb2e1a9"
+        },
+        {
+          "path": "packages/glib/gir/GIRepository-3.0.xml",
+          "sha256": "d0655f934004f48c2d792284ad69611fdc1cd3e7f3f8272a810764109652b651"
+        },
+        {
+          "path": "packages/glib/gir/GLib-2.0.xml",
+          "sha256": "46079fb7c7d7c8cb40e090ae889eb6cc80a7c8a77f2f787fb92d09c717bc5fd9"
+        },
+        {
+          "path": "packages/glib/gir/GLibUnix-2.0.xml",
+          "sha256": "ae767d2ed8a9be2939d5d663e9203cb0c99b70a39c5109e82e349df13470e7ff"
+        },
+        {
+          "path": "packages/glib/gir/GModule-2.0.xml",
+          "sha256": "27d5c5012450aa030edf993af45ae3ec30ecea8b6ae840918498f9450343b787"
+        },
+        {
+          "path": "packages/glib/gir/GObject-2.0.xml",
+          "sha256": "8f0edb15de95ac28d3e54206b2839d615b7be959b485507eabe5941de1f19dbf"
+        },
+        {
+          "path": "packages/glib/gir/Gio-2.0.xml",
+          "sha256": "1270e9bcabfb23372ec1be8f2079e58b90c8f8ad05b7eed47bc7b6b90983a067"
+        },
+        {
+          "path": "packages/glib/gir/GioUnix-2.0.xml",
+          "sha256": "cf6f4b6877ea9bdbfc038ed429d42bafc0eb559996f967c20ac00889494a0f01"
+        },
+        {
+          "path": "packages/glib/girepository-introspection-meson.build.patch",
+          "sha256": "a136b6a6fc0334397653750e5bceacf54b21cbed08156e2113eb9c698debce81"
+        },
+        {
+          "path": "packages/glib/glib-compile-schemas-remove-warns.patch",
+          "sha256": "6eb8b900d1b21b8dac9b2abd4acf27a9b048661839dabf8deec46efad1b03da8"
+        },
+        {
+          "path": "packages/glib/glib-compile-schemas.alpm.hook",
+          "sha256": "9505e67a14a30d4da45a0513188318e0070422948524fff9bbc283d1a6e963eb"
+        },
+        {
+          "path": "packages/glib/glib-cross.subpackage.sh",
+          "sha256": "4a7a5a442acc8ea0e11f1194bdf80ae8932e410f2f43bd07ed2da7fbbf738ee8"
+        },
+        {
+          "path": "packages/glib/glib-gcharset.c.patch",
+          "sha256": "7d432b2142e01ad4fce2f3149c4e1fc128caa69cf7258e3364626c5a087e9a3b"
+        },
+        {
+          "path": "packages/glib/glib-gspawn.c.patch",
+          "sha256": "efc48ab7f96e486436f70ccbd5fbeb438d81ddf8376844e5d8b944ada1527bde"
+        },
+        {
+          "path": "packages/glib/glib-gthread-posix.c.patch",
+          "sha256": "dbe119e4afdfb048930b9c9ebf8da8e050ac8e2fbc1bbe4958eae8c4e1084c33"
+        },
+        {
+          "path": "packages/glib/glib-gthreadprivate.h.patch",
+          "sha256": "40c5136d5e503bbb6b7169dd28fc5f37c06ab0e8af056af72079dfe60053d179"
+        },
+        {
+          "path": "packages/glib/glib-gtimezone.patch",
+          "sha256": "428005be9eb005fc11dab6b3315c4693e8c41e92ddec7e69a750266cf7677d10"
+        },
+        {
+          "path": "packages/glib/glib-gutils.c.patch",
+          "sha256": "bc6f9e8a1fc576b6134b2769401bd5b312e519c3a2324781e88a195034a2dbce"
+        },
+        {
+          "path": "packages/glib/glib-no-ovverride-host-binary.patch",
+          "sha256": "89bc8a1c87f4134f774f45fc61277a7ebf4a96bd2ab713b0a1129de040c1aae0"
+        },
+        {
+          "path": "packages/glib/glib-tests-meson.build.patch",
+          "sha256": "795ed294fcda69cd5eed47c425986c591ad01c2e19b5f604e9ffae4237399326"
+        },
+        {
+          "path": "packages/glib/hooks/postinst.in",
+          "sha256": "5e757a8bfd886aa3785f39dec6b79c031b8c322d4a59ad7cfea96f20515fa09c"
+        },
+        {
+          "path": "packages/glib/hooks/prerm.in",
+          "sha256": "82eff1d7a6f93663e289d39d9d007d87e25ad009111ce002ba1858ab63062226"
+        },
+        {
+          "path": "packages/glib/hooks/triggers.in",
+          "sha256": "2b289f7c7b79673b766ebfcf4cb6bdff7ebdff7aa5d3c990f338831ab566a2ce"
+        },
+        {
+          "path": "packages/glib/meson.build.patch",
+          "sha256": "cfc91fedd132e7b3baf2b2b9eeaa05faf04da35a9fb2e00c617c498134ba0b74"
+        }
+      ],
+      "license_summary_from_recipe": "LGPL-2.1",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "glib-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "libandroid-glob",
+      "version": "0.6-3",
+      "manifest_scopes": [
+        "software"
+      ],
+      "recipe_path": "packages/libandroid-glob",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/libandroid-glob/LICENSE",
+          "sha256": "5bc2d38d50f282548a27f7dd8b3ac8f3ac696ba501aaacd2bba821b15b018dac"
+        },
+        {
+          "path": "packages/libandroid-glob/build.sh",
+          "sha256": "6102e21f8da56e853d2add2f8158462187b7fc10c0a5406c5c7a63872adabd24"
+        },
+        {
+          "path": "packages/libandroid-glob/glob.c",
+          "sha256": "d9c04df55f97bdc5335c3b76224b47a2b20ccef27c73103208f8074320aba014"
+        },
+        {
+          "path": "packages/libandroid-glob/glob.h",
+          "sha256": "ff4512c530aea288693f5be17e98c77faf7f449ea439df46164ad34aab197122"
+        }
+      ],
+      "license_summary_from_recipe": "BSD 3-Clause",
+      "source_kind": "recipe-local-source",
+      "source_input_ids": [],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "libandroid-shmem",
+      "version": "0.7",
+      "manifest_scopes": [
+        "software"
+      ],
+      "recipe_path": "packages/libandroid-shmem",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/libandroid-shmem/build.sh",
+          "sha256": "0262fc1342aedf7d14e2b6a2932c33e0ebc9bd1f4a80533bd0f2400c6ef9ccf3"
+        }
+      ],
+      "license_summary_from_recipe": "BSD 3-Clause",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "libandroid-shmem-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "libandroid-support",
+      "version": "29-1",
+      "manifest_scopes": [
+        "network",
+        "software"
+      ],
+      "recipe_path": "packages/libandroid-support",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/libandroid-support/build.sh",
+          "sha256": "23f10711528bcc66a3a8728d218f43efea8467bfbb7db222796e5f5b89ac0d79"
+        }
+      ],
+      "license_summary_from_recipe": "Apache-2.0, MIT",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "libandroid-support-0",
+        "libandroid-support-1"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "libc++",
+      "version": "30",
+      "manifest_scopes": [
+        "software"
+      ],
+      "recipe_path": "packages/libc++",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/libc++/build.sh",
+          "sha256": "f0e670ec0f30469e91920a42427115e4bee082c8a22a6dc72e983603dfe659cf"
+        }
+      ],
+      "license_summary_from_recipe": "NCSA",
+      "source_kind": "prebuilt-toolchain",
+      "source_input_ids": [
+        "libc++-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "libdrm",
+      "version": "2.4.134",
+      "manifest_scopes": [
+        "software"
+      ],
+      "recipe_path": "packages/libdrm",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/libdrm/LICENSE",
+          "sha256": "9631d4f694952e3e6ae5a05534c2e93e994e47d3413677a3a00e45c8cef6db93"
+        },
+        {
+          "path": "packages/libdrm/build.sh",
+          "sha256": "ad3d1e67bac5351fe363fe33b8991ece83c644452bed8be1b693ff1d9c16217a"
+        }
+      ],
+      "license_summary_from_recipe": "MIT",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "libdrm-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "libexpat",
+      "version": "2.10.0",
+      "manifest_scopes": [
+        "software"
+      ],
+      "recipe_path": "packages/libexpat",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/libexpat/build.sh",
+          "sha256": "d9154be35b45aab4e4375eb125b7f945a81edeb0478091e0bee6512aa8ceb521"
+        }
+      ],
+      "license_summary_from_recipe": "MIT",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "libexpat-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "libffi",
+      "version": "3.8.0",
+      "manifest_scopes": [
+        "software"
+      ],
+      "recipe_path": "packages/libffi",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/libffi/build.sh",
+          "sha256": "0a7f2e44163fe2d43a48680968a5254bad0ee1032f89fe20cfcfe5dbddb2555e"
+        }
+      ],
+      "license_summary_from_recipe": "MIT",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "libffi-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "libiconv",
+      "version": "1.19.1",
+      "manifest_scopes": [
+        "network",
+        "software"
+      ],
+      "recipe_path": "packages/libiconv",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/libiconv/build.sh",
+          "sha256": "54af1386b950d10a4e982c90665a440ad4174fc5c6559851faea7d0b1de44049"
+        },
+        {
+          "path": "packages/libiconv/iconv.subpackage.sh",
+          "sha256": "dd8ca068475d22aa07d6f354928563002f15ca06f85a02051377eb21c09230ea"
+        }
+      ],
+      "license_summary_from_recipe": "LGPL-2.1, GPL-3.0",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "libiconv-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "libllvm",
+      "version": "21.1.8-3",
+      "manifest_scopes": [
+        "software"
+      ],
+      "recipe_path": "packages/libllvm",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/libllvm/Add-stubs-and-headers-for-nl_types-APIs.patch",
+          "sha256": "bba2c01db66c2e29d29b600c342a258b6bb0cb5a0428d22870385bb1065263fe"
+        },
+        {
+          "path": "packages/libllvm/build.sh",
+          "sha256": "55d48a1f31939fb7585ce8320110a6bbe523a28665cb668333eeb56a566e8877"
+        },
+        {
+          "path": "packages/libllvm/clang-include-clang-Driver-Options.td.patch",
+          "sha256": "63c7b87da8c97502a07abcdeee6a2f198b2f63fb23f6f3c28257f0590f8b17eb"
+        },
+        {
+          "path": "packages/libllvm/clang-lib-Driver-SanitizerArgs.cpp.patch",
+          "sha256": "5c87f7c261f121422bfe1c18c165b4272a7668b19126b85b9960e9394a4fa578"
+        },
+        {
+          "path": "packages/libllvm/clang-lib-Driver-ToolChain.cpp.patch",
+          "sha256": "7bfaaecd4857f68bf0dcb5c2bac40149596c99449dc34f6eece776193c180c36"
+        },
+        {
+          "path": "packages/libllvm/clang-lib-Driver-ToolChains-Gnu.cpp.patch",
+          "sha256": "4a8632f55d4aec696bd43674b26d6fc3a9ac96e3249dbfda0e750a2298d08125"
+        },
+        {
+          "path": "packages/libllvm/clang-lib-Driver-ToolChains-Linux.cpp.patch",
+          "sha256": "8b2c15da67ef37f84b7a9e892576f63ff24ecbd8ce24cd783771f3cf37736fb7"
+        },
+        {
+          "path": "packages/libllvm/clang.subpackage.sh",
+          "sha256": "8387a2314c0b2b0174dc6fbc7b1c4de64c62a165d285e72bde6ddbf8d0104b36"
+        },
+        {
+          "path": "packages/libllvm/compiler-rt-CMakeLists.txt.patch",
+          "sha256": "fe60b5d4a199c45f51c2cea6b858b8a229d5d70d195934707f25149899f18dc4"
+        },
+        {
+          "path": "packages/libllvm/compiler-rt-lib-builtins-CMakeLists.txt.patch",
+          "sha256": "6033cf749424e644c58207e4e34d87c0a303fae3e986c6a76917e06bbd1ad13a"
+        },
+        {
+          "path": "packages/libllvm/cxx-libm.patch",
+          "sha256": "d53229f03eb813ad0b40143bc971b5298ac2ee7283fa0f55819c30b01a6623a1"
+        },
+        {
+          "path": "packages/libllvm/libcompiler-rt.subpackage.sh",
+          "sha256": "1d1b017da351550842590de29e63b16f60be80c0adae889ff657c1e867801815"
+        },
+        {
+          "path": "packages/libllvm/libpolly.subpackage.sh",
+          "sha256": "55fafabac445a7e1df87661796adb30abe21d4cf6fbf9ec747cd2739d5cdcb71"
+        },
+        {
+          "path": "packages/libllvm/lld-ELF-Relocations.cpp.patch",
+          "sha256": "c650cd0f3be543f87449ef4ad5b98383517dadbc69b48d1df7b4146cd8e58241"
+        },
+        {
+          "path": "packages/libllvm/lld.subpackage.sh",
+          "sha256": "8b324932be7ba130d55fcdeb85fcab25c371a51bdb5fa7f7314b8bc2784a7a51"
+        },
+        {
+          "path": "packages/libllvm/lldb-include-lldb-Host-Editline.h.patch",
+          "sha256": "aedb00d1699da3620ce3c96ea4a1b6ddd0958c88b6a2cc2f4e85d2a3290637ae"
+        },
+        {
+          "path": "packages/libllvm/lldb-source-Host-android-HostInfoAndroid.cpp.patch",
+          "sha256": "b8969fc555985a0adc9fab387787c167dae1590f02f7a0571a57641fd8d07d84"
+        },
+        {
+          "path": "packages/libllvm/lldb-source-Host-posix-ProcessLauncherPosixFork.cpp.patch",
+          "sha256": "526338471ff4852cf733d7e8dead872f570c3a71793e1616d21888df8b88f43c"
+        },
+        {
+          "path": "packages/libllvm/lldb-source-Plugins-Platform-Android-AdbClient.cpp.patch",
+          "sha256": "6aeab4d3d8702c25f4a1624b12e80382d026611eb5772b523dc7b7019e219fe4"
+        },
+        {
+          "path": "packages/libllvm/lldb-source-Plugins-Process-Linux-NativeProcessLinux.cpp.patch",
+          "sha256": "8feaa643f5c43b40cb5559a2069cde5735a3ca7b244c069b2b6de9d0753cd311"
+        },
+        {
+          "path": "packages/libllvm/lldb-source-Utility-ArchSpec.cpp.patch",
+          "sha256": "6d17b3ad35063e8f22c448b8086f9892a3394dffc282fc774ddc527968506b62"
+        },
+        {
+          "path": "packages/libllvm/lldb.subpackage.sh",
+          "sha256": "852f455fe915279e900afe011ba76b521ab32502c7b985314a6d75a29a43c4d3"
+        },
+        {
+          "path": "packages/libllvm/llvm-config.in",
+          "sha256": "3912178970f071c5aeb03a263cc7fc23687994be97054a2285b81f026b3b4d7a"
+        },
+        {
+          "path": "packages/libllvm/llvm-include-llvm-ADT-SmallVector.h.patch",
+          "sha256": "108257180cff934299f811d9d7ded8f61e468c8fc8f5f6be253fc810ff4e3e9e"
+        },
+        {
+          "path": "packages/libllvm/llvm-include-llvm-Demangle-ItaniumDemangle.h.patch",
+          "sha256": "723fa40377d5b808b7984637b46fc78407c04b694feec6cb9694f8ef024fa34b"
+        },
+        {
+          "path": "packages/libllvm/llvm-lib-Support-Unix-Path.inc.patch",
+          "sha256": "ba674da9244d5d115d34b20963106c1dd9af6c8bd2164d28a4a1765eb680925e"
+        },
+        {
+          "path": "packages/libllvm/llvm-tools-llvm-rtdyld-llvm-rtdyld.cpp.patch",
+          "sha256": "628a405116f496f359a05dcca18e93d57939d1ba3d8a8e18ff07e0c171e8b4e5"
+        },
+        {
+          "path": "packages/libllvm/llvm-tools.subpackage.sh",
+          "sha256": "ff9ee4b313afcb75a812c7277139b9d2f4eb0a00eb6ec9b299c7462f2f0646f5"
+        },
+        {
+          "path": "packages/libllvm/llvm.subpackage.sh",
+          "sha256": "55f8d359223e21125798390d75f134370209695cfc991a183c6a6c84395d24cc"
+        },
+        {
+          "path": "packages/libllvm/mlir-lib-ExecutionEngine-CRunnerUtils.cpp.patch",
+          "sha256": "4cdb178e4186fe5d6aa59fc7c1a34be0d678e2ff60f8f16f28c44c2d3222690c"
+        },
+        {
+          "path": "packages/libllvm/mlir.subpackage.sh",
+          "sha256": "ea31bc77ead48cadc87b7a5278caac6679771cd49ddaf63e551d294558b89f7f"
+        },
+        {
+          "path": "packages/libllvm/openmp-config-ix-m32.patch",
+          "sha256": "889a96779bbb30f28083c23248f9f46dfe9cd7430ec18e171df28fddfbf0eb95"
+        },
+        {
+          "path": "packages/libllvm/update-libcompiler-rt.alpm.hook",
+          "sha256": "36c4c3e60e630036964b6402bc1887b38d7f97bd64072bc5ad3f0ae59aab0918"
+        },
+        {
+          "path": "packages/libllvm/update-libcompiler-rt.alpm.script",
+          "sha256": "377528d0f15cd594997edc17f55f2e5f991ace6ab9b3dc23825d01f2cd230f98"
+        }
+      ],
+      "license_summary_from_recipe": "Apache-2.0, NCSA",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "libllvm-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "liblzma",
+      "version": "5.8.4",
+      "manifest_scopes": [
+        "software"
+      ],
+      "recipe_path": "packages/liblzma",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/liblzma/build.sh",
+          "sha256": "b75e6d0c87edd1579e834139c66cd99c1a74de4f0d68bee9c0c9ad46eda30772"
+        },
+        {
+          "path": "packages/liblzma/configure.patch",
+          "sha256": "191c185d63037483059bf3817d64cb0471c30c7b85fd31d76e02d57708410f08"
+        },
+        {
+          "path": "packages/liblzma/xz-utils.subpackage.sh",
+          "sha256": "b25e036e06f5c5a8b0e1fa17b20bb50e442fad63f9245c953972a25919cebd8e"
+        }
+      ],
+      "license_summary_from_recipe": "LGPL-2.1, GPL-2.0, GPL-3.0",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "liblzma-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "libslirp",
+      "version": "4.9.7",
+      "manifest_scopes": [
+        "network"
+      ],
+      "recipe_path": "packages/libslirp",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/libslirp/build.sh",
+          "sha256": "007d09f7afeca75945a661f879b9a4ce25716101934870629054595c35a5d63e"
+        },
+        {
+          "path": "packages/libslirp/resolvconf.patch",
+          "sha256": "35d34d609fc2fc547870353e248a0c4337b8966cce6b5c1b7f5805ef236455ea"
+        }
+      ],
+      "license_summary_from_recipe": "BSD 3-Clause, MIT",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "libslirp-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "libwayland",
+      "version": "1.26.0",
+      "manifest_scopes": [
+        "software"
+      ],
+      "recipe_path": "packages/libwayland",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/libwayland/build.sh",
+          "sha256": "6b328d2744c7adde0b08b841979a3fcb005e971d11b04180f6d8e0c846a0024f"
+        },
+        {
+          "path": "packages/libwayland/libwayland-cross-scanner.subpackage.sh",
+          "sha256": "b63ae2468bb44fd10e9815a1e0175e8617e04fdb8ff04a73eb128ec16bdf793e"
+        },
+        {
+          "path": "packages/libwayland/xdg-runtime-dir.patch",
+          "sha256": "add6461fc5db15a750221fe6fb6e24cdcbf1443ba42392114ff38ace9b369f3b"
+        }
+      ],
+      "license_summary_from_recipe": "MIT",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "libwayland-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "libx11",
+      "version": "1.8.14",
+      "manifest_scopes": [
+        "software"
+      ],
+      "recipe_path": "packages/libx11",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/libx11/build.sh",
+          "sha256": "cf0b7c5786fcea2de3a1dfd779ebf5d66cb6740723c7b144c834d3f111d148bb"
+        },
+        {
+          "path": "packages/libx11/src-CrGlCur.c.patch",
+          "sha256": "0fbfd10ddaa002778fbdb0a895d0eac56f4d5b46237dccbe7908c08daf84b8cc"
+        },
+        {
+          "path": "packages/libx11/src-XlibInt.c.patch",
+          "sha256": "3123a8ea94c4d2c96e6efcc4da8a87267ea47a81981d04b7edbd04533be4915f"
+        }
+      ],
+      "license_summary_from_recipe": "MIT, X11",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "libx11-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "libxau",
+      "version": "1.0.12-2",
+      "manifest_scopes": [
+        "software"
+      ],
+      "recipe_path": "packages/libxau",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/libxau/build.sh",
+          "sha256": "db1c86540a4e09dfcaa7e4320756c67827757474b347681d2fce2c57c96696ea"
+        },
+        {
+          "path": "packages/libxau/libXau-1.0.8_AuLock.c.patch",
+          "sha256": "28ac1de7514c02d63f8c86880f4ef9c753f02774214ea50ab69e788d1d84f3d5"
+        }
+      ],
+      "license_summary_from_recipe": "MIT",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "libxau-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "libxcb",
+      "version": "1.17.0-1",
+      "manifest_scopes": [
+        "software"
+      ],
+      "recipe_path": "packages/libxcb",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/libxcb/build.sh",
+          "sha256": "dad40cf766b09a3f336f15ea731f742e16d7dbbe6cc94f77daefd487c9483f13"
+        },
+        {
+          "path": "packages/libxcb/libxcb-1.12_src_xcb_util.c.patch",
+          "sha256": "9b49f4077fc9b726f23dfedc4da21629f033e2efa87f89c591f80dacf37fd976"
+        }
+      ],
+      "license_summary_from_recipe": "MIT",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "libxcb-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "libxdmcp",
+      "version": "1.1.5-2",
+      "manifest_scopes": [
+        "software"
+      ],
+      "recipe_path": "packages/libxdmcp",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/libxdmcp/build.sh",
+          "sha256": "c65fc07a144c77cdf281c091e0a6e409ecdf65bfadbff4c854db33cd2621c4c8"
+        }
+      ],
+      "license_summary_from_recipe": "MIT",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "libxdmcp-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "libxml2",
+      "version": "2.15.4-1",
+      "manifest_scopes": [
+        "software"
+      ],
+      "recipe_path": "packages/libxml2",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/libxml2/build.sh",
+          "sha256": "52de9d390c6594e2a9bc45b1301a21fadc157b20a7c203d9e4eb3a841b058f7c"
+        },
+        {
+          "path": "packages/libxml2/libxml2-python.subpackage.sh",
+          "sha256": "8c6062144e81d520cd963f6cc8f9fe4b39f7c42a2dd3a90ca9faafd0ceb4c7b9"
+        },
+        {
+          "path": "packages/libxml2/libxml2-utils.subpackage.sh",
+          "sha256": "da6cc7df469f7b7239113876ce3368a50b6e0dc3403170de322109b297bb8bdb"
+        },
+        {
+          "path": "packages/libxml2/revert-Make-xmlFreeNodeList-non-recursive.patch",
+          "sha256": "fc9319d96a70d290a1854d3d1d6ee1f805a3f948a685aba89ce39e8b4a7b4716"
+        }
+      ],
+      "license_summary_from_recipe": "MIT",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "libxml2-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "libxshmfence",
+      "version": "1.3.3-1",
+      "manifest_scopes": [
+        "software"
+      ],
+      "recipe_path": "packages/libxshmfence",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/libxshmfence/build.sh",
+          "sha256": "f67d5d890047d8425f71e108daa2269db34a3d23e916ea9c16ee1e906072ae98"
+        }
+      ],
+      "license_summary_from_recipe": "HPND",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "libxshmfence-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "mesa-vulkan-icd-swrast",
+      "version": "26.2.7",
+      "manifest_scopes": [
+        "software"
+      ],
+      "recipe_path": "packages/mesa",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/mesa/0000-disable-android-detection.patch",
+          "sha256": "b7eb87464cdeba43a51db092322976edf9019501c91b6722d3db902e9ec02999"
+        },
+        {
+          "path": "packages/mesa/0001-disable-multithreading-for-llvmpipe.patch",
+          "sha256": "af8317dd901987eb4fef8ffbf7d5f31d57ad4a3bc1b08936085cffa5f72aac51"
+        },
+        {
+          "path": "packages/mesa/0002-fix-for-getprogname.patch",
+          "sha256": "58d8672360c8c38ec7bb22785685f39c68de9b81ee3c48e5141f2ec35efe1111"
+        },
+        {
+          "path": "packages/mesa/0003-fix-for-anon-file.patch",
+          "sha256": "946cb24e67e0a2d83fbff8004bd33ed97749918a78b4086add0f880d6d0e23ee"
+        },
+        {
+          "path": "packages/mesa/0004-do-not-check-xlocale.patch",
+          "sha256": "3ee0337bf3ea1a3895312990bc2db1f8a1c10fe8b193dee7bb9065a50b2c45d2"
+        },
+        {
+          "path": "packages/mesa/0005-virgl-socket-path.patch",
+          "sha256": "96656faee2407cf20cdcfb9cf8455d097db51bb7a0d6e0b97091aef610879bb0"
+        },
+        {
+          "path": "packages/mesa/0006-wsi-no-pthread_cancel.patch",
+          "sha256": "9ecdfc951cb60331250c1a4d410a797bbbc2d945e399b6d8dfdf6d33760db721"
+        },
+        {
+          "path": "packages/mesa/0007-use-mtx_t-operations-in-turnip.patch",
+          "sha256": "d60ab74e945e0ce0e18b9e59ed463fc201feaad6766e75bfb9d1e95cb657c0aa"
+        },
+        {
+          "path": "packages/mesa/0008-workaround-fortify-check.patch",
+          "sha256": "ad321249d18a67f6168e1a58a5c47c981d57e7caad26db6d593cf3c3d58b1bc9"
+        },
+        {
+          "path": "packages/mesa/0009-disable-resource_create_front-for-vtest.patch",
+          "sha256": "82a6393517a702624a8adf9a7ecc91fc8d646d6f413504802eae042ba7088d8c"
+        },
+        {
+          "path": "packages/mesa/0011-lld-undefined-version.diff",
+          "sha256": "b2a8f64a3602311518e5b5f079d3a9dff81aee6fa186679218d528e86e2388a7"
+        },
+        {
+          "path": "packages/mesa/0012-always-use-software-for-swrast.patch",
+          "sha256": "e6b51f429f7361f37e9fe8ed6448959230e3d77ff8eb65e74ca1b26604f29d43"
+        },
+        {
+          "path": "packages/mesa/0013-detect-sve-sve2-support.patch",
+          "sha256": "426bc86f3642dbdd5737c8e10dfa44d718cb928348c2f589eb088b056b2b49f0"
+        },
+        {
+          "path": "packages/mesa/0014-replace-turnip-wait_timestamp_safe-assert.patch",
+          "sha256": "c9f7d115cc507dda06b4c24b971dd174360a18dcc713c84e7a940d204651162c"
+        },
+        {
+          "path": "packages/mesa/0015-define-reallocarray.patch",
+          "sha256": "84b35de37de9a74b3cc52d35f42d9bff1044eeca06a00fd03804868604fb7ef4"
+        },
+        {
+          "path": "packages/mesa/0016-unofficial_support_adreno_710_720_722.patch",
+          "sha256": "c17d3466a472a18dda9ae118af1704382d67762f34bef879b639ced617dc9b9b"
+        },
+        {
+          "path": "packages/mesa/0017-preserve-egl-support-in-zink.patch",
+          "sha256": "eff01956cce8ad3ed545f412e0ee2b2996a94dfd7a3ac57ee4c1b37f33647efc"
+        },
+        {
+          "path": "packages/mesa/0018-disable-general-layout-in-zink-for-turnip.patch",
+          "sha256": "ed8b49e5ce31d64c8d11214078295cf98afae3efe0dc8f94cabe2daa97dcef29"
+        },
+        {
+          "path": "packages/mesa/0019-enforce-memfd-create-syscall.patch",
+          "sha256": "442a54875e1fbb42b57858a1aa1cd0095b81690c80392ab7a5a6bbf83f700747"
+        },
+        {
+          "path": "packages/mesa/1001-src-compiler-clc-meson.build.diff.beforehostbuild",
+          "sha256": "58cbc9c42d6118df6a50b929ba62db58bcbfc1821faa300bccbfa1376a4c5872"
+        },
+        {
+          "path": "packages/mesa/build.sh",
+          "sha256": "693165214cdfedae4b7ffc576127bb300f02f6d7ca0177de92305778834e176e"
+        },
+        {
+          "path": "packages/mesa/cmake-wrapper.in",
+          "sha256": "bb23dc9b6259697bd8e9310d7b4da3f6539f97bf2e369ee6a1b270145087cb83"
+        },
+        {
+          "path": "packages/mesa/mesa-dev.subpackage.sh",
+          "sha256": "08dd11e397e6a2562ab298a80fe3ef9c648945d96c033c124861143da531605f"
+        },
+        {
+          "path": "packages/mesa/mesa-opencl-icd-rusticl.subpackage.sh",
+          "sha256": "34e60acaf9e80ec731ac6e7de7b96bce723002af8aa8d59109c8213deaf10f04"
+        },
+        {
+          "path": "packages/mesa/mesa-vulkan-icd-freedreno.subpackage.sh",
+          "sha256": "8fa159e4b07fad7f19333567cfc8d1b1e107390e7619fe67a95f729263b27704"
+        },
+        {
+          "path": "packages/mesa/mesa-vulkan-icd-swrast.subpackage.sh",
+          "sha256": "67b667e4c7aabbb5ffb7d61473129f82a8db853790c440e80f317cbafbd1a019"
+        },
+        {
+          "path": "packages/mesa/mesa-vulkan-icd-virtio.subpackage.sh",
+          "sha256": "1c937d0c16c3a0bf418cbc41f71bfb7095dd0b96e38015b2131e54902d8eed67"
+        }
+      ],
+      "license_summary_from_recipe": "MIT",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "mesa-vulkan-icd-swrast-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "ncurses",
+      "version": "6.6.20260307+really6.5.20250830",
+      "manifest_scopes": [
+        "software"
+      ],
+      "recipe_path": "packages/ncurses",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/ncurses/build.sh",
+          "sha256": "350a65eb4f5d5086d95c2b05db129557c62dbbbf0c5f82ee7163e0de12f4ea34"
+        },
+        {
+          "path": "packages/ncurses/fix-paths.patch",
+          "sha256": "87c9a238b3c43c1c4c80e28f1d77f569f9f6184c2a8728d6595068bf41a2f945"
+        },
+        {
+          "path": "packages/ncurses/ncurses-tinfo-lib_setup.c.patch",
+          "sha256": "2e03294631c3c2835c9818dbf8c6a02e83e0ec7ce2e0dd81601ba24f8d382812"
+        },
+        {
+          "path": "packages/ncurses/ncurses-tinfo-tinfo_driver.c.patch",
+          "sha256": "abcf8b13b4690bb1af16ef2de1fc5da238f1350d0fcf9b24fe3af11d670c15b8"
+        },
+        {
+          "path": "packages/ncurses/ncurses-ui-libs-static.subpackage.sh",
+          "sha256": "bb6945f87908ef37f09567b4be65f6afa8cb1a4561a2c81ad674268227c24f8b"
+        },
+        {
+          "path": "packages/ncurses/ncurses-ui-libs.subpackage.sh",
+          "sha256": "a1ed7e1aa01e0f87e5a23f7df0ff8efa11fc7740201191862ac6e56dcc44581e"
+        },
+        {
+          "path": "packages/ncurses/ncurses-utils.subpackage.sh",
+          "sha256": "6b2a4a4653fa5a93b7ae7ae685260b97f3f6c699cecf439d2c659d3637355516"
+        }
+      ],
+      "license_summary_from_recipe": "MIT",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "ncurses-0",
+        "ncurses-1",
+        "ncurses-2",
+        "ncurses-3",
+        "ncurses-4"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "pcre2",
+      "version": "10.49",
+      "manifest_scopes": [
+        "network"
+      ],
+      "recipe_path": "packages/pcre2",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/pcre2/build.sh",
+          "sha256": "3d4f6e3cd27218fb539e4d812255c2a8787b43319bb45a6ad76bb3abf70fe293"
+        },
+        {
+          "path": "packages/pcre2/pcre2grep.subpackage.sh",
+          "sha256": "89470ead67fa7338c21ee72223ae0e75633eb20d370f0228b233b6d87f8ae8c3"
+        }
+      ],
+      "license_summary_from_recipe": "BSD 3-Clause",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "pcre2-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "vulkan-loader-generic",
+      "version": "1.4.368",
+      "manifest_scopes": [
+        "software"
+      ],
+      "recipe_path": "packages/vulkan-loader-generic",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/vulkan-loader-generic/0001-fix-hardcoded-pathes.patch",
+          "sha256": "8f29491b469069d53afc52f5b7ce6a513b1d07a3ff65c55767d5e291036e6665"
+        },
+        {
+          "path": "packages/vulkan-loader-generic/0002-properly-enable-extensions.patch",
+          "sha256": "ba5ef723193384044df1fa3d335c81b79f960fb7cb3b4cf4284e9de514078d18"
+        },
+        {
+          "path": "packages/vulkan-loader-generic/build.sh",
+          "sha256": "d1118159a9e65a6a133f552b1a371571a4d70478740cf2e2a3b14e211c3358ba"
+        }
+      ],
+      "license_summary_from_recipe": "Apache-2.0",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "vulkan-loader-generic-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "xorg-util-macros",
+      "version": "1.20.2",
+      "manifest_scopes": [
+        "software"
+      ],
+      "recipe_path": "packages/xorg-util-macros",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/xorg-util-macros/build.sh",
+          "sha256": "90834b817c7086e2d7657564ba027d045493ff129e161f80eb99695d81aad57e"
+        },
+        {
+          "path": "packages/xorg-util-macros/xorg-macros.m4.in.patch",
+          "sha256": "72ac5367aac4f60a9e3df49a93110c3c738f45d290b3638cbf855a6a5ef6d43e"
+        }
+      ],
+      "license_summary_from_recipe": "HPND, MIT",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "xorg-util-macros-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "xorgproto",
+      "version": "2026.1",
+      "manifest_scopes": [
+        "software"
+      ],
+      "recipe_path": "packages/xorgproto",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/xorgproto/build.sh",
+          "sha256": "6c5fc5b5f3362de2d2eb728054de01aa2368f6b22846de1ddde2c19a214f5238"
+        },
+        {
+          "path": "packages/xorgproto/include-x11-Xos_r.h.patch",
+          "sha256": "59c4788af25ace36bdd4eaf840e3d8b930a04d307a505afe3236ffc69be9fde5"
+        },
+        {
+          "path": "packages/xorgproto/include-x11-Xpoll.h.in.patch",
+          "sha256": "82205b522349e69f3dd09bb0cb86d1e70d852cee6ba59f80b1c57269310e49e6"
+        },
+        {
+          "path": "packages/xorgproto/meson.build.patch",
+          "sha256": "0967707ce1b3381f31f914a18e5c567358ec1c51510a16d9d737145adc4b97d3"
+        }
+      ],
+      "license_summary_from_recipe": "MIT",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "xorgproto-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "zlib",
+      "version": "1.4",
+      "manifest_scopes": [
+        "software"
+      ],
+      "recipe_path": "packages/zlib",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/zlib/build.sh",
+          "sha256": "2c0e13371b812cdbe0d404a5d14b52958cf235338ecaae121e2047dd913fbdcf"
+        },
+        {
+          "path": "packages/zlib/force-support-shared-library.patch",
+          "sha256": "9f1f63931ac4738747c93d852f351c6c46ecafccea0127f01498e48cb17f50c2"
+        }
+      ],
+      "license_summary_from_recipe": "ZLIB",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "zlib-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    },
+    {
+      "name": "zstd",
+      "version": "1.5.7-1",
+      "manifest_scopes": [
+        "software"
+      ],
+      "recipe_path": "packages/zstd",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_files": [
+        {
+          "path": "packages/zstd/build-cmake-contrib-CMakeLists.txt.patch",
+          "sha256": "84968ddfad32f1f9ca2be44edd4b99f2d671afe49ae5a505c99adce822eb241c"
+        },
+        {
+          "path": "packages/zstd/build.sh",
+          "sha256": "d7768dbd39af796ae9d5d1f0cc95d963ed5fa842332aecd9b6b046d87bbc48ec"
+        },
+        {
+          "path": "packages/zstd/pzstd.subpackage.sh",
+          "sha256": "8665f419f2cf256f921ed108f991693d0e2745d259e766ebf5a6c3340825df0a"
+        }
+      ],
+      "license_summary_from_recipe": "GPL-2.0",
+      "source_kind": "source-archives",
+      "source_input_ids": [
+        "zstd-0"
+      ],
+      "mapping_evidence": "Official recipe full version matches pinned deb control; source URL/checksum and all recipe files pinned. No deb build-commit attestation is present."
+    }
+  ],
+  "inputs": [
+    {
+      "id": "glib-0",
+      "package": "glib",
+      "url": "https://download.gnome.org/sources/glib/2.90/glib-2.90.1.tar.xz",
+      "sha256": "93c941aa17d5eb1d53fe838365f29a8b4e539c222a256d974ec8f30fc413e396",
+      "file": "glib-0.tar.xz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "libandroid-shmem-0",
+      "package": "libandroid-shmem",
+      "url": "https://github.com/termux/libandroid-shmem/archive/refs/tags/v0.7.tar.gz",
+      "sha256": "1e5ff8459bc0a8c229dd8a94b27d119987e09ef3414331c2b5ebfff20b98e867",
+      "file": "libandroid-shmem-0.tar.gz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "libandroid-support-0",
+      "package": "libandroid-support",
+      "url": "https://github.com/termux/libandroid-support/archive/refs/tags/v29.tar.gz",
+      "sha256": "8f74ce0f9cf70ec29f548696c248cac0ba560a2d8916a0fe1cf9316d5f167a80",
+      "file": "libandroid-support-0.tar.gz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "libandroid-support-1",
+      "package": "libandroid-support",
+      "url": "https://github.com/termux/wcwidth/archive/refs/tags/v4.tar.gz",
+      "sha256": "08489e00f797ffb3b71f9c1894c83e5ebe12c90a2ee0e1f9dc7c6eb29a2ff1a8",
+      "file": "libandroid-support-1.tar.gz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "libc++-0",
+      "package": "libc++",
+      "url": "https://dl.google.com/android/repository/android-ndk-r30-linux.zip",
+      "sha256": "753611f410d002cfcd3f3dc2ef49aad532089d3180b436c060a90bf0fcb64df2",
+      "file": "libc++-0.zip",
+      "kind": "prebuilt-ndk; not library source",
+      "required_for_apk_library_source": false
+    },
+    {
+      "id": "libdrm-0",
+      "package": "libdrm",
+      "url": "https://dri.freedesktop.org/libdrm/libdrm-2.4.134.tar.xz",
+      "sha256": "ac5e74d157830eb8bee44c6a6bf3ad49774ef0dd2a72bdad74a8f20308b52a95",
+      "file": "libdrm-0.tar.xz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "libexpat-0",
+      "package": "libexpat",
+      "url": "https://github.com/libexpat/libexpat/releases/download/R_2_10_0/expat-2.10.0.tar.bz2",
+      "sha256": "44e0139015f1c9908d0876b5516235136f16b14932d8f6634a16737a12742f53",
+      "file": "libexpat-0.tar.bz2",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "libffi-0",
+      "package": "libffi",
+      "url": "https://github.com/libffi/libffi/releases/download/v3.8.0/libffi-3.8.0.tar.gz",
+      "sha256": "7da3e2d9a171eb0a038f592ecad3ff2bb2550f3496d87b3b29ad0cf4430c0db4",
+      "file": "libffi-0.tar.gz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "libiconv-0",
+      "package": "libiconv",
+      "url": "https://mirrors.kernel.org/gnu/libiconv/libiconv-1.19.1.tar.gz",
+      "sha256": "9a06844846d664d7122161700c10a64480d7c7bcead3091925a785b38c91edab",
+      "file": "libiconv-0.tar.gz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "libllvm-0",
+      "package": "libllvm",
+      "url": "https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.8/llvm-project-21.1.8.src.tar.xz",
+      "sha256": "4633a23617fa31a3ea51242586ea7fb1da7140e426bd62fc164261fe036aa142",
+      "file": "libllvm-0.tar.xz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "liblzma-0",
+      "package": "liblzma",
+      "url": "https://github.com/tukaani-project/xz/releases/download/v5.8.4/xz-5.8.4.tar.xz",
+      "sha256": "4ce24038fd4221e0d13bc1a2de7a4db56e90b92b3bf75321f6c14be73f65de4b",
+      "file": "liblzma-0.tar.xz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "libslirp-0",
+      "package": "libslirp",
+      "url": "https://gitlab.freedesktop.org/slirp/libslirp/-/archive/v4.9.7/libslirp-v4.9.7.tar.gz",
+      "sha256": "d2567fa06a6357c7755d61c67293b2c0bf069b3f2173bde6b76cf768529a1938",
+      "file": "libslirp-0.tar.gz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "libwayland-0",
+      "package": "libwayland",
+      "url": "https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.26.0/downloads/wayland-1.26.0.tar.xz",
+      "sha256": "64176eaa46e4969903e286f8e5ef8331affc17fdf03ac9b58381d2b23162b7a3",
+      "file": "libwayland-0.tar.xz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "libx11-0",
+      "package": "libx11",
+      "url": "https://xorg.freedesktop.org/releases/individual/lib/libX11-1.8.14.tar.xz",
+      "sha256": "bbc78c46217174655c2b32b138ad119f3ac15f50808b4d0b3a2677a4b1afc950",
+      "file": "libx11-0.tar.xz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "libxau-0",
+      "package": "libxau",
+      "url": "https://xorg.freedesktop.org/releases/individual/lib/libXau-1.0.12.tar.xz",
+      "sha256": "74d0e4dfa3d39ad8939e99bda37f5967aba528211076828464d2777d477fc0fb",
+      "file": "libxau-0.tar.xz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "libxcb-0",
+      "package": "libxcb",
+      "url": "https://xorg.freedesktop.org/archive/individual/lib/libxcb-1.17.0.tar.xz",
+      "sha256": "599ebf9996710fea71622e6e184f3a8ad5b43d0e5fa8c4e407123c88a59a6d55",
+      "file": "libxcb-0.tar.xz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "libxdmcp-0",
+      "package": "libxdmcp",
+      "url": "https://xorg.freedesktop.org/archive/individual/lib/libXdmcp-1.1.5.tar.xz",
+      "sha256": "d8a5222828c3adab70adf69a5583f1d32eb5ece04304f7f8392b6a353aa2228c",
+      "file": "libxdmcp-0.tar.xz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "libxml2-0",
+      "package": "libxml2",
+      "url": "https://download.gnome.org/sources/libxml2/2.15/libxml2-2.15.4.tar.xz",
+      "sha256": "98087fd181d9070724f3fbc65c7377db03038eb92bd882374daff44940138821",
+      "file": "libxml2-0.tar.xz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "libxshmfence-0",
+      "package": "libxshmfence",
+      "url": "https://xorg.freedesktop.org/releases/individual/lib/libxshmfence-1.3.3.tar.xz",
+      "sha256": "d4a4df096aba96fea02c029ee3a44e11a47eb7f7213c1a729be83e85ec3fde10",
+      "file": "libxshmfence-0.tar.xz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "mesa-vulkan-icd-swrast-0",
+      "package": "mesa-vulkan-icd-swrast",
+      "url": "https://archive.mesa3d.org/mesa-26.2.7.tar.xz",
+      "sha256": "04294f75d22e9f61cd1e050206bc48b3d39366e788f1803a3368e3d5a872ce18",
+      "file": "mesa-vulkan-icd-swrast-0.tar.xz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "ncurses-0",
+      "package": "ncurses",
+      "url": "https://github.com/ThomasDickey/ncurses-snapshots/archive/5f58399b2de47ed14bdfe3a0cb149293b27893d5.tar.gz",
+      "sha256": "28cd102efe6a2610e830cc79cf270da6ff0427b2022900a9a36d2761522f9576",
+      "file": "ncurses-0.tar.gz",
+      "kind": "library-source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "ncurses-1",
+      "package": "ncurses",
+      "url": "https://dist.schmorp.de/rxvt-unicode/Attic/rxvt-unicode-9.31.tar.bz2",
+      "sha256": "aaa13fcbc149fe0f3f391f933279580f74a96fd312d6ed06b8ff03c2d46672e8",
+      "file": "ncurses-1.tar.bz2",
+      "kind": "terminfo-only",
+      "required_for_apk_library_source": false
+    },
+    {
+      "id": "ncurses-2",
+      "package": "ncurses",
+      "url": "https://github.com/kovidgoyal/kitty/releases/download/v0.50.0/kitty-0.50.0.tar.xz",
+      "sha256": "01f20d0b253af0a7e041394a501adc83483f2eee01faf607a933c028343ab71a",
+      "file": "ncurses-2.tar.xz",
+      "kind": "terminfo-only; recipe referenced at inventory commit, not shipped in APK",
+      "required_for_apk_library_source": false
+    },
+    {
+      "id": "ncurses-3",
+      "package": "ncurses",
+      "url": "https://github.com/alacritty/alacritty/archive/refs/tags/v0.17.0.tar.gz",
+      "sha256": "38d6527d346cda5c6049332a1f3338a89ea66cd7981b54d4c3ce801b392496f8",
+      "file": "ncurses-3.tar.gz",
+      "kind": "terminfo-only; recipe referenced at inventory commit, not shipped in APK",
+      "required_for_apk_library_source": false
+    },
+    {
+      "id": "ncurses-4",
+      "package": "ncurses",
+      "url": "https://codeberg.org/dnkl/foot/archive/1.28.0.tar.gz",
+      "sha256": "4296be402b5684d049534598e69db92b918f92beac9dab76b585207045f0b037",
+      "file": "ncurses-4.tar.gz",
+      "kind": "terminfo-only; recipe referenced at inventory commit, not shipped in APK",
+      "required_for_apk_library_source": false
+    },
+    {
+      "id": "pcre2-0",
+      "package": "pcre2",
+      "url": "https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.49/pcre2-10.49.tar.bz2",
+      "sha256": "53c156e1ba416a20da8e65395daa132da0d80e76910424caca3fcdae7831d384",
+      "file": "pcre2-0.tar.bz2",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "vulkan-loader-generic-0",
+      "package": "vulkan-loader-generic",
+      "url": "https://github.com/KhronosGroup/Vulkan-Loader/archive/refs/tags/v1.4.368.tar.gz",
+      "sha256": "d2fe102c8493d80f2e3d6c5b3304a331e69072d7a041b1323c6f0246b94cbf3c",
+      "file": "vulkan-loader-generic-0.tar.gz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "xorg-util-macros-0",
+      "package": "xorg-util-macros",
+      "url": "https://xorg.freedesktop.org/releases/individual/util/util-macros-1.20.2.tar.xz",
+      "sha256": "9ac269eba24f672d7d7b3574e4be5f333d13f04a7712303b1821b2a51ac82e8e",
+      "file": "xorg-util-macros-0.tar.xz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "xorgproto-0",
+      "package": "xorgproto",
+      "url": "https://xorg.freedesktop.org/archive/individual/proto/xorgproto-2026.1.tar.xz",
+      "sha256": "f9bfe4a9ed8c8ab9d2a3b0d49797f046052dadd06b7a8b45dbffaffb137e8290",
+      "file": "xorgproto-0.tar.xz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "zlib-0",
+      "package": "zlib",
+      "url": "https://github.com/madler/zlib/releases/download/v1.4/zlib-1.4.tar.xz",
+      "sha256": "4f11c512053d7bab8d9e9b89bde3575add3e4c50a383b42ef6cb837035fc5a7c",
+      "file": "zlib-0.tar.xz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    },
+    {
+      "id": "zstd-0",
+      "package": "zstd",
+      "url": "https://github.com/facebook/zstd/archive/refs/tags/v1.5.7.tar.gz",
+      "sha256": "37d7284556b20954e56e1ca85b80226768902e2edabd3b649e9e72c0c9012ee3",
+      "file": "zstd-0.tar.gz",
+      "kind": "source",
+      "required_for_apk_library_source": true
+    }
+  ],
+  "limits": [
+    "Versions and pinned recipe files match; prebuilt debs do not record build commits. This is not bit-identical rebuild evidence.",
+    "libc++ recipe copies NDK binaries: an NDK zip is not libc++ source. Android source provenance must be bundled separately.",
+    "Ncurses auxiliary terminal definitions are not copied into APK; current referenced versions are recorded separately from the library source.",
+    "Host build prerequisites and full optional Rust/Mesa sources are tracked by separate graphics manifests."
+  ],
+  "binary_release_ready": false
+}

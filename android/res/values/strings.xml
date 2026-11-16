@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ui_no_session_logs_yet_run_a_mac_or_a_diagnostic_to_see_results" formatted="false">"No session logs yet. Run a Mac or a diagnostic to see results here."</string>
+    <string name="ui_testing_mali_composition_authored_test_pattern" formatted="false">"Testing Mali composition · authored test pattern"</string>
+    <string name="ui_gpu_copy_path_passed_not_yet_applied_to_macos" formatted="false">"GPU copy path passed · not yet applied to macOS"</string>
+    <string name="ui_mali_gpu_shared_memory_computation_passed_macos_connection_u" formatted="false">"Mali GPU shared-memory computation passed · macOS connection unverified"</string>
+    <string name="ui_virtual_network_test_passed" formatted="false">"Virtual network test passed"</string>
+    <string name="ui_input_direct_touch" formatted="false">"Input: direct touch"</string>
+    <string name="ui_clone_test_passed" formatted="false">"Clone test passed"</string>
+    <string name="ui_3_cores" formatted="false">"3 cores"</string>
+    <string name="ui_running_boot_rom_15_second_experiment" formatted="false">"Running boot ROM · 15-second experiment"</string>
+    <string name="ui_virtual_gpu_test_error" formatted="false">"Virtual GPU test error"</string>
+    <string name="ui_latin_letters_numbers_symbols" formatted="false">"Latin letters, numbers, symbols"</string>
+    <string name="ui_device_diagnostics" formatted="false">"Device diagnostics"</string>
+    <string name="ui_recovery_experiment_stopped_check_progress_in_the_log" formatted="false">"Recovery experiment stopped · check progress in the log"</string>
+    <string name="ui_the_graphics_backend_failed_preflight_select_cpu_rendering_o" formatted="false">"The graphics backend failed preflight. Select CPU rendering or check the graphics log."</string>
+    <string name="ui_auto_selects_after_preflight_checks_cpu_rendering_is_very_sl" formatted="false">"Auto selects after preflight checks. CPU rendering is very slow. Execution on other devices is unverified."</string>
+    <string name="ui_mali_composition_failed_check_the_log" formatted="false">"Mali composition failed · check the log"</string>
+    <string name="ui_this_cpu_memory_page_and_jit_combination_does_not_meet_execu" formatted="false">"This CPU, memory page and JIT combination does not meet execution requirements. Check PLATFORM_RESULT in the log."</string>
+    <string name="ui_testing_mali_memory_api" formatted="false">"Testing Mali memory API"</string>
+    <string name="ui_input_trackpad" formatted="false">"Input: trackpad"</string>
+    <string name="ui_gpu_copy_path_test_error" formatted="false">"GPU copy path test error"</string>
+    <string name="ui_launch_settings" formatted="false">"Launch settings"</string>
+    <string name="ui_stop_normally" formatted="false">"Stop normally"</string>
+    <string name="ui_disk_clone_error" formatted="false">"Disk clone error"</string>
+    <string name="ui_shared_memory_display_test_passed" formatted="false">"Shared-memory display test passed"</string>
+    <string name="ui_preflight_then_boot_cpu" formatted="false">" preflight, then boot · CPU "</string>
+    <string name="ui_keep_running" formatted="false">"Keep running"</string>
+    <string name="ui_run_rom_1_gb_15_seconds" formatted="false">"Run ROM · 1 GB / 15 seconds"</string>
+    <string name="ui_panvk_compatibility_failed_check_the_log" formatted="false">"PanVK compatibility failed · check the log"</string>
+    <string name="ui_macos_execution_requires_separate_verification" formatted="false">" · macOS execution requires separate verification."</string>
+    <string name="ui_apple_server_connection_passed" formatted="false">"Apple server connection passed"</string>
+    <string name="ui_close" formatted="false">"Close"</string>
+    <string name="ui_individual_firmware_recovery_and_disk_tests_use_launch_setti" formatted="false">"Individual firmware, recovery and disk tests. Use Launch settings for a normal Mac session."</string>
+    <string name="ui_test_apple_server_connection" formatted="false">"Test Apple server connection"</string>
+    <string name="ui_seconds" formatted="false">" seconds"</string>
+    <string name="ui_distribution_source_and_modifications" formatted="false">"Distribution, source and modifications"</string>
+    <string name="ui_virtual_gpu_initialization_passed_macos_display_unverified" formatted="false">"Virtual GPU initialization passed · macOS display unverified"</string>
+    <string name="ui_graphics_backend" formatted="false">"Graphics backend"</string>
+    <string name="ui_display_cache_test_passed" formatted="false">"Display cache test passed"</string>
+    <string name="ui_guest_display_d_d_recent_updates_1f_s" formatted="false">"Guest display %d × %d · recent updates %.1f/s"</string>
+    <string name="ui_preflight_cancelled" formatted="false">"Preflight cancelled."</string>
+    <string name="ui_tests_failed" formatted="false">"Tests failed · "</string>
+    <string name="ui_start_from_your_saved_mac_disk_choose_resources_for_your_nex" formatted="false">"Start from your saved Mac disk.\nChoose resources for your next session below."</string>
+    <string name="ui_tap_to_return_to_your_mac" formatted="false">"Tap to return to your Mac"</string>
+    <string name="ui_shared_memory_display_failed_check_the_log" formatted="false">"Shared-memory display failed · check the log"</string>
+    <string name="ui_choose_keep_running_to_continue_using_your_mac" formatted="false">"Choose Keep running to continue using your Mac."</string>
+    <string name="ui_boot_experiment_ended_check_logs_and_frames_for_os_progress" formatted="false">"Boot experiment ended · check logs and frames for OS progress"</string>
+    <string name="ui_testing_display_cache" formatted="false">"Testing display cache"</string>
+    <string name="ui_ready_to_continue" formatted="false">"Ready to continue"</string>
+    <string name="ui_finishing_disk_writes_and_stopping" formatted="false">"Finishing disk writes and stopping"</string>
+    <string name="ui_testing_clone_preservation_sparse_regions_and_overwrite_refu" formatted="false">"Testing clone preservation, sparse regions and overwrite refusal"</string>
+    <string name="ui_lock_external_mouse_esc_to_release" formatted="false">"Lock external mouse · Esc to release"</string>
+    <string name="ui_tests_computation_and_pixels_from_authored_shaders_macos_dis" formatted="false">"Tests computation and pixels from authored shaders. macOS display output needs separate verification."</string>
+    <string name="ui_select_a_latin_input_source_in_the_mac_before_typing_english" formatted="false">"Select a Latin input source in the Mac before typing English. It is separate from your tablet’s keyboard language."</string>
+    <string name="ui_rom_must_be_1_mb_or_smaller" formatted="false">"ROM must be 1 MB or smaller"</string>
+    <string name="ui_tools" formatted="false">"Tools"</string>
+    <string name="ui_2_cores_recommended" formatted="false">"2 cores · recommended"</string>
+    <string name="ui_mali_gpu_shared_memory_computation_error" formatted="false">"Mali GPU shared-memory computation error"</string>
+    <string name="ui_virtual_mac_is_running" formatted="false">"Virtual Mac is running"</string>
+    <string name="ui_testing_gpu_shared_memory" formatted="false">"Testing GPU shared memory"</string>
+    <string name="ui_manual_stop" formatted="false">"manual stop"</string>
+    <string name="ui_rom_import_error" formatted="false">"ROM import error · "</string>
+    <string name="ui_1_core" formatted="false">"1 core"</string>
+    <string name="ui_shared_memory_test_failed_check_the_log" formatted="false">"Shared memory test failed · check the log"</string>
+    <string name="ui_virtual_network_test_error" formatted="false">"Virtual network test error"</string>
+    <string name="ui_tap_click_two_fingers_scroll" formatted="false">"Tap: click · two fingers: scroll"</string>
+    <string name="ui_boot_experiment_error_check_the_log" formatted="false">"Boot experiment error · check the log"</string>
+    <string name="ui_mali_memory_map_unmap_observed_gpu_computation_unverified" formatted="false">"Mali memory map/unmap observed · GPU computation unverified"</string>
+    <string name="ui_prepare_your_mac" formatted="false">"Prepare your Mac"</string>
+    <string name="ui_booting_waiting_for_this_session_s_display" formatted="false">"Booting · waiting for this session’s display"</string>
+    <string name="ui_testing_software_vulkan_test_pattern" formatted="false">"Testing software Vulkan · test pattern"</string>
+    <string name="ui_testing_virtual_network" formatted="false">"Testing virtual network"</string>
+    <string name="ui_up_to" formatted="false">"up to "</string>
+    <string name="ui_checking_cpu_and_graphics_mac_disk_stays_closed" formatted="false">"Checking CPU and graphics · Mac disk stays closed"</string>
+    <string name="ui_display_cache_test_error" formatted="false">"Display cache test error"</string>
+    <string name="ui_virtual_network_test_failed_check_the_log" formatted="false">"Virtual network test failed · check the log"</string>
+    <string name="ui_full_screen_test_error" formatted="false">"Full-screen test error"</string>
+    <string name="ui_testing_shared_memory_display" formatted="false">"Testing shared-memory display"</string>
+    <string name="ui_gpu_test_failed_check_translator_and_device_logs" formatted="false">"GPU test failed · check translator and device logs"</string>
+    <string name="ui_mali_composition_passed_macos_needs_separate_verification" formatted="false">"Mali composition passed · macOS needs separate verification"</string>
+    <string name="ui_timeout_normal_stop_requested" formatted="false">"TIMEOUT · normal stop requested\n"</string>
+    <string name="ui_full_screen_test_authored_fixture" formatted="false">"Full-screen test · authored fixture"</string>
+    <string name="ui_install_disk_boot_experiment_up_to" formatted="false">"Install disk boot experiment · up to "</string>
+    <string name="ui_mali_memory_api_test_failed_check_the_log" formatted="false">"Mali memory API test failed · check the log"</string>
+    <string name="ui_cannot_read_the_list" formatted="false">"Cannot read the list"</string>
+    <string name="ui_testing_gpu_copy_path" formatted="false">"Testing GPU copy path"</string>
+    <string name="ui_hide_recovery_and_firmware_tools" formatted="false">"Hide recovery and firmware tools"</string>
+    <string name="ui_virtual_mac_session_ended_check_the_log" formatted="false">"Virtual Mac session ended · check the log"</string>
+    <string name="ui_rom_experiment_ended_check_the_log" formatted="false">"ROM experiment ended · check the log"</string>
+    <string name="ui_test_virtual_disk_read_write" formatted="false">"Test virtual disk read/write"</string>
+    <string name="ui_rom_execution_error" formatted="false">"ROM execution error"</string>
+    <string name="ui_testing_https_connection_to_apple_servers" formatted="false">"Testing HTTPS connection to Apple servers"</string>
+    <string name="ui_macos_install_experiment_2_gb_20_minutes" formatted="false">"macOS install experiment · 2 GB / 20 minutes"</string>
+    <string name="ui_mali_memory_import_accepted_gpu_execution_unverified" formatted="false">"Mali memory import accepted · GPU execution unverified"</string>
+    <string name="ui_diagnostics" formatted="false">"Diagnostics"</string>
+    <string name="ui_send" formatted="false">"Send"</string>
+    <string name="ui_rotate_display" formatted="false">"Rotate display"</string>
+    <string name="ui_test_gpu_shader_translation" formatted="false">"Test GPU shader translation"</string>
+    <string name="ui_switch_input_source_space" formatted="false">"Switch input source (⌃Space)"</string>
+    <string name="ui_session_test_error" formatted="false">"Session test error"</string>
+    <string name="ui_license_reading_error" formatted="false">"License reading error"</string>
+    <string name="ui_session_test_ended" formatted="false">"Session test ended"</string>
+    <string name="ui_show_recovery_and_firmware_tools" formatted="false">"Show recovery and firmware tools"</string>
+    <string name="ui_logs" formatted="false">"Logs"</string>
+    <string name="ui_no_graphics_backend_passed_preflight_check_the_log" formatted="false">"No graphics backend passed preflight. Check the log."</string>
+    <string name="ui_boot_experiment_error" formatted="false">"Boot experiment error"</string>
+    <string name="ui_cloning_research_macos_disk_source_is_read_only" formatted="false">"Cloning research macOS disk · source is read-only"</string>
+    <string name="ui_testing_mali_gpu_memory_computation_no_macos_disk" formatted="false">"Testing Mali GPU memory computation · no macOS disk"</string>
+    <string name="ui_testing_keep_the_app_open" formatted="false">"Testing · keep the app open"</string>
+    <string name="ui_notice_file_exceeds_the_size_limit" formatted="false">"Notice file exceeds the size limit"</string>
+    <string name="ui_testing" formatted="false">"Testing · "</string>
+    <string name="ui_number_of_cpu_cores" formatted="false">"Number of CPU cores"</string>
+    <string name="ui_allocating_more_memory_leaves_less_for_android" formatted="false">"Allocating more memory leaves less for Android."</string>
+    <string name="ui_rom_execution_error_check_exit_code_and_log" formatted="false">"ROM execution error · check exit code and log"</string>
+    <string name="ui_virtual_mac_display_tap_a_location_to_click_it" formatted="false">"Virtual Mac display. Tap a location to click it."</string>
+    <string name="ui_gpu_test_error" formatted="false">"GPU test error"</string>
+    <string name="ui_external_mouse_speed" formatted="false">"External mouse speed"</string>
+    <string name="ui_close_tools" formatted="false">"Close tools"</string>
+    <string name="ui_session_logs" formatted="false">"Session logs"</string>
+    <string name="ui_experimental_stability_and_speed_under_development_normal_se" formatted="false">"Experimental · stability and speed under development\nNormal sessions run until you stop them."</string>
+    <string name="ui_testing_virtual_mac_recovery_connection" formatted="false">"Testing virtual Mac recovery connection"</string>
+    <string name="ui_2_gb_recommended" formatted="false">"2 GB · recommended"</string>
+    <string name="ui_recovery_and_firmware" formatted="false">"Recovery and firmware"</string>
+    <string name="ui_restore_recommended_settings" formatted="false">"Restore recommended settings"</string>
+    <string name="ui_mali_gpu_shared_memory_computation_failed_check_the_log" formatted="false">"Mali GPU shared-memory computation failed · check the log"</string>
+    <string name="ui_preflight_check_does_not_open_the_mac_disk" formatted="false">"Preflight check · does not open the Mac disk"</string>
+    <string name="ui_preflight_passed" formatted="false">"Preflight passed · "</string>
+    <string name="ui_loading" formatted="false">"Loading…"</string>
+    <string name="ui_start_mac" formatted="false">"Start Mac · "</string>
+    <string name="ui_service_test_does_not_open_a_virtual_mac_disk" formatted="false">"Service test · does not open a virtual Mac disk."</string>
+    <string name="ui_virtual_dfu_connection_passed_identifiers_are_in_the_log" formatted="false">"Virtual DFU connection passed · identifiers are in the log"</string>
+    <string name="ui_testing_cpu_gpu_shared_memory_no_macos_disk" formatted="false">"Testing CPU/GPU shared memory · no macOS disk"</string>
+    <string name="ui_testing_panvk_gpu_compatibility_authored_test_pattern" formatted="false">"Testing PanVK GPU compatibility · authored test pattern"</string>
+    <string name="ui_open_source_licenses" formatted="false">"Open-source licenses"</string>
+    <string name="ui_stop_this_mac_session" formatted="false">"Stop this Mac session?"</string>
+    <string name="ui_boot_install_disk_experiment_2_gb_2_minutes" formatted="false">"Boot install disk experiment · 2 GB / 2 minutes"</string>
+    <string name="ui_cpu_check_passed_5_test_groups" formatted="false">"CPU check passed · 5 test groups"</string>
+    <string name="ui_virtual_disk_test_error" formatted="false">"Virtual disk test error"</string>
+    <string name="ui_server_connection_test_error" formatted="false">"Server connection test error"</string>
+    <string name="ui_gpu_shared_memory_failed_check_the_log" formatted="false">"GPU shared memory failed · check the log"</string>
+    <string name="ui_file_size_limit_exceeded" formatted="false">"File size limit exceeded"</string>
+    <string name="ui_read_error" formatted="false">"Read error: "</string>
+    <string name="ui_4_cores" formatted="false">"4 cores"</string>
+    <string name="ui_virtual_mac_recovery_experiment_up_to" formatted="false">"Virtual Mac recovery experiment · up to "</string>
+    <string name="ui_test_virtual_gpu_initialization" formatted="false">"Test virtual GPU initialization"</string>
+    <string name="ui_virtual_disk_test_passed" formatted="false">"Virtual disk test passed"</string>
+    <string name="ui_recommended_start_2_cores_2_gb_your_current_choices_appear_i" formatted="false">"Recommended start  2 cores · 2 GB\nYour current choices appear in Launch settings."</string>
+    <string name="ui_display_transport_test_test_colors" formatted="false">"Display transport test · test colors"</string>
+    <string name="ui_unknown_graphics_backend" formatted="false">"Unknown graphics backend."</string>
+    <string name="ui_virtual_dfu_connection_error" formatted="false">"Virtual DFU connection error"</string>
+    <string name="ui_testing_gpu_shader_translation_test_pattern" formatted="false">"Testing GPU shader translation · test pattern"</string>
+    <string name="ui_cpu_jit_requirements_are_not_met_check_the_log" formatted="false">"CPU/JIT requirements are not met. Check the log."</string>
+    <string name="ui_save_session_log" formatted="false">"Save session log"</string>
+    <string name="ui_click" formatted="false">"Click"</string>
+    <string name="ui_cannot_save_the_rom_file" formatted="false">"Cannot save the ROM file"</string>
+    <string name="ui_result_file_saved" formatted="false">"Result file saved"</string>
+    <string name="ui_research_clone_complete_source_preserved" formatted="false">"Research clone complete · source preserved"</string>
+    <string name="ui_compatibility_check_error_check_the_log" formatted="false">"Compatibility check error · check the log"</string>
+    <string name="ui_launch" formatted="false">"Launch"</string>
+    <string name="ui_send_text_to_virtual_mac" formatted="false">"Send text to virtual Mac"</string>
+    <string name="ui_testing_temporary_virtual_disk" formatted="false">"Testing temporary virtual disk"</string>
+    <string name="ui_close_virtual_mac_tools" formatted="false">"Close virtual Mac tools"</string>
+    <string name="ui_gpu_shared_memory_test_error" formatted="false">"GPU shared memory test error"</string>
+    <string name="ui_movement_is_independent_of_display_scaling_try_1_5_2_if_poin" formatted="false">"Movement is independent of display scaling. Try 1.5–2× if pointer travel is too small."</string>
+    <string name="ui_clone_failed_check_the_log" formatted="false">"Clone failed · check the log"</string>
+    <string name="ui_display_cache_test_failed_check_the_log" formatted="false">"Display cache test failed · check the log"</string>
+    <string name="ui_tests_library_initialization_device_registers_and_shutdown_w" formatted="false">"Tests library initialization, device registers and shutdown without opening a macOS disk."</string>
+    <string name="ui_recovery_writes_installation_data_to_a_new_virtual_disk_disk" formatted="false">"Recovery writes installation data to a new virtual disk. Disks with existing partitions are rejected to preserve their contents."</string>
+    <string name="ui_graphics" formatted="false">"Graphics"</string>
+    <string name="ui_second_limit" formatted="false">" second limit\n"</string>
+    <string name="ui_virtual_gpu_initialization_failed_check_the_log" formatted="false">"Virtual GPU initialization failed · check the log"</string>
+    <string name="ui_original_mbedtls_notice" formatted="false">"Original MbedTLS notice"</string>
+    <string name="ui_sha_256_does_not_match_the_supported_avpbooter" formatted="false">"SHA-256 does not match the supported AVPBooter"</string>
+    <string name="ui_memory" formatted="false">"Memory"</string>
+    <string name="ui_cancel" formatted="false">"Cancel"</string>
+    <string name="ui_groups_check_the_log" formatted="false">" groups · check the log"</string>
+    <string name="ui_ready_review_your_mac_launch_settings" formatted="false">"Ready · Review your Mac launch settings"</string>
+    <string name="ui_session_cancelled" formatted="false">"Session cancelled."</string>
+    <string name="ui_checking_rom_file" formatted="false">"Checking ROM file"</string>
+    <string name="ui_rom_check_passed_firmware_experiments_are_available" formatted="false">"ROM check passed · firmware experiments are available"</string>
+    <string name="ui_test_cpu_instructions_memory_and_graphics_separately_expand" formatted="false">"Test CPU instructions, memory and graphics separately. Expand recovery tools below when needed."</string>
+    <string name="ui_cannot_open_the_save_location" formatted="false">"Cannot open the save location"</string>
+    <string name="ui_the_tablet_is_low_on_memory_close_other_apps_and_try_again" formatted="false">"The tablet is low on memory. Close other apps and try again."</string>
+    <string name="ui_cpu_gpu_shared_memory_passed_guest_acceleration_unverified" formatted="false">"CPU/GPU shared memory passed · guest acceleration unverified"</string>
+    <string name="ui_save_error" formatted="false">"Save error · "</string>
+    <string name="ui_cpu_cores" formatted="false">"CPU cores"</string>
+    <string name="ui_virtual_mac_session_error_check_the_log" formatted="false">"Virtual Mac session error · check the log"</string>
+    <string name="ui_applies_to_your_next_mac_session" formatted="false">"Applies to your next Mac session"</string>
+    <string name="ui_session_test_authored_fixture" formatted="false">"Session test · authored fixture"</string>
+    <string name="ui_swipe_move_pointer_tap_click_two_fingers_scroll" formatted="false">"Swipe: move pointer · tap: click · two fingers: scroll"</string>
+    <string name="ui_stop_mac" formatted="false">"Stop Mac"</string>
+    <string name="ui_virtual_disk_test_failed_check_the_log" formatted="false">"Virtual disk test failed · check the log"</string>
+    <string name="ui_original_henge_gplv2_or_later" formatted="false">"Original Henge GPLv2 or later"</string>
+    <string name="ui_cores_memory" formatted="false">" cores · memory "</string>
+    <string name="ui_graphics_preflight_failed_choose_another_backend_or_check_th" formatted="false">"Graphics preflight failed. Choose another backend or check the log."</string>
+    <string name="ui_virtual_mac_session" formatted="false">"Virtual Mac session"</string>
+    <string name="ui_mali_memory_api_test_error" formatted="false">"Mali memory API test error"</string>
+    <string name="ui_local_mac_workspace" formatted="false">"NaruVM"</string>
+    <string name="ui_test_ended_normally" formatted="false">"Test ended normally"</string>
+    <string name="ui_the_selected_graphics_backend_failed_preflight_check_the_log" formatted="false">"The selected graphics backend failed preflight. Check the log and select another backend."</string>
+    <string name="ui_gpu_shared_memory_passed_macos_acceleration_not_connected" formatted="false">"GPU shared memory passed · macOS acceleration not connected"</string>
+    <string name="ui_this_dialog_supports_latin_letters_numbers_and_symbols_only" formatted="false">"This dialog supports Latin letters, numbers and symbols only"</string>
+    <string name="ui_cannot_open_the_file" formatted="false">"Cannot open the file"</string>
+    <string name="ui_virtual_dfu_connection_failed_check_the_log" formatted="false">"Virtual DFU connection failed · check the log"</string>
+    <string name="ui_testing_virtual_gpu_library_initialization_no_guest" formatted="false">"Testing virtual GPU library initialization · no guest"</string>
+    <string name="ui_shared_memory_test_error" formatted="false">"Shared memory test error"</string>
+    <string name="ui_timeout_no_stop_response" formatted="false">"TIMEOUT · no stop response\n"</string>
+    <string name="ui_my_mac" formatted="false">"My Mac"</string>
+    <string name="ui_import_rom_file" formatted="false">"Import ROM file"</string>
+    <string name="ui_gpu_computation_pixels_passed_macos_display_unverified" formatted="false">"GPU computation/pixels passed · macOS display unverified"</string>
+    <string name="ui_open_the_app_and_try_again_foreground_service_error" formatted="false">"Open the app and try again · foreground service error"</string>
+    <string name="ui_macos_is_booting_waiting_for_the_display" formatted="false">"macOS is booting · waiting for the display"</string>
+    <string name="ui_run_cpu_tests" formatted="false">"Run CPU tests"</string>
+    <string name="ui_list" formatted="false">"List"</string>
+    <string name="ui_panvk_compatibility_test_error" formatted="false">"PanVK compatibility test error"</string>
+    <string name="ui_recovery_tool_finished_check_the_log" formatted="false">"Recovery tool finished · check the log"</string>
+    <string name="ui_a_rom_and_an_existing_mac_disk_are_required_a_new_installati" formatted="false">"Choose a version below to download, verify, install to a fresh disk and start your Mac."</string>
+    <string name="ui_panvk_shader_test_passed_macos_acceleration_not_connected" formatted="false">"PanVK shader test passed · macOS acceleration not connected"</string>
+    <string name="ui_open_virtual_mac_input_and_stop_tools" formatted="false">"Open virtual Mac input and stop tools"</string>
+    <string name="ui_a_rom_and_an_existing_mac_disk_are_required_to_start" formatted="false">"A ROM and an existing Mac disk are required to start."</string>
+    <string name="ui_test_virtual_dfu_connection" formatted="false">"Test virtual DFU connection"</string>
+    <string name="ui_gpu_copy_path_failed_macos_use_deferred" formatted="false">"GPU copy path failed · macOS use deferred"</string>
+    <string name="ui_recovery_experiment_error" formatted="false">"Recovery experiment error"</string>
+    <string name="ui_licenses_and_source" formatted="false">"Licenses and source"</string>
+    <string name="ui_check_device_compatibility" formatted="false">"Check device compatibility"</string>
+    <string name="ui_not_enough_memory_would_remain_for_android_choose_a_lower_al" formatted="false">"Not enough memory would remain for Android. Choose a lower allocation."</string>
+    <string name="ui_external_mouse_movement_speed" formatted="false">"External mouse movement speed"</string>
+    <string name="ui_apple_server_connection_failed_check_network_log" formatted="false">"Apple server connection failed · check network log"</string>
+    <string name="ui_type_text" formatted="false">"Type text"</string>
+    <string name="ui_memory_allocated_to_the_mac" formatted="false">"Memory allocated to the Mac"</string>
+    <string name="resource_summary">%1$d cores / %2$d GB</string>
+    <string-array name="gpu_labels">
+        <item>Auto · recommended</item>
+        <item>CPU rendering · portable, slow</item>
+        <item>System Vulkan · experimental</item>
+        <item>Mali PanVK · experimental</item>
+        <item>Adreno Turnip · separate driver</item>
+    </string-array>
+    <string-array name="mouse_speed_labels">
+        <item>0.5×</item>
+        <item>1× · recommended</item>
+        <item>1.5×</item>
+        <item>2×</item>
+        <item>3×</item>
+    </string-array>
+    <string name="install_title">Install macOS</string>
+    <string name="install_action">Download, install &amp; start</string>
+    <string name="install_another">Install another Mac</string>
+    <string name="install_description">Choose a version. Download, verification, a fresh disk and first boot run in sequence. Finish account setup in macOS.</string>
+    <string name="install_version">macOS version</string>
+    <string name="install_observed">15.6.1 · Android boot observed</string>
+    <string name="install_unverified">%1$s · Android untested</string>
+    <string name="install_size">Download %1$.1f GiB · allow about %2$.1f GiB free. Storage is an estimate; existing Macs are kept.</string>
+    <string name="install_experimental">This version has not been installed or booted on Android. The experimental path may fail; availability is not a compatibility guarantee.</string>
+    <string name="install_15_note">15.6.1 reached a desktop in prior tablet research. The new automatic installation flow still needs a complete real-device run.</string>
+    <string name="install_legal">Downloads come directly from Apple. Review Apple’s macOS license and use only where permitted. No Apple images are bundled.</string>
+    <string name="install_preparing">Preparing a fresh Mac</string>
+    <string name="install_rom">Downloading and verifying boot ROM</string>
+    <string name="install_downloading">Downloading macOS</string>
+    <string name="install_verifying">Verifying SHA-256</string>
+    <string name="install_restoring">Installing to a new disk · keep the app open</string>
+    <string name="install_ready">Installed · return to start your Mac</string>
+    <string name="install_failed">Installation stopped · see details and retry</string>
+    <string name="install_paused">Stopped · downloads can resume on retry</string>
+    <string name="install_pause">Stop installation</string>
+    <string name="install_pause_note">A download can resume. An interrupted installation stays separate; retry creates a new disk.</string>
+    <string name="install_stopping">Finishing writes and stopping…</string>
+    <string name="install_busy">Stop the current Mac or installation first.</string>
+    <string name="install_memory">Installation needs at least 4 GiB total device memory and available Android memory.</string>
+    <string name="install_space">About %1$.1f GiB free storage is needed. Existing files were preserved.</string>
+    <string name="install_android_timeout">Android paused the background download. Open the app and retry to resume.</string>
+    <string name="nav_tests">Tests</string>
+    <string name="home_unprepared">Choose a macOS version to get started.</string>
+    <string name="resource_first_boot">Resources apply to first boot. Installation uses 2 GB of RAM.</string>
+</resources>

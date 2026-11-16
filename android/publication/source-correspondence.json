@@ -1,0 +1,1598 @@
+{
+  "format": 1,
+  "label": "observed-offline-origin-audit",
+  "date": "2026-11-16",
+  "apk_sha256": "55d78d6f8077bce71dba7e6ad5add2d870b9b4632905b110bdddf5ecf345ee37",
+  "native_members": 53,
+  "native_members_mapped": 53,
+  "exact_package_members": 27,
+  "exact_local_build_outputs": 26,
+  "used_package_versions": [
+    {
+      "name": "glib",
+      "version": "2.90.1"
+    },
+    {
+      "name": "libandroid-shmem",
+      "version": "0.7"
+    },
+    {
+      "name": "libandroid-support",
+      "version": "29-1"
+    },
+    {
+      "name": "libc++",
+      "version": "30"
+    },
+    {
+      "name": "libdrm",
+      "version": "2.4.134"
+    },
+    {
+      "name": "libffi",
+      "version": "3.8.0"
+    },
+    {
+      "name": "libiconv",
+      "version": "1.19.1"
+    },
+    {
+      "name": "libllvm",
+      "version": "21.1.8-3"
+    },
+    {
+      "name": "libslirp",
+      "version": "4.9.7"
+    },
+    {
+      "name": "libwayland",
+      "version": "1.26.0"
+    },
+    {
+      "name": "libx11",
+      "version": "1.8.14"
+    },
+    {
+      "name": "libxau",
+      "version": "1.0.12-2"
+    },
+    {
+      "name": "libxcb",
+      "version": "1.17.0-1"
+    },
+    {
+      "name": "libxdmcp",
+      "version": "1.1.5-2"
+    },
+    {
+      "name": "libxml2",
+      "version": "2.15.4-1"
+    },
+    {
+      "name": "libxshmfence",
+      "version": "1.3.3-1"
+    },
+    {
+      "name": "mesa-vulkan-icd-swrast",
+      "version": "26.2.7"
+    },
+    {
+      "name": "pcre2",
+      "version": "10.49"
+    },
+    {
+      "name": "zlib",
+      "version": "1.4"
+    },
+    {
+      "name": "zstd",
+      "version": "1.5.7-1"
+    }
+  ],
+  "input_package_entries": 29,
+  "recipe_files_verified": 147,
+  "project_input_files_verified": 927,
+  "source_manifest_sha256": "fa332af86d717fe763c1a286b740554ee6469c01dfc595e9bc6d683c10aa0a6c",
+  "rows": [
+    {
+      "apk_member": "lib/arm64-v8a/libandroid-shmem.so",
+      "sha256": "84475798e07c8174dbbfaec70a827fdb02f19ffa69a589380c13e7507fd0e731",
+      "bytes": 14432,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "software",
+          "package": "libandroid-shmem",
+          "version": "0.7",
+          "deb_sha256": "0da3a24d558b93c92bcf8d611e0826a99ff96e396b148e6cdf33b47c47c57ff6",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libandroid-shmem",
+          "source_input_ids": [
+            "libandroid-shmem-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libandroid-shmem",
+            "Architecture": "aarch64",
+            "Version": "0.7"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libandroid-shmem.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libandroid-support.so",
+      "sha256": "739cf829511d71dafd6c67fdbb70f3f0c6048642ea2e1967790ee961fde14430",
+      "bytes": 20736,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "network",
+          "package": "libandroid-support",
+          "version": "29-1",
+          "deb_sha256": "f2f145d6135ad4843ac9670153be3e3944dc1e6f1736d46d2306c28f2b86f517",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libandroid-support",
+          "source_input_ids": [
+            "libandroid-support-0",
+            "libandroid-support-1"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libandroid-support",
+            "Architecture": "aarch64",
+            "Version": "29-1"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libandroid-support.so"
+        },
+        {
+          "group": "software",
+          "package": "libandroid-support",
+          "version": "29-1",
+          "deb_sha256": "f2f145d6135ad4843ac9670153be3e3944dc1e6f1736d46d2306c28f2b86f517",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libandroid-support",
+          "source_input_ids": [
+            "libandroid-support-0",
+            "libandroid-support-1"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libandroid-support",
+            "Architecture": "aarch64",
+            "Version": "29-1"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libandroid-support.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_ahb_alias_test.so",
+      "sha256": "5abd219149212b230282031c01b57a71588fe89ff31efa218eb12bdbc4abb242",
+      "bytes": 172416,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/CMakeLists.txt:henge_ahb_alias_test",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_clone.so",
+      "sha256": "632e616ab9fe42690b30669a48f832ec450a22ddddcd6137481e831132b3094f",
+      "bytes": 67752,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/CMakeLists.txt:henge_clone",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_counter_test.so",
+      "sha256": "ef263928b892837c8f00591d7c407fdc4aaf508bd4dc5253310d8767a04feb59",
+      "bytes": 790256,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/CMakeLists.txt:henge_counter_test",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_cpu_native_bench.so",
+      "sha256": "802f91478c235f64e024124089e8b09adfd68f33130fad563ea16b95aea9e72b",
+      "bytes": 790656,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/CMakeLists.txt:henge_cpu_native_bench",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_frame_jni.so",
+      "sha256": "3a4e07c8c8a6d061c0500ea84e9e98953c143bdd081cca6fba26103ce51fdff7",
+      "bytes": 56176,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/CMakeLists.txt:henge_frame_jni",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_frames_test.so",
+      "sha256": "56f531a442cad317c35241ff264c6bae566532f19fbd9a7c48bc6cfb77e66aa0",
+      "bytes": 52752,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/CMakeLists.txt:henge_frames_test",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_gpu.so",
+      "sha256": "1a740621291707c62e57f5c132ab6b7f9808fff31509f9f40645072e03322acc",
+      "bytes": 29302240,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/build_gpu.py",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lab.so",
+      "sha256": "491b6498c8fb33aee3359ff4612e30ea35198d473498f8aa7b6add0ee3845472",
+      "bytes": 14025224,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/CMakeLists.txt:henge_lab",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lvp_libLLVM_so.so",
+      "sha256": "ae20f8a19dcd84740bb3b3c7cc5845ec44f5143cbf7dab44a64160a4b7f21fa0",
+      "bytes": 133597776,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "software",
+          "package": "libllvm",
+          "version": "21.1.8-3",
+          "deb_sha256": "5056a73f2645fc9c0759e6f94a1bd6edcf36305acaef58dc685211ced9cc2a02",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libllvm",
+          "source_input_ids": [
+            "libllvm-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libllvm",
+            "Architecture": "aarch64",
+            "Version": "21.1.8-3"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libLLVM.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lvp_libX11_xcb_so.so",
+      "sha256": "c8b5bea4369067b8ad5241752ae21c51d67b97b638bfab193dad4345aba10588",
+      "bytes": 4160,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "software",
+          "package": "libx11",
+          "version": "1.8.14",
+          "deb_sha256": "c5206ee9cc26a63985d110b57bc24f23c7c97505e6100c4d6a8547a1aeed5532",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libx11",
+          "source_input_ids": [
+            "libx11-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libx11",
+            "Architecture": "aarch64",
+            "Version": "1.8.14"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libX11-xcb.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lvp_libXau_so.so",
+      "sha256": "e820c412bac544d28d4288f50f7b6dee046e2f32cc7cfc82e203c642fbaa42bf",
+      "bytes": 9904,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "software",
+          "package": "libxau",
+          "version": "1.0.12-2",
+          "deb_sha256": "2d86bed61ce89dd8fdb55e565aede10155f2ce3adaccb61d5f1375aec3314083",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libxau",
+          "source_input_ids": [
+            "libxau-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libxau",
+            "Architecture": "aarch64",
+            "Version": "1.0.12-2"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libXau.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lvp_libXdmcp_so.so",
+      "sha256": "fca2b4d37620a90b9e97ff5ef24b4b7f438fcce6a837db152705348c95379ef8",
+      "bytes": 18920,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "software",
+          "package": "libxdmcp",
+          "version": "1.1.5-2",
+          "deb_sha256": "caea0cf5c0028af0840774094b8900ef7afffd8f9bbd7b1abfbe66851f0d6077",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libxdmcp",
+          "source_input_ids": [
+            "libxdmcp-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libxdmcp",
+            "Architecture": "aarch64",
+            "Version": "1.1.5-2"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libXdmcp.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lvp_libc___shared_so.so",
+      "sha256": "05bef9d3901910c3ff8ab450b03bc8b28383d363a2290f2f7b9aed7331ea6ff7",
+      "bytes": 1423696,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "software",
+          "package": "libc++",
+          "version": "30",
+          "deb_sha256": "53d0b84a7ba7459024257cb94d5b136fe13ef858567f65a8064b35950799f2ca",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libc++",
+          "source_input_ids": [
+            "libc++-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libc++",
+            "Architecture": "aarch64",
+            "Version": "30"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libc++_shared.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lvp_libdrm_so.so",
+      "sha256": "0e4e8f0bbc6809589206a757759a6506e0aa7c88e0b55de2fe8d54f7ef6a3323",
+      "bytes": 76016,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "software",
+          "package": "libdrm",
+          "version": "2.4.134",
+          "deb_sha256": "0cbe82140cf325c15473fbf53a3711fc7a2fb88e36a3eea58a3267c461ab4a17",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libdrm",
+          "source_input_ids": [
+            "libdrm-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libdrm",
+            "Architecture": "aarch64",
+            "Version": "2.4.134"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libdrm.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lvp_libffi_so.so",
+      "sha256": "e118d741361c64015c074c5e1f24e42e44292d0d694ca3ba1e109205c10421f9",
+      "bytes": 87128,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "software",
+          "package": "libffi",
+          "version": "3.8.0",
+          "deb_sha256": "4f255badf74cd31f6a2801c17fa1444199c84c834b517b7c843e2fe9ebe91d77",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libffi",
+          "source_input_ids": [
+            "libffi-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libffi",
+            "Architecture": "aarch64",
+            "Version": "3.8.0"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libffi.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lvp_libiconv_so.so",
+      "sha256": "540df15e445f9117ce757dedf54fefd93c4db34ecf2caf06ef1cb397ac6fc940",
+      "bytes": 1083488,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "network",
+          "package": "libiconv",
+          "version": "1.19.1",
+          "deb_sha256": "a1c6323eff4f660e16ae6f5832356444b3269c19a4f61146355a49e7c4be5ed1",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libiconv",
+          "source_input_ids": [
+            "libiconv-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libiconv",
+            "Architecture": "aarch64",
+            "Version": "1.19.1"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libiconv.so"
+        },
+        {
+          "group": "software",
+          "package": "libiconv",
+          "version": "1.19.1",
+          "deb_sha256": "a1c6323eff4f660e16ae6f5832356444b3269c19a4f61146355a49e7c4be5ed1",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libiconv",
+          "source_input_ids": [
+            "libiconv-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libiconv",
+            "Architecture": "aarch64",
+            "Version": "1.19.1"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libiconv.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lvp_libvulkan_lvp_so.so",
+      "sha256": "d1cbde6077dfbea105d2e34776716535d427e79456551e66a5971eab5247011d",
+      "bytes": 13241192,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "software",
+          "package": "mesa-vulkan-icd-swrast",
+          "version": "26.2.7",
+          "deb_sha256": "09ab1392ff465a0ffc73d9fd8f77114a0238f435b1250f053c86a460dc994a28",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/mesa",
+          "source_input_ids": [
+            "mesa-vulkan-icd-swrast-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "mesa-vulkan-icd-swrast",
+            "Architecture": "aarch64",
+            "Version": "26.2.7"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libvulkan_lvp.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lvp_libwayland_client_so.so",
+      "sha256": "fa49c2f119b84a0cf54669de1706a6bc427bb8a7f147c977328575ccbb920126",
+      "bytes": 64848,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "software",
+          "package": "libwayland",
+          "version": "1.26.0",
+          "deb_sha256": "f03ea02f7d523399514e2463c5459dab234b802bbda41a61c0340b4011dc773d",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libwayland",
+          "source_input_ids": [
+            "libwayland-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libwayland",
+            "Architecture": "aarch64",
+            "Version": "1.26.0"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libwayland-client.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lvp_libxcb_dri3_so.so",
+      "sha256": "46a0bcdb74795fafcf62181439bb62d69568f0c6c0c652655002923dd02178a8",
+      "bytes": 14680,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "software",
+          "package": "libxcb",
+          "version": "1.17.0-1",
+          "deb_sha256": "191c3642b6a8c754bc75b69b94a81858ecb5f18766dc085aff55559b8087ad34",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libxcb",
+          "source_input_ids": [
+            "libxcb-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libxcb",
+            "Architecture": "aarch64",
+            "Version": "1.17.0-1"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libxcb-dri3.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lvp_libxcb_present_so.so",
+      "sha256": "3914002f479e29cb9796045de542b091cd592e2347ec84272da3bbce57326c07",
+      "bytes": 9976,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "software",
+          "package": "libxcb",
+          "version": "1.17.0-1",
+          "deb_sha256": "191c3642b6a8c754bc75b69b94a81858ecb5f18766dc085aff55559b8087ad34",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libxcb",
+          "source_input_ids": [
+            "libxcb-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libxcb",
+            "Architecture": "aarch64",
+            "Version": "1.17.0-1"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libxcb-present.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lvp_libxcb_randr_so.so",
+      "sha256": "0c2bfe3c4c8150a913bc7a24bdbeca6d379a388de9f50228bd746d0bf14c6c0e",
+      "bytes": 53896,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "software",
+          "package": "libxcb",
+          "version": "1.17.0-1",
+          "deb_sha256": "191c3642b6a8c754bc75b69b94a81858ecb5f18766dc085aff55559b8087ad34",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libxcb",
+          "source_input_ids": [
+            "libxcb-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libxcb",
+            "Architecture": "aarch64",
+            "Version": "1.17.0-1"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libxcb-randr.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lvp_libxcb_shm_so.so",
+      "sha256": "dbd474ea05afb27c33269aa1cf26a62edc08e7fb79a2f8459aebc4cb370cf1bb",
+      "bytes": 9368,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "software",
+          "package": "libxcb",
+          "version": "1.17.0-1",
+          "deb_sha256": "191c3642b6a8c754bc75b69b94a81858ecb5f18766dc085aff55559b8087ad34",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libxcb",
+          "source_input_ids": [
+            "libxcb-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libxcb",
+            "Architecture": "aarch64",
+            "Version": "1.17.0-1"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libxcb-shm.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lvp_libxcb_so.so",
+      "sha256": "13d59f33b51765e4d1444cad3f7f949ccf60a9bd34e53bdbe10cfcd787fda14c",
+      "bytes": 136584,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "software",
+          "package": "libxcb",
+          "version": "1.17.0-1",
+          "deb_sha256": "191c3642b6a8c754bc75b69b94a81858ecb5f18766dc085aff55559b8087ad34",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libxcb",
+          "source_input_ids": [
+            "libxcb-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libxcb",
+            "Architecture": "aarch64",
+            "Version": "1.17.0-1"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libxcb.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lvp_libxcb_sync_so.so",
+      "sha256": "3940e8236e0ead4696e2f09c4d297fa629cca0859243b73d33fcf11535e335ba",
+      "bytes": 22224,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "software",
+          "package": "libxcb",
+          "version": "1.17.0-1",
+          "deb_sha256": "191c3642b6a8c754bc75b69b94a81858ecb5f18766dc085aff55559b8087ad34",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libxcb",
+          "source_input_ids": [
+            "libxcb-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libxcb",
+            "Architecture": "aarch64",
+            "Version": "1.17.0-1"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libxcb-sync.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lvp_libxcb_xfixes_so.so",
+      "sha256": "41af7ab9535ff73913889255cb7a8c87d8f19c1e6749b88f4d4a98df66caa1b2",
+      "bytes": 26664,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "software",
+          "package": "libxcb",
+          "version": "1.17.0-1",
+          "deb_sha256": "191c3642b6a8c754bc75b69b94a81858ecb5f18766dc085aff55559b8087ad34",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libxcb",
+          "source_input_ids": [
+            "libxcb-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libxcb",
+            "Architecture": "aarch64",
+            "Version": "1.17.0-1"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libxcb-xfixes.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lvp_libxml2_so_16.so",
+      "sha256": "ed8fca535487054960e6a4edb0b4a14c5efe6256710f3b2f0bf66f59343960e6",
+      "bytes": 1092824,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "software",
+          "package": "libxml2",
+          "version": "2.15.4-1",
+          "deb_sha256": "d315861bbcf716cfb088f53cddab9fb6a96430cc66769f79774cc69c2f53bcff",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libxml2",
+          "source_input_ids": [
+            "libxml2-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libxml2",
+            "Architecture": "aarch64",
+            "Version": "2.15.4-1"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libxml2.so.16.1.4"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lvp_libxshmfence_so.so",
+      "sha256": "0ffb6814ca405e76d34e56630cb5e8cc115fa6e09936f9f9472c7d2cd34f3d8f",
+      "bytes": 7352,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "software",
+          "package": "libxshmfence",
+          "version": "1.3.3-1",
+          "deb_sha256": "7644c2969c2ce4d763785bd2a85eb32ccf8e5ad40228cd92b193f7edb6398d92",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libxshmfence",
+          "source_input_ids": [
+            "libxshmfence-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libxshmfence",
+            "Architecture": "aarch64",
+            "Version": "1.3.3-1"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libxshmfence.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lvp_libz_so_1.so",
+      "sha256": "df5e95e3ea1ffb8f2e0dcebfc43a6c0824b6aebec11752ad8f8764123e24f8a6",
+      "bytes": 74056,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "software",
+          "package": "zlib",
+          "version": "1.4",
+          "deb_sha256": "e3027565ae50bcd8ba5113c988b589754ae192c9cc3e6afbe3e4ed7c06b2598e",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/zlib",
+          "source_input_ids": [
+            "zlib-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "zlib",
+            "Architecture": "aarch64",
+            "Version": "1.4"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libz.so.1.4"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lvp_libzstd_so_1.so",
+      "sha256": "1677d5e828c1839f111f0261697c08f99a5e4e80434659ab88e5ff859a1374f7",
+      "bytes": 820840,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "software",
+          "package": "zstd",
+          "version": "1.5.7-1",
+          "deb_sha256": "e1b4a5113648da8de189620ba1fce74c48b2d0833d9043391b9a1c91fb606fd3",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/zstd",
+          "source_input_ids": [
+            "zstd-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "zstd",
+            "Architecture": "aarch64",
+            "Version": "1.5.7-1"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libzstd.so.1.5.7"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_lvp_loader.so",
+      "sha256": "8c0743bb38f2c4c4c1e70887a8e9724122e48a66f1af859cc1001eea8ef94c51",
+      "bytes": 15640,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/build_software.py",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_mali_userptr_test.so",
+      "sha256": "39a3341d55e03cc3513dd3695b5e857b91d5630f742ffd66cb4db1bd7f36c02b",
+      "bytes": 27472,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/CMakeLists.txt:henge_mali_userptr_test",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_net_libglib_2_0_so_0.so",
+      "sha256": "8786e5753b0ec128609322eb4b5fd51ec187a0a54ed3181dc3f2d39afa6b34bb",
+      "bytes": 1270016,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "network",
+          "package": "glib",
+          "version": "2.90.1",
+          "deb_sha256": "132d8ce961d96a7252fd4bc2228bddd385b1b17b706a46caae6d541ae0e4b2c0",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/glib",
+          "source_input_ids": [
+            "glib-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "glib",
+            "Architecture": "aarch64",
+            "Version": "2.90.1"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libglib-2.0.so.0.9000.1"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_net_libiconv_so.so",
+      "sha256": "540df15e445f9117ce757dedf54fefd93c4db34ecf2caf06ef1cb397ac6fc940",
+      "bytes": 1083488,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "network",
+          "package": "libiconv",
+          "version": "1.19.1",
+          "deb_sha256": "a1c6323eff4f660e16ae6f5832356444b3269c19a4f61146355a49e7c4be5ed1",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libiconv",
+          "source_input_ids": [
+            "libiconv-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libiconv",
+            "Architecture": "aarch64",
+            "Version": "1.19.1"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libiconv.so"
+        },
+        {
+          "group": "software",
+          "package": "libiconv",
+          "version": "1.19.1",
+          "deb_sha256": "a1c6323eff4f660e16ae6f5832356444b3269c19a4f61146355a49e7c4be5ed1",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libiconv",
+          "source_input_ids": [
+            "libiconv-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libiconv",
+            "Architecture": "aarch64",
+            "Version": "1.19.1"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libiconv.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_net_libpcre2_8_so.so",
+      "sha256": "52c7ab426f4f274f630d05ef04c852153f4bb7e78ae178ce61cb17e258569bdf",
+      "bytes": 479984,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "network",
+          "package": "pcre2",
+          "version": "10.49",
+          "deb_sha256": "c27995e5f52b8ecc9b8b3e662eb08e49f82a18bfd3f34343936acc7b23964724",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/pcre2",
+          "source_input_ids": [
+            "pcre2-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "pcre2",
+            "Architecture": "aarch64",
+            "Version": "10.49"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libpcre2-8.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_net_libslirp_so.so",
+      "sha256": "da4ad8a0b0bd5c0576f991c209533926d0e3a99494c7a7361600157835646ae0",
+      "bytes": 125968,
+      "origin": "pinned-deb-byte-identical",
+      "package_matches": [
+        {
+          "group": "network",
+          "package": "libslirp",
+          "version": "4.9.7",
+          "deb_sha256": "2dd2c214bcec7f1125fcd4040606e72768c38010ba87ed9c0365193616ba7ada",
+          "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+          "recipe_path": "packages/libslirp",
+          "source_input_ids": [
+            "libslirp-0"
+          ],
+          "binary_producing_recipe_attested": false,
+          "control_fields": {
+            "Package": "libslirp",
+            "Architecture": "aarch64",
+            "Version": "4.9.7"
+          },
+          "member": "./data/data/com.termux/files/usr/lib/libslirp.so"
+        }
+      ],
+      "source_correspondence": "version-matched-candidate-not-build-attested"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_network_test.so",
+      "sha256": "cceee08098499afe3ed5b054272e8c7075b70a1266e5d487c288f3b73c2cd43f",
+      "bytes": 148712,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/CMakeLists.txt:henge_network_test",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_panvk_userptr_driver.so",
+      "sha256": "c220683dce9dae602c8af3b234a94c1a3a4102109d3b4aad004900957e926275",
+      "bytes": 20260432,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/build_panvk_source.py + android/build_panvk_userptr_probe.py",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_panvk_userptr_loader.so",
+      "sha256": "d36045090195ea5af1feb2f4821ecaf97b59ff8c1338a2b996290106dd18a514",
+      "bytes": 21440,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/build_panvk_userptr_probe.py",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_platform_test.so",
+      "sha256": "c08ec8ed396d28dc12675f12a6db363e81be81b0b8cd91cb855a6a43890fe3cb",
+      "bytes": 30232,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/CMakeLists.txt:henge_platform_test",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_reims_probe.so",
+      "sha256": "9c94308091de891420069ccfeb73eae320a06a2f6580aa0628494db8a7ee6d15",
+      "bytes": 16568,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/build_reims.py",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_runtime_sampler_check.so",
+      "sha256": "120dec4182dd54949c98aea82c0276c2bf4404de4abee1d1e7dd5f7103dc0385",
+      "bytes": 28058560,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/build_gpu.py",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_sampler_check.so",
+      "sha256": "927f32f75c486573a335918464c9da719507e609db483893a86e5d53dc31b9d0",
+      "bytes": 721800,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/build_gpu.py",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_scanout_test.so",
+      "sha256": "1ac37074efc497676a2e82ff648703484109dc48c98c92d30c244c8019a55410",
+      "bytes": 696224,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/CMakeLists.txt:henge_scanout_test",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libhenge_turnip_loader.so",
+      "sha256": "2af6323bc41cdf69f569061f97ce1095af3e72d94d8b870e5a5bff9ba391ec8e",
+      "bytes": 13520,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/CMakeLists.txt:henge_turnip_loader",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libnaruvm_rom.so",
+      "sha256": "e3244bcc38928986a0b0be59aab82f67d94e9fe5d62c18f35852494d1782ba2e",
+      "bytes": 85848,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/CMakeLists.txt:naruvm_rom",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libreims_vgpu_c.so",
+      "sha256": "c4f78611bedf108a69b529eff838f797e9432e9d94d0f0a016fb4746fe3a9237",
+      "bytes": 36991056,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/build_reims.py",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libtest_classify.so",
+      "sha256": "c5548de785d39e450c49c7137220dd6bf3a62dc902d23de1103eecd8737d1e1c",
+      "bytes": 16248,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/CMakeLists.txt:test_classify",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libtest_mempath.so",
+      "sha256": "a8735d63de0ea135026dbfde3288eb3e8b72ec1dbedb0591ce37e5fc20e16829",
+      "bytes": 787912,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/CMakeLists.txt:test_mempath",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libtest_mmu.so",
+      "sha256": "e4a3b6812de330dafe2bad783834f847510c696523402428c81b01c65bdea351",
+      "bytes": 766656,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/CMakeLists.txt:test_mmu",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libtest_operands.so",
+      "sha256": "6539be2476b36f24d073b9589543e6ae35c8ca2210f112134f709353f7fb0a67",
+      "bytes": 15624,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/CMakeLists.txt:test_operands",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    },
+    {
+      "apk_member": "lib/arm64-v8a/libtest_shutdown.so",
+      "sha256": "eccf09ca4e6a4cdf916f85966dea32853e10ea0f373990233ea97a865cbb943f",
+      "bytes": 782128,
+      "origin": "local-build-output-byte-identical",
+      "build_recipe": "android/CMakeLists.txt:test_shutdown",
+      "source_correspondence": "observed-build-output-and-selected-inputs"
+    }
+  ],
+  "input_packages": [
+    {
+      "group": "network",
+      "package": "libslirp",
+      "version": "4.9.7",
+      "deb_sha256": "2dd2c214bcec7f1125fcd4040606e72768c38010ba87ed9c0365193616ba7ada",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libslirp",
+      "source_input_ids": [
+        "libslirp-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "libslirp",
+        "Architecture": "aarch64",
+        "Version": "4.9.7"
+      }
+    },
+    {
+      "group": "network",
+      "package": "glib",
+      "version": "2.90.1",
+      "deb_sha256": "132d8ce961d96a7252fd4bc2228bddd385b1b17b706a46caae6d541ae0e4b2c0",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/glib",
+      "source_input_ids": [
+        "glib-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "glib",
+        "Architecture": "aarch64",
+        "Version": "2.90.1"
+      }
+    },
+    {
+      "group": "network",
+      "package": "pcre2",
+      "version": "10.49",
+      "deb_sha256": "c27995e5f52b8ecc9b8b3e662eb08e49f82a18bfd3f34343936acc7b23964724",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/pcre2",
+      "source_input_ids": [
+        "pcre2-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "pcre2",
+        "Architecture": "aarch64",
+        "Version": "10.49"
+      }
+    },
+    {
+      "group": "network",
+      "package": "libandroid-support",
+      "version": "29-1",
+      "deb_sha256": "f2f145d6135ad4843ac9670153be3e3944dc1e6f1736d46d2306c28f2b86f517",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libandroid-support",
+      "source_input_ids": [
+        "libandroid-support-0",
+        "libandroid-support-1"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "libandroid-support",
+        "Architecture": "aarch64",
+        "Version": "29-1"
+      }
+    },
+    {
+      "group": "network",
+      "package": "libiconv",
+      "version": "1.19.1",
+      "deb_sha256": "a1c6323eff4f660e16ae6f5832356444b3269c19a4f61146355a49e7c4be5ed1",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libiconv",
+      "source_input_ids": [
+        "libiconv-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "libiconv",
+        "Architecture": "aarch64",
+        "Version": "1.19.1"
+      }
+    },
+    {
+      "group": "software",
+      "package": "vulkan-loader-generic",
+      "version": "1.4.368",
+      "deb_sha256": "8043459b6d4efd4834b756c6eeb539e8ae184d71046ffddff3ca75e85b1fcb27",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/vulkan-loader-generic",
+      "source_input_ids": [
+        "vulkan-loader-generic-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "vulkan-loader-generic",
+        "Architecture": "aarch64",
+        "Version": "1.4.368"
+      }
+    },
+    {
+      "group": "software",
+      "package": "mesa-vulkan-icd-swrast",
+      "version": "26.2.7",
+      "deb_sha256": "09ab1392ff465a0ffc73d9fd8f77114a0238f435b1250f053c86a460dc994a28",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/mesa",
+      "source_input_ids": [
+        "mesa-vulkan-icd-swrast-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "mesa-vulkan-icd-swrast",
+        "Architecture": "aarch64",
+        "Version": "26.2.7"
+      }
+    },
+    {
+      "group": "software",
+      "package": "zstd",
+      "version": "1.5.7-1",
+      "deb_sha256": "e1b4a5113648da8de189620ba1fce74c48b2d0833d9043391b9a1c91fb606fd3",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/zstd",
+      "source_input_ids": [
+        "zstd-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "zstd",
+        "Architecture": "aarch64",
+        "Version": "1.5.7-1"
+      }
+    },
+    {
+      "group": "software",
+      "package": "zlib",
+      "version": "1.4",
+      "deb_sha256": "e3027565ae50bcd8ba5113c988b589754ae192c9cc3e6afbe3e4ed7c06b2598e",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/zlib",
+      "source_input_ids": [
+        "zlib-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "zlib",
+        "Architecture": "aarch64",
+        "Version": "1.4"
+      }
+    },
+    {
+      "group": "software",
+      "package": "liblzma",
+      "version": "5.8.4",
+      "deb_sha256": "44e95e6e60dddb3705e60a344a4f009a1085a210797342b721eaff41b44033c0",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/liblzma",
+      "source_input_ids": [
+        "liblzma-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "liblzma",
+        "Architecture": "aarch64",
+        "Version": "5.8.4"
+      }
+    },
+    {
+      "group": "software",
+      "package": "ncurses",
+      "version": "6.6.20260307+really6.5.20250830",
+      "deb_sha256": "f44bbfdc3d42ec0217bffa978309390e59cea5a48a9a83226d4a496c42ad0b99",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/ncurses",
+      "source_input_ids": [
+        "ncurses-0",
+        "ncurses-1",
+        "ncurses-2",
+        "ncurses-3",
+        "ncurses-4"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "ncurses",
+        "Architecture": "aarch64",
+        "Version": "6.6.20260307+really6.5.20250830"
+      }
+    },
+    {
+      "group": "software",
+      "package": "libwayland",
+      "version": "1.26.0",
+      "deb_sha256": "f03ea02f7d523399514e2463c5459dab234b802bbda41a61c0340b4011dc773d",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libwayland",
+      "source_input_ids": [
+        "libwayland-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "libwayland",
+        "Architecture": "aarch64",
+        "Version": "1.26.0"
+      }
+    },
+    {
+      "group": "software",
+      "package": "libxml2",
+      "version": "2.15.4-1",
+      "deb_sha256": "d315861bbcf716cfb088f53cddab9fb6a96430cc66769f79774cc69c2f53bcff",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libxml2",
+      "source_input_ids": [
+        "libxml2-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "libxml2",
+        "Architecture": "aarch64",
+        "Version": "2.15.4-1"
+      }
+    },
+    {
+      "group": "software",
+      "package": "libiconv",
+      "version": "1.19.1",
+      "deb_sha256": "a1c6323eff4f660e16ae6f5832356444b3269c19a4f61146355a49e7c4be5ed1",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libiconv",
+      "source_input_ids": [
+        "libiconv-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "libiconv",
+        "Architecture": "aarch64",
+        "Version": "1.19.1"
+      }
+    },
+    {
+      "group": "software",
+      "package": "libandroid-glob",
+      "version": "0.6-3",
+      "deb_sha256": "2276ae8adedf0db76c2f4ffc94cc4cceb2f4f5d78e021b54e2e046d1233e7826",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libandroid-glob",
+      "source_input_ids": [],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "libandroid-glob",
+        "Architecture": "aarch64",
+        "Version": "0.6-3"
+      }
+    },
+    {
+      "group": "software",
+      "package": "libffi",
+      "version": "3.8.0",
+      "deb_sha256": "4f255badf74cd31f6a2801c17fa1444199c84c834b517b7c843e2fe9ebe91d77",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libffi",
+      "source_input_ids": [
+        "libffi-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "libffi",
+        "Architecture": "aarch64",
+        "Version": "3.8.0"
+      }
+    },
+    {
+      "group": "software",
+      "package": "libexpat",
+      "version": "2.10.0",
+      "deb_sha256": "0e4411f01f6fb664f3f04f9420289472f9afc30db01ea1c5d1e57fd9fa2354be",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libexpat",
+      "source_input_ids": [
+        "libexpat-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "libexpat",
+        "Architecture": "aarch64",
+        "Version": "2.10.0"
+      }
+    },
+    {
+      "group": "software",
+      "package": "libandroid-support",
+      "version": "29-1",
+      "deb_sha256": "f2f145d6135ad4843ac9670153be3e3944dc1e6f1736d46d2306c28f2b86f517",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libandroid-support",
+      "source_input_ids": [
+        "libandroid-support-0",
+        "libandroid-support-1"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "libandroid-support",
+        "Architecture": "aarch64",
+        "Version": "29-1"
+      }
+    },
+    {
+      "group": "software",
+      "package": "libxshmfence",
+      "version": "1.3.3-1",
+      "deb_sha256": "7644c2969c2ce4d763785bd2a85eb32ccf8e5ad40228cd92b193f7edb6398d92",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libxshmfence",
+      "source_input_ids": [
+        "libxshmfence-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "libxshmfence",
+        "Architecture": "aarch64",
+        "Version": "1.3.3-1"
+      }
+    },
+    {
+      "group": "software",
+      "package": "libxcb",
+      "version": "1.17.0-1",
+      "deb_sha256": "191c3642b6a8c754bc75b69b94a81858ecb5f18766dc085aff55559b8087ad34",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libxcb",
+      "source_input_ids": [
+        "libxcb-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "libxcb",
+        "Architecture": "aarch64",
+        "Version": "1.17.0-1"
+      }
+    },
+    {
+      "group": "software",
+      "package": "libxdmcp",
+      "version": "1.1.5-2",
+      "deb_sha256": "caea0cf5c0028af0840774094b8900ef7afffd8f9bbd7b1abfbe66851f0d6077",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libxdmcp",
+      "source_input_ids": [
+        "libxdmcp-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "libxdmcp",
+        "Architecture": "aarch64",
+        "Version": "1.1.5-2"
+      }
+    },
+    {
+      "group": "software",
+      "package": "libxau",
+      "version": "1.0.12-2",
+      "deb_sha256": "2d86bed61ce89dd8fdb55e565aede10155f2ce3adaccb61d5f1375aec3314083",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libxau",
+      "source_input_ids": [
+        "libxau-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "libxau",
+        "Architecture": "aarch64",
+        "Version": "1.0.12-2"
+      }
+    },
+    {
+      "group": "software",
+      "package": "libx11",
+      "version": "1.8.14",
+      "deb_sha256": "c5206ee9cc26a63985d110b57bc24f23c7c97505e6100c4d6a8547a1aeed5532",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libx11",
+      "source_input_ids": [
+        "libx11-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "libx11",
+        "Architecture": "aarch64",
+        "Version": "1.8.14"
+      }
+    },
+    {
+      "group": "software",
+      "package": "xorgproto",
+      "version": "2026.1",
+      "deb_sha256": "2463651143a386eba0d7baebac87ca5d2db5239d36cf38f9b2086f3c1bfdcbce",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/xorgproto",
+      "source_input_ids": [
+        "xorgproto-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "xorgproto",
+        "Architecture": "all",
+        "Version": "2026.1"
+      }
+    },
+    {
+      "group": "software",
+      "package": "xorg-util-macros",
+      "version": "1.20.2",
+      "deb_sha256": "11765ad1a6f181e36f807464f7b4360593d847dce245202a393eb2ca156520d0",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/xorg-util-macros",
+      "source_input_ids": [
+        "xorg-util-macros-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "xorg-util-macros",
+        "Architecture": "all",
+        "Version": "1.20.2"
+      }
+    },
+    {
+      "group": "software",
+      "package": "libllvm",
+      "version": "21.1.8-3",
+      "deb_sha256": "5056a73f2645fc9c0759e6f94a1bd6edcf36305acaef58dc685211ced9cc2a02",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libllvm",
+      "source_input_ids": [
+        "libllvm-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "libllvm",
+        "Architecture": "aarch64",
+        "Version": "21.1.8-3"
+      }
+    },
+    {
+      "group": "software",
+      "package": "libc++",
+      "version": "30",
+      "deb_sha256": "53d0b84a7ba7459024257cb94d5b136fe13ef858567f65a8064b35950799f2ca",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libc++",
+      "source_input_ids": [
+        "libc++-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "libc++",
+        "Architecture": "aarch64",
+        "Version": "30"
+      }
+    },
+    {
+      "group": "software",
+      "package": "libdrm",
+      "version": "2.4.134",
+      "deb_sha256": "0cbe82140cf325c15473fbf53a3711fc7a2fb88e36a3eea58a3267c461ab4a17",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libdrm",
+      "source_input_ids": [
+        "libdrm-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "libdrm",
+        "Architecture": "aarch64",
+        "Version": "2.4.134"
+      }
+    },
+    {
+      "group": "software",
+      "package": "libandroid-shmem",
+      "version": "0.7",
+      "deb_sha256": "0da3a24d558b93c92bcf8d611e0826a99ff96e396b148e6cdf33b47c47c57ff6",
+      "recipe_commit": "09d1dd79abccc429d8ad632ed1ad265f80938b4b",
+      "recipe_path": "packages/libandroid-shmem",
+      "source_input_ids": [
+        "libandroid-shmem-0"
+      ],
+      "binary_producing_recipe_attested": false,
+      "control_fields": {
+        "Package": "libandroid-shmem",
+        "Architecture": "aarch64",
+        "Version": "0.7"
+      }
+    }
+  ],
+  "complete_source_correspondence": false,
+  "binary_release_ready": false,
+  "limits": [
+    "Byte-identical package origin is narrower than proof of its binary-producing recipe commit.",
+    "Local output/input matches do not by themselves attest a historical source-to-binary build.",
+    "Source completeness, runtime/toolchain sources and release installation/relink acceptance remain separate gates.",
+    "No network, package scripts, driver, guest or device execution occurs in this audit."
+  ]
+}

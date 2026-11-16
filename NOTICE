@@ -1,0 +1,64 @@
+NaruVM research port
+Prepared 2026-11-16
+
+This is an independent experimental Android adaptation of Henge, based on
+https://github.com/Leviidev/Henge at
+e98920ce3b108d17f98acaff87f74e5a477ec4b2.
+It is not an official Android release by the upstream project.
+Original authors retain their copyrights; all existing file notices apply.
+Upstream Henge also credits GPL-2.0-or-later code from Husk:
+https://github.com/Leviidev/Husk
+The Android build does not import Husk's iOS pairing or StikJIT setup.
+
+Henge and original Android-port material are offered under
+GPL-2.0-or-later unless a file states another license. LICENSE contains GPLv2;
+the later-version option is preserved. This statement does not relicense
+third-party code. See docs/licensing.md and android/publication/licenses.json.
+The restoration stack includes different GPL/LGPL grants. Do not describe
+an APK containing every component as GPLv2-only. The combined research APK
+selects the GPLv3 option and the LGPLv3 option where LGPL-2.1-or-later applies;
+all original grants remain available. See android/publication/license-selection.json.
+GPLv3 and LGPL texts are included. This selection does not establish complete
+binary-release source, notice or installation compliance.
+
+Android changes dated 2026-11-14 through 2026-11-16 cover Bionic/NDK host
+interfaces, RW/RX JIT mappings, software-MMU translation, virtual devices,
+network/restore integration, Reims/Vulkan adapters and the native Android UI.
+Modified upstream source files carry change notices. docs/modifications.json
+records their baseline and paths. Original upstream source is available at
+the pinned Henge revision above.
+
+Reims and metal2vulkan are by their respective upstream contributors:
+https://github.com/steelbrain/reims-vgpu
+https://github.com/steelbrain/metal2vulkan
+Their Android patches and source pins are in android/reims and android/gpu;
+the upstream grant is GPL-2.0-or-later OR LGPL-3.0-or-later.
+The optional PanVK patch is based on JimVulkan/Mesa contributors' work:
+https://github.com/JimVulkan/mali-panvk
+Retain LICENSES/PanVK-MIT.txt and upstream per-file notices.
+These external implementation trees are fetched during optional builds,
+not embedded in this source-only project. Source pins are not substitutes
+for complete corresponding source when distributing their binaries.
+
+Vendored restoration/crypto/library copyrights, copying conditions and
+warranty disclaimers remain in third_party, including nested notices.
+The Henge compatibility headers under third_party/curl_include and
+third_party/restore_config are distinct from the separately fetched curl
+implementation. Additional unmodified license texts are under LICENSES.
+
+Apple software, Boot ROM, IPSW, guest disks/accounts, device screenshots,
+private research logs, signing keys and compiled drivers are not part of
+the intended source publication. The source license grants no rights to
+macOS or other Apple material. Review Apple's applicable license separately.
+Names and trademarks do not imply affiliation or endorsement.
+
+This is experimental software, provided without warranty under the applicable
+licenses. Known GPU faults, host reboots and severe responsiveness limits
+remain unresolved. See README.md and SECURITY.md before running it.
+
+The Android boot-ROM decoder uses Apple LZFSE, BSD-3-Clause, pinned at
+e634ca58b4821d9f3d560cdc6df5dec02ffc93fd. Copyright Apple Inc.
+The full license is third_party/lzfse/LICENSE; exact selected inputs and
+source archive identity are in android/installer/dependencies.json.
+ROM extraction layout follows attributed upstream ios/Henge/BootROM.swift.
+No Apple ROM or restore image is redistributed by this source/APK build.

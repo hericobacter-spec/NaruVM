@@ -1,0 +1,572 @@
+diff --git a/src/panfrost/lib/kmod/kbase_kmod.c b/src/panfrost/lib/kmod/kbase_kmod.c
+index 35e3a7c..4a6fa4f 100644
+--- a/src/panfrost/lib/kmod/kbase_kmod.c
++++ b/src/panfrost/lib/kmod/kbase_kmod.c
+@@ -29,6 +29,7 @@
+ #include <string.h>
+ #include <assert.h>
+ #include <poll.h>
++#include <linux/sync_file.h>
+ #include <sys/ioctl.h>
+ #include <sys/mman.h>
+ #include <unistd.h>
+@@ -175,6 +176,8 @@ union kbase_ioctl_mem_import {
+ /* Bit 12: the CPU mapping is cacheable. The GPU does not snoop CPU caches here, so the CPU side
+  * needs explicit cache maintenance (PAN_KMOD_BO_FLAG_WB_MMAP). */
+ #define BASE_MEM_CACHED_CPU (1ull << 12)
++#define BASE_MEM_COHERENT_SYSTEM (1ull << 10)
++#define BASE_MEM_COHERENT_SYSTEM_REQUIRED (1ull << 15)
+ 
+ /* PAN_KMOD_BO_FLAG_ALLOC_ON_FAULT, the tiler heap, the indirect varying buffer and the tess
+  * heap: 336 MB between them, all of it committed at vkCreateDevice when this flag was ignored
+@@ -285,6 +288,7 @@ struct kbase_kmod_dev {
+    uint32_t js0_features;
+    /* CSF: queue groups instead of job atoms (kbase UAPI 1.x). */
+    bool csf;
++   bool coherent_userptr;
+    struct drm_panthor_csif_info csif;
+    struct kbase_csf_dev *csfq;
+ };
+@@ -294,6 +298,43 @@ static int kbase_probe_atom_layout_fd(int fd);
+ static void kbase_queue_finish(struct kbase_kmod_dev *kdev);
+ static bool kbase_csf_dev_init(struct kbase_kmod_dev *kdev);
+ static void kbase_csf_dev_finish(struct kbase_kmod_dev *kdev);
++static int kbase_userptr_map(struct kbase_kmod_dev *kdev, uint64_t va, bool map);
++
++/* Check the kernel's required-coherency gate with owned pages. A noncoherent
++ * platform must refuse, never silently downgrade an imported coherent type. */
++static bool
++kbase_probe_coherent_userptr(int fd)
++{
++   const size_t size = 4096;
++   void *pages = mmap(NULL, size, PROT_READ | PROT_WRITE,
++                      MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++   if (pages == MAP_FAILED)
++      return false;
++   memset(pages, 0, size);
++   const struct { uint64_t ptr, length; } user = {(uintptr_t)pages, size};
++   union kbase_ioctl_mem_import req = {.in = {
++      .flags = 0xfull | BASE_MEM_CACHED_CPU | BASE_MEM_COHERENT_SYSTEM |
++               BASE_MEM_COHERENT_SYSTEM_REQUIRED,
++      .phandle = (uintptr_t)&user, .type = 3}};
++   bool coherent = false;
++   if (!pan_kmod_ioctl(fd, KBASE_IOCTL_MEM_IMPORT, &req)) {
++      void *anchor = mmap(NULL, size, PROT_NONE, MAP_SHARED, fd, req.out.gpu_va);
++      if (anchor != MAP_FAILED) {
++         coherent = (req.out.flags & BASE_MEM_COHERENT_SYSTEM) && req.out.va_pages == 1;
++         munmap(anchor, size);
++      }
++   }
++   munmap(pages, size);
++   return coherent;
++}
++
++bool
++pan_kmod_kbase_has_coherent_userptr(struct pan_kmod_dev *dev)
++{
++   if (!pan_kmod_kbase_is_csf(dev))
++      return false;
++   return container_of(dev, struct kbase_kmod_dev, base)->coherent_userptr;
++}
+ 
+ struct kbase_kmod_bo {
+    struct pan_kmod_bo base;
+@@ -302,6 +343,7 @@ struct kbase_kmod_bo {
+     * the allocation's. NULL for an executable one, whose address comes from the kernel. */
+    void *anchor;
+    bool exec;
++   bool userptr;
+ };
+ 
+ struct kbase_kmod_vm {
+@@ -564,6 +606,8 @@ kbase_kmod_dev_create(int fd, uint32_t flags, const struct pan_kmod_allocator *a
+    } else {
+       kbase_dev->atom_layout = kbase_probe_atom_layout_fd(fd);
+    }
++   kbase_dev->coherent_userptr = kbase_dev->csf && sysconf(_SC_PAGESIZE) == 4096 &&
++                                kbase_probe_coherent_userptr(fd);
+    return &kbase_dev->base;
+ 
+ err_free_dev:
+@@ -655,6 +699,8 @@ kbase_kmod_bo_alloc(struct pan_kmod_dev *dev, struct pan_kmod_vm *exclusive_vm,
+    if (!bo)
+       return NULL;
+ 
++   bo->userptr = false;
++
+    const uint64_t pages = DIV_ROUND_UP(size, 4096);
+    union kbase_ioctl_mem_alloc req = {
+       .in = {
+@@ -721,6 +767,10 @@ kbase_kmod_bo_free(struct pan_kmod_bo *bo)
+ {
+    struct kbase_kmod_bo *kbase_bo = container_of(bo, struct kbase_kmod_bo, base);
+ 
++   if (kbase_bo->userptr && kbase_userptr_map(
++          container_of(bo->dev, struct kbase_kmod_dev, base), kbase_bo->gpu_va, false))
++      mesa_loge("kbase: USER_BUFFER unmap failed (err=%d)", errno);
++
+    if (kbase_bo->exec) {
+       struct kbase_ioctl_mem_free req = {.gpu_addr = kbase_bo->gpu_va};
+       if (pan_kmod_ioctl(bo->dev->fd, KBASE_IOCTL_MEM_FREE, &req))
+@@ -781,6 +831,8 @@ kbase_kmod_bo_import(struct pan_kmod_dev *dev, int fd)
+    if (!bo)
+       return NULL;
+ 
++   bo->userptr = false;
++
+    /* CPU and GPU read/write, SAME_VA. Not COHERENT_LOCAL: that is a property of memory kbase
+     * allocates, and an import is the exporter's. */
+    int dmabuf = fd;
+@@ -836,6 +888,69 @@ kbase_kmod_bo_import(struct pan_kmod_dev *dev, int fd)
+    return &bo->base;
+ }
+ 
++/* Import the caller's stable, writable pages, with noncoherent CPU cache semantics.
++ * The caller keeps its VMAs alive and unchanged through the BO's lifetime. */
++struct pan_kmod_bo *
++pan_kmod_kbase_bo_import_userptr(struct pan_kmod_dev *dev, void *pointer, uint64_t size, bool coherent)
++{
++   if (!pan_kmod_kbase_is_csf(dev) || !pointer || !size ||
++       ((uintptr_t)pointer & 4095) || (size & 4095) ||
++       (coherent && !pan_kmod_kbase_has_coherent_userptr(dev)))
++      return NULL;
++   struct kbase_kmod_dev *kdev = container_of(dev, struct kbase_kmod_dev, base);
++   struct kbase_kmod_bo *bo = pan_kmod_dev_alloc(dev, sizeof(*bo));
++   if (!bo)
++      return NULL;
++   const struct { uint64_t ptr, length; } user = {(uintptr_t)pointer, size};
++   union kbase_ioctl_mem_import req = {0};
++   /* Inner-shareable GPU mappings keep shader cores coherent with each other.
++    * This does not provide CPU/GPU coherence: WB CPU mappings still require
++    * explicit flush/invalidate and must not be exposed as HOST_COHERENT. */
++   req.in.flags = 0xfull | BASE_MEM_CACHED_CPU |
++      (coherent ? BASE_MEM_COHERENT_SYSTEM | BASE_MEM_COHERENT_SYSTEM_REQUIRED :
++                  BASE_MEM_COHERENT_LOCAL);
++   req.in.phandle = (uintptr_t)&user;
++   req.in.type = 3; /* Arm UAPI BASE_MEM_IMPORT_TYPE_USER_BUFFER */
++   if (pan_kmod_ioctl(dev->fd, KBASE_IOCTL_MEM_IMPORT, &req)) {
++      mesa_loge("kbase: USER_BUFFER import failed (err=%d)", errno);
++      pan_kmod_dev_free(dev, bo);
++      return NULL;
++   }
++   void *anchor = mmap(NULL, size, PROT_NONE, MAP_SHARED, dev->fd, req.out.gpu_va);
++   if (anchor == MAP_FAILED) {
++      struct kbase_ioctl_mem_free release = {.gpu_addr = req.out.gpu_va};
++      pan_kmod_ioctl(dev->fd, KBASE_IOCTL_MEM_FREE, &release);
++      mesa_loge("kbase: USER_BUFFER VA mapping failed (err=%d)", errno);
++      pan_kmod_dev_free(dev, bo);
++      return NULL;
++   }
++   bo->exec = false;
++   bo->anchor = anchor;
++   bo->gpu_va = (uintptr_t)anchor;
++   bo->userptr = false;
++   pan_kmod_bo_init(&bo->base, dev, NULL, size,
++                    PAN_KMOD_BO_FLAG_IMPORTED | PAN_KMOD_BO_FLAG_WB_MMAP,
++                    p_atomic_inc_return(&kdev->next_handle));
++   if (req.out.va_pages * 4096 != size ||
++       (coherent && !(req.out.flags & BASE_MEM_COHERENT_SYSTEM)) ||
++       kbase_userptr_map(kdev, bo->gpu_va, true)) {
++      /* The enqueue may have succeeded even if its completion check failed. */
++      kbase_userptr_map(kdev, bo->gpu_va, false);
++      kbase_kmod_bo_free(&bo->base);
++      return NULL;
++   }
++   bo->userptr = true;
++   if (coherent)
++      bo->base.flags |= PAN_KMOD_BO_FLAG_IO_COHERENT;
++   struct pan_kmod_bo **slot = util_sparse_array_get(&dev->handle_to_bo.array, bo->base.handle);
++   if (!slot) {
++      kbase_kmod_bo_free(&bo->base);
++      return NULL;
++   }
++   *slot = &bo->base;
++   return &bo->base;
++}
++
+ /* ---- address space -------------------------------------------------------------------------
+  *
+  * kbase gives a context exactly one GPU address space and assigns every VA itself at allocation
+@@ -2218,6 +2333,9 @@ struct kbase_csf_dev {
+    /* The KCPU queue the submission fences come from (pan_kmod_kbase_csf_fence_fd). */
+    bool kcpu_created;
+    uint8_t kcpu_id;
++   pthread_mutex_t import_lock;
++   bool import_queue_created;
++   uint8_t import_queue_id;
+ };
+ 
+ /* KCPU queues (UAPI 1.x): the kernel runs their commands in order, so a CQS wait on the seqno
+@@ -2271,6 +2389,51 @@ struct base_fence {
+    } basep;
+ };
+ 
++/* A separate control queue avoids waiting behind GPU-submission fences while pinning pages. */
++static int
++kbase_userptr_map(struct kbase_kmod_dev *kdev, uint64_t va, bool map)
++{
++   struct kbase_csf_dev *c = kdev->csfq;
++   if (!c) { errno = ENODEV; return -1; }
++   pthread_mutex_lock(&c->import_lock);
++   int ret = -1;
++   if (!c->import_queue_created) {
++      struct kbase_ioctl_kcpu_queue_new create = {0};
++      if (pan_kmod_ioctl(kdev->base.fd, KBASE_IOCTL_KCPU_QUEUE_CREATE, &create))
++         goto out;
++      c->import_queue_id = create.id;
++      c->import_queue_created = true;
++   }
++   struct base_fence fence = {.basep = {.fd = -1, .stream_fd = -1}};
++   struct base_kcpu_command cmds[2] = {
++      {.type = map ? 6 : 7, .info.pad = {va}},
++      {.type = BASE_KCPU_COMMAND_TYPE_FENCE_SIGNAL, .info.fence = {.fence = (uintptr_t)&fence}},
++   };
++   for (unsigned i = 0; i < 2; i++) {
++      struct kbase_ioctl_kcpu_queue_enqueue enq = {
++         .addr = (uintptr_t)&cmds[i], .nr_commands = 1, .id = c->import_queue_id};
++      if (pan_kmod_ioctl(kdev->base.fd, KBASE_IOCTL_KCPU_QUEUE_ENQUEUE, &enq))
++         goto out;
++   }
++   if (fence.basep.fd >= 0) {
++      struct pollfd wait = {.fd = fence.basep.fd, .events = POLLIN};
++      const int ready = poll(&wait, 1, 5000);
++      struct sync_file_info info = {0};
++      if (ready > 0 && !ioctl(fence.basep.fd, SYNC_IOC_FILE_INFO, &info) && info.status > 0)
++         ret = 0;
++      else if (ready == 0)
++         errno = ETIMEDOUT;
++      else if (ready > 0)
++         errno = EIO;
++      close(fence.basep.fd);
++   } else {
++      errno = EIO;
++   }
++out:
++   pthread_mutex_unlock(&c->import_lock);
++   return ret;
++}
++
+ static uint64_t
+ cs_ins(unsigned op, uint64_t bits)
+ {
+@@ -2332,6 +2495,7 @@ kbase_csf_dev_init(struct kbase_kmod_dev *kdev)
+    if (!c)
+       return false;
+    pthread_mutex_init(&c->lock, NULL);
++   pthread_mutex_init(&c->import_lock, NULL);
+    pthread_condattr_t attr;
+    pthread_condattr_init(&attr);
+    pthread_condattr_setclock(&attr, CLOCK_MONOTONIC);
+@@ -2359,6 +2523,11 @@ kbase_csf_dev_finish(struct kbase_kmod_dev *kdev)
+       struct kbase_ioctl_kcpu_queue_delete del = {.id = c->kcpu_id};
+       pan_kmod_ioctl(kdev->base.fd, KBASE_IOCTL_KCPU_QUEUE_DELETE, &del);
+    }
++   if (c->import_queue_created) {
++      struct kbase_ioctl_kcpu_queue_delete del = {.id = c->import_queue_id};
++      pan_kmod_ioctl(kdev->base.fd, KBASE_IOCTL_KCPU_QUEUE_DELETE, &del);
++   }
++   pthread_mutex_destroy(&c->import_lock);
+    pthread_cond_destroy(&c->cond);
+    pthread_mutex_destroy(&c->lock);
+    free(c);
+diff --git a/src/panfrost/lib/kmod/kbase_kmod.h b/src/panfrost/lib/kmod/kbase_kmod.h
+index c2a915f..e2a95f0 100644
+--- a/src/panfrost/lib/kmod/kbase_kmod.h
++++ b/src/panfrost/lib/kmod/kbase_kmod.h
+@@ -18,6 +18,11 @@
+ struct pan_kmod_dev;
+ struct pan_kmod_bo;
+ 
++/* Stable user-page import, currently CSF/4KiB only. Coherent imports require
++ * the kernel's required system-coherency gate; otherwise refuse. */
++bool pan_kmod_kbase_has_coherent_userptr(struct pan_kmod_dev *dev);
++struct pan_kmod_bo *pan_kmod_kbase_bo_import_userptr(struct pan_kmod_dev *dev, void *pointer, uint64_t size, bool coherent);
++
+ /* core_req values are TAKEN VERBATIM from the vendor driver's own atoms, captured while it
+  * rendered a triangle. The frame arrived as ONE
+  * JOB_SUBMIT carrying two atoms:
+diff --git a/src/panfrost/vulkan/csf/panvk_vX_cmd_buffer.c b/src/panfrost/vulkan/csf/panvk_vX_cmd_buffer.c
+index 7f1b9cb..eab479c 100644
+--- a/src/panfrost/vulkan/csf/panvk_vX_cmd_buffer.c
++++ b/src/panfrost/vulkan/csf/panvk_vX_cmd_buffer.c
+@@ -1021,7 +1021,8 @@ panvk_create_cmdbuf(struct vk_command_pool *vk_pool, VkCommandBufferLevel level,
+ 
+    struct panvk_pool_properties tls_pool_props = {
+       .create_flags =
+-         panvk_device_adjust_bo_flags(device, PAN_KMOD_BO_FLAG_NO_MMAP),
++         panvk_device_adjust_bo_flags(device, PAN_KMOD_BO_FLAG_NO_MMAP |
++                                                PAN_KMOD_BO_FLAG_ALLOC_ON_FAULT),
+       .slab_size = 64 * 1024,
+       .label = "TLS pool",
+       .prealloc = false,
+diff --git a/src/panfrost/vulkan/csf/panvk_vX_gpu_queue.c b/src/panfrost/vulkan/csf/panvk_vX_gpu_queue.c
+index 5e0f49a..b27211c 100644
+--- a/src/panfrost/vulkan/csf/panvk_vX_gpu_queue.c
++++ b/src/panfrost/vulkan/csf/panvk_vX_gpu_queue.c
+@@ -1851,7 +1851,9 @@ panvk_per_arch(gpu_queue_check_status)(struct vk_queue *vk_queue)
+             /* Check printf buffer one more time before exiting */
+             u_printf_with_ctx(stdout, &dev->printf.ctx);
+ 
+-            return vk_queue_set_lost(&queue->vk, "CS_FAULT");
++            return vk_queue_set_lost(&queue->vk,
++                                     "CS_FAULT subqueue=%u error=0x%08x", i,
++                                     subq_ctx->last_error);
+          }
+       }
+    }
+diff --git a/src/panfrost/vulkan/panvk_cmd_desc_state.h b/src/panfrost/vulkan/panvk_cmd_desc_state.h
+index e747ef6..fffcec4 100644
+--- a/src/panfrost/vulkan/panvk_cmd_desc_state.h
++++ b/src/panfrost/vulkan/panvk_cmd_desc_state.h
+@@ -16,6 +16,7 @@
+ 
+ #include "panvk_cmd_pool.h"
+ #include "panvk_descriptor_set.h"
++#include "panvk_image.h"
+ #include "panvk_macros.h"
+ #include "panvk_shader.h"
+ 
+@@ -55,10 +56,15 @@ panvk_shader_res_table_count(struct panvk_shader_desc_state *shader_desc_state)
+ }
+ #endif
+ 
++/* MAX_PUSH_DESCS counts Vulkan descriptors, not hardware slots. A combined
++ * descriptor needs texture and sampler slots for every possible image plane.
++ * Keep meta save/restore storage at the same capacity as the push set. */
++#define PANVK_MAX_PUSH_DESC_SLOTS (MAX_PUSH_DESCS * 2 * PANVK_MAX_PLANES)
++
+ struct panvk_push_set {
+    struct panvk_cmd_pool_obj base;
+    struct panvk_descriptor_set set;
+-   struct panvk_opaque_desc descs[MAX_PUSH_DESCS];
++   struct panvk_opaque_desc descs[PANVK_MAX_PUSH_DESC_SLOTS];
+ };
+ 
+ struct panvk_descriptor_state {
+diff --git a/src/panfrost/vulkan/panvk_cmd_meta.h b/src/panfrost/vulkan/panvk_cmd_meta.h
+index a896f7d..c65a728 100644
+--- a/src/panfrost/vulkan/panvk_cmd_meta.h
++++ b/src/panfrost/vulkan/panvk_cmd_meta.h
+@@ -24,7 +24,7 @@ struct panvk_cmd_meta_compute_save_ctx {
+    } cs;
+    const struct panvk_descriptor_set *set0;
+    struct {
+-      struct panvk_opaque_desc desc_storage[MAX_PUSH_DESCS];
++      struct panvk_opaque_desc desc_storage[PANVK_MAX_PUSH_DESC_SLOTS];
+       uint64_t descs_dev_addr;
+       uint32_t desc_count;
+       bool dirty;
+@@ -38,7 +38,7 @@ struct panvk_cmd_meta_graphics_save_ctx {
+    const struct panvk_graphics_pipeline *pipeline;
+    const struct panvk_descriptor_set *set0;
+    struct {
+-      struct panvk_opaque_desc desc_storage[MAX_PUSH_DESCS];
++      struct panvk_opaque_desc desc_storage[PANVK_MAX_PUSH_DESC_SLOTS];
+       uint64_t descs_dev_addr;
+       uint32_t desc_count;
+       bool dirty;
+diff --git a/src/panfrost/vulkan/panvk_device_memory.c b/src/panfrost/vulkan/panvk_device_memory.c
+index 5963ac0..699b026 100644
+--- a/src/panfrost/vulkan/panvk_device_memory.c
++++ b/src/panfrost/vulkan/panvk_device_memory.c
+@@ -13,6 +13,7 @@
+ #include "panvk_entrypoints.h"
+ 
+ #include "pan_props.h"
++#include "kmod/kbase_kmod.h"
+ 
+ #include "util/u_atomic.h"
+ #include "vk_debug_utils.h"
+@@ -95,7 +96,26 @@ panvk_AllocateMemory(VkDevice _device,
+    if (fd_info && !fd_info->handleType)
+       fd_info = NULL;
+ 
+-   if (fd_info) {
++   const VkImportMemoryHostPointerInfoEXT *host_info =
++      vk_find_struct_const(pAllocateInfo->pNext, IMPORT_MEMORY_HOST_POINTER_INFO_EXT);
++   if (host_info && host_info->handleType) {
++      if (host_info->handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT ||
++          !host_info->pHostPointer || ((uintptr_t)host_info->pHostPointer & 4095) ||
++          !pAllocateInfo->allocationSize || (pAllocateInfo->allocationSize & 4095) ||
++          !(type->propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) ||
++          (!(type->propertyFlags & VK_MEMORY_PROPERTY_HOST_CACHED_BIT) &&
++           !(type->propertyFlags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT))) {
++         result = panvk_error(device, VK_ERROR_INVALID_EXTERNAL_HANDLE);
++         goto err_destroy_mem;
++      }
++      mem->bo = pan_kmod_kbase_bo_import_userptr(device->kmod.dev,
++         host_info->pHostPointer, pAllocateInfo->allocationSize,
++         type->propertyFlags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
++      if (!mem->bo) {
++         result = panvk_error(device, VK_ERROR_INVALID_EXTERNAL_HANDLE);
++         goto err_destroy_mem;
++      }
++   } else if (fd_info) {
+       assert(
+          fd_info->handleType == VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT ||
+          fd_info->handleType == VK_EXTERNAL_MEMORY_HANDLE_TYPE_DMA_BUF_BIT_EXT);
+@@ -199,7 +219,7 @@ panvk_AllocateMemory(VkDevice _device,
+ 
+    if (device->debug.decode_ctx) {
+       if (PANVK_DEBUG(DUMP) || PANVK_DEBUG(TRACE)) {
+-         void *cpu =
++         void *cpu = mem->vk.host_ptr ? mem->vk.host_ptr :
+             pan_kmod_bo_mmap(mem->bo, PROT_READ | PROT_WRITE, MAP_SHARED, NULL);
+          if (cpu != MAP_FAILED)
+             mem->debug.host_mapping = cpu;
+@@ -260,11 +280,11 @@ panvk_FreeMemory(VkDevice _device, VkDeviceMemory _mem,
+       pandecode_inject_free(device->debug.decode_ctx, mem->addr.dev,
+                             pan_kmod_bo_size(mem->bo));
+ 
+-      if (mem->debug.host_mapping)
++      if (mem->debug.host_mapping && !mem->vk.host_ptr)
+          os_munmap(mem->debug.host_mapping, pan_kmod_bo_size(mem->bo));
+    }
+ 
+-   if (mem->addr.host) {
++   if (mem->addr.host && !mem->vk.host_ptr) {
+       ASSERTED int ret = os_munmap(mem->addr.host, pan_kmod_bo_size(mem->bo));
+       assert(!ret);
+    }
+@@ -335,6 +355,14 @@ panvk_MapMemory2KHR(VkDevice _device, const VkMemoryMapInfoKHR *pMemoryMapInfo,
+       return panvk_errorf(device, VK_ERROR_MEMORY_MAP_FAILED,
+                           "Memory object already mapped.");
+ 
++   if (mem->vk.host_ptr) {
++      if (pMemoryMapInfo->flags & VK_MEMORY_MAP_PLACED_BIT_EXT)
++         return panvk_error(device, VK_ERROR_MEMORY_MAP_FAILED);
++      mem->addr.host = mem->vk.host_ptr;
++      *ppData = (char *)mem->addr.host + offset;
++      return VK_SUCCESS;
++   }
++
+    void *host_addr = NULL;
+    int map_flags = MAP_SHARED;
+ 
+@@ -367,6 +395,13 @@ panvk_UnmapMemory2KHR(VkDevice _device,
+    VK_FROM_HANDLE(panvk_device, device, _device);
+    VK_FROM_HANDLE(panvk_device_memory, mem, pMemoryUnmapInfo->memory);
+ 
++   if (mem->vk.host_ptr) {
++      if (pMemoryUnmapInfo->flags & VK_MEMORY_UNMAP_RESERVE_BIT_EXT)
++         return panvk_error(device, VK_ERROR_MEMORY_MAP_FAILED);
++      mem->addr.host = NULL;
++      return VK_SUCCESS;
++   }
++
+    if (pMemoryUnmapInfo->flags & VK_MEMORY_UNMAP_RESERVE_BIT_EXT) {
+       void *reserved =
+          os_mmap(mem->addr.host, pan_kmod_bo_size(mem->bo), PROT_NONE,
+@@ -512,3 +547,28 @@ panvk_GetDeviceMemoryOpaqueCaptureAddress(
+ 
+    return memory->addr.dev;
+ }
++
++/* Cached host pages are deliberately NOT advertised as HOST_COHERENT. */
++VKAPI_ATTR VkResult VKAPI_CALL
++panvk_GetMemoryHostPointerPropertiesEXT(VkDevice _device,
++   VkExternalMemoryHandleTypeFlagBits handleType, const void *pHostPointer,
++   VkMemoryHostPointerPropertiesEXT *pMemoryHostPointerProperties)
++{
++   VK_FROM_HANDLE(panvk_device, device, _device);
++   struct panvk_physical_device *pdev = to_panvk_physical_device(device->vk.physical);
++   pMemoryHostPointerProperties->memoryTypeBits = 0;
++   if (!pan_kmod_kbase_is_csf(device->kmod.dev) ||
++       handleType != VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT ||
++       !pHostPointer || ((uintptr_t)pHostPointer & 4095))
++      return panvk_error(device, VK_ERROR_INVALID_EXTERNAL_HANDLE);
++   for (unsigned i = 0; i < pdev->memory.type_count; i++) {
++      VkMemoryPropertyFlags flags = pdev->memory.types[i].propertyFlags;
++      if ((flags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) &&
++          ((flags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) ?
++            pan_kmod_kbase_has_coherent_userptr(device->kmod.dev) :
++            (flags & VK_MEMORY_PROPERTY_HOST_CACHED_BIT)))
++         pMemoryHostPointerProperties->memoryTypeBits |= 1u << i;
++   }
++   return pMemoryHostPointerProperties->memoryTypeBits ? VK_SUCCESS :
++      panvk_error(device, VK_ERROR_INVALID_EXTERNAL_HANDLE);
++}
+diff --git a/src/panfrost/vulkan/panvk_physical_device.c b/src/panfrost/vulkan/panvk_physical_device.c
+index 273a9f7..3cf2adb 100644
+--- a/src/panfrost/vulkan/panvk_physical_device.c
++++ b/src/panfrost/vulkan/panvk_physical_device.c
+@@ -514,6 +514,9 @@ panvk_physical_device_init(struct panvk_physical_device *device,
+    panvk_arch_dispatch(arch, get_physical_device_extensions, device, instance,
+                        &supported_extensions);
+ 
++   supported_extensions.EXT_external_memory_host =
++      pan_kmod_kbase_is_csf(device->kmod.dev) && sysconf(_SC_PAGESIZE) == 4096;
++
+    struct vk_features supported_features;
+    panvk_arch_dispatch(arch, get_physical_device_features, instance,
+                        device, &supported_features);
+@@ -544,6 +547,9 @@ panvk_physical_device_init(struct panvk_physical_device *device,
+    panvk_arch_dispatch(arch, get_physical_device_properties, instance, device,
+                        &device->vk.properties);
+ 
++   if (supported_extensions.EXT_external_memory_host)
++      device->vk.properties.minImportedHostPointerAlignment = 4096;
++
+    device->vk.supported_sync_types = device->sync_types;
+ 
+    result = panvk_wsi_init(device);
+@@ -1901,6 +1907,16 @@ panvk_GetPhysicalDeviceExternalBufferProperties(
+    const VkPhysicalDeviceExternalBufferInfo *pExternalBufferInfo,
+    VkExternalBufferProperties *pExternalBufferProperties)
+ {
++   VK_FROM_HANDLE(panvk_physical_device, pdev, physicalDevice);
++   if (pExternalBufferInfo->handleType == VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT &&
++       pdev->vk.supported_extensions.EXT_external_memory_host) {
++      pExternalBufferProperties->externalMemoryProperties = (VkExternalMemoryProperties){
++         .externalMemoryFeatures = VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT,
++         .compatibleHandleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT,
++      };
++      return;
++   }
++
+    if (pExternalBufferInfo->handleType ==
+        VK_EXTERNAL_MEMORY_HANDLE_TYPE_ANDROID_HARDWARE_BUFFER_BIT_ANDROID) {
+       vk_android_get_ahb_buffer_properties(physicalDevice, pExternalBufferInfo,
+diff --git a/src/panfrost/vulkan/panvk_vX_cmd_desc_state.c b/src/panfrost/vulkan/panvk_vX_cmd_desc_state.c
+index 8204f5e..8f0b433 100644
+--- a/src/panfrost/vulkan/panvk_vX_cmd_desc_state.c
++++ b/src/panfrost/vulkan/panvk_vX_cmd_desc_state.c
+@@ -56,7 +56,7 @@ cmd_desc_state_bind_sets(struct panvk_descriptor_state *desc_state,
+ static struct panvk_descriptor_set *
+ cmd_get_push_desc_set(struct vk_command_buffer *vk_cmdbuf,
+                       struct panvk_descriptor_state *desc_state,
+-                      uint32_t set_idx)
++                      uint32_t set_idx, uint32_t desc_count)
+ {
+    struct panvk_cmd_buffer *cmdbuf =
+       container_of(vk_cmdbuf, struct panvk_cmd_buffer, vk);
+@@ -66,6 +66,11 @@ cmd_get_push_desc_set(struct vk_command_buffer *vk_cmdbuf,
+ 
+    assert(set_idx < MAX_SETS);
+ 
++   if (unlikely(desc_count > PANVK_MAX_PUSH_DESC_SLOTS)) {
++      vk_command_buffer_set_error(&cmdbuf->vk, VK_ERROR_OUT_OF_HOST_MEMORY);
++      return NULL;
++   }
++
+    if (likely(desc_state->push_sets[set_idx])) {
+       push_set = container_of(desc_state->push_sets[set_idx],
+                               struct panvk_push_set, set);
+@@ -468,7 +473,7 @@ push_desc_set_write(struct panvk_cmd_buffer *cmd,
+       to_panvk_descriptor_set_layout(playout->set_layouts[info->set]);
+ 
+    struct panvk_descriptor_set *push_set =
+-      cmd_get_push_desc_set(&cmd->vk, desc, info->set);
++      cmd_get_push_desc_set(&cmd->vk, desc, info->set, set_layout->desc_count);
+    if (!push_set)
+       return;
+ 
+@@ -521,7 +526,7 @@ panvk_per_arch(CmdPushDescriptorSetWithTemplate2KHR)(
+    struct panvk_descriptor_state *desc_state =
+       panvk_cmd_get_desc_state(cmdbuf, template->bind_point);
+    struct panvk_descriptor_set *push_set =
+-      cmd_get_push_desc_set(&cmdbuf->vk, desc_state, set);
++      cmd_get_push_desc_set(&cmdbuf->vk, desc_state, set, set_layout->desc_count);
+    if (!push_set)
+       return;
+ 

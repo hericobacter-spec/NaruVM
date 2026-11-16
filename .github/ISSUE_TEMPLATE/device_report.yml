@@ -1,0 +1,32 @@
+name: Device observations / 기기 관찰
+description: Record actual disk-free results or an explicitly untested model.
+body:
+  - type: dropdown
+    id: evidence_kind
+    attributes:
+      label: Evidence type / 근거 종류
+      options:
+        - Actual disk-free diagnostic on this device
+        - Actual guest observation on this device
+        - Specification research only; execution untested
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Exact model, generation and region / 정확한 모델·세대·지역
+      description: Do not include a serial, account or other personal identifier.
+    validations:
+      required: true
+  - type: textarea
+    id: capabilities
+    attributes:
+      label: Capabilities and source / 기능과 출처
+      description: SoC/GPU, Android build, page size, source revision and public manufacturer specification link if known. Say unknown where unavailable.
+    validations:
+      required: true
+  - type: textarea
+    id: results
+    attributes:
+      label: Results and limits / 결과와 한계
+      description: Sanitized preflight markers, selected backend, CPU/RAM, duration and observed faults. A policy/pixel pass alone is not macOS stability proof.

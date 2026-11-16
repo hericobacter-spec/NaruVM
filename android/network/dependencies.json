@@ -1,0 +1,46 @@
+{
+  "source": "https://packages.termux.dev/apt/termux-main/",
+  "index_sha256": "4b6723c9f37891f58790888e1eb189308727e24d6fe34ae4f1655cfdd803cf10",
+  "packages": [
+    {
+      "Package": "libslirp",
+      "Version": "4.9.7",
+      "Depends": "glib",
+      "Filename": "pool/main/libs/libslirp/libslirp_4.9.7_aarch64.deb",
+      "Size": "56168",
+      "SHA256": "2dd2c214bcec7f1125fcd4040606e72768c38010ba87ed9c0365193616ba7ada"
+    },
+    {
+      "Package": "glib",
+      "Version": "2.90.1",
+      "Depends": "libandroid-support, libffi, libiconv, pcre2, resolv-conf, zlib, python",
+      "Filename": "pool/main/g/glib/glib_2.90.1_aarch64.deb",
+      "Size": "2573108",
+      "SHA256": "132d8ce961d96a7252fd4bc2228bddd385b1b17b706a46caae6d541ae0e4b2c0"
+    },
+    {
+      "Package": "pcre2",
+      "Version": "10.49",
+      "Depends": null,
+      "Filename": "pool/main/p/pcre2/pcre2_10.49_aarch64.deb",
+      "Size": "1001320",
+      "SHA256": "c27995e5f52b8ecc9b8b3e662eb08e49f82a18bfd3f34343936acc7b23964724"
+    },
+    {
+      "Package": "libandroid-support",
+      "Version": "29-1",
+      "Depends": null,
+      "Filename": "pool/main/liba/libandroid-support/libandroid-support_29-1_aarch64.deb",
+      "Size": "10880",
+      "SHA256": "f2f145d6135ad4843ac9670153be3e3944dc1e6f1736d46d2306c28f2b86f517"
+    },
+    {
+      "Package": "libiconv",
+      "Version": "1.19.1",
+      "Depends": null,
+      "Filename": "pool/main/libi/libiconv/libiconv_1.19.1_aarch64.deb",
+      "Size": "562252",
+      "SHA256": "a1c6323eff4f660e16ae6f5832356444b3269c19a4f61146355a49e7c4be5ed1"
+    }
+  ]
+}

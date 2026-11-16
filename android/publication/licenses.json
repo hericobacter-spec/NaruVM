@@ -1,0 +1,380 @@
+{
+  "format": 1,
+  "reviewed": "2026-11-16",
+  "label": "observed-technical-license-review",
+  "scope": "Source publication; not a legal opinion or binary-release clearance",
+  "project_grant": "GPL-2.0-or-later; component and per-file grants prevail",
+  "root_license_unchanged": true,
+  "combined_binary_policy": "Select GPLv3 for the combined research APK; select LGPLv3 under applicable LGPL-2.1-or-later grants. Preserve original per-file grants. Binary source closure still required.",
+  "source_release_candidate": true,
+  "binary_release_ready": false,
+  "components": [
+    {
+      "name": "NaruVM / Henge-derived core",
+      "path": "core",
+      "license_summary": "GPL-2.0-or-later",
+      "evidence": "observed local license files and source headers,2026-11-16",
+      "notices": [
+        {
+          "path": "LICENSE",
+          "sha256": "6f04ae8364d0079a192b14635f4b1da294ce18724c034c39a6a41d1b09df6100"
+        },
+        {
+          "path": "LICENSES/source-info.txt",
+          "sha256": "536560cfb867b6f305d7cc43913707944fbdb45905465ff57d7ae2f58281b140"
+        }
+      ],
+      "source_revision": "via Henge e98920ce3b108d17f98acaff87f74e5a477ec4b2",
+      "upstream": "https://github.com/Leviidev/Henge"
+    },
+    {
+      "name": "idevicerestore",
+      "path": "third_party/idevicerestore",
+      "license_summary": "LGPL-2.1-or-later headers; LGPLv3 selected consistently with included COPYING",
+      "evidence": "observed local license files and source headers,2026-11-16",
+      "notices": [
+        {
+          "path": "third_party/idevicerestore/COPYING",
+          "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+        }
+      ],
+      "pin_file": "third_party/idevicerestore/UPSTREAM_COMMIT",
+      "source_revision": "ae8cfb4aa919000b283a0fe7db96b1a321a010d3",
+      "upstream": "https://github.com/libimobiledevice/idevicerestore"
+    },
+    {
+      "name": "libimobiledevice",
+      "path": "third_party/libimobiledevice",
+      "license_summary": "LGPL library and GPL tools; nested third-party notices retained",
+      "evidence": "observed local license files and source headers,2026-11-16",
+      "notices": [
+        {
+          "path": "third_party/libimobiledevice/3rd_party/ed25519/LICENSE",
+          "sha256": "f68d76b9c1c2271422e55134ea94cf71f2ac3fc3ed6a7ec6b83a1a0538753214"
+        },
+        {
+          "path": "third_party/libimobiledevice/3rd_party/libsrp6a-sha512/LICENSE",
+          "sha256": "6b420542f5295bd85e285a2142eca27be4f700e4bd1648450c07be4f82548a85"
+        },
+        {
+          "path": "third_party/libimobiledevice/COPYING",
+          "sha256": "7619c753cac95d4740220223bde48a032606fcaccde5e546f9bc444c81ab356d"
+        },
+        {
+          "path": "third_party/libimobiledevice/COPYING.LESSER",
+          "sha256": "e237fa56668030e928551ddd60f05df5fe957f75eab874bbd017e085ed722e7c"
+        }
+      ],
+      "pin_file": "third_party/libimobiledevice/UPSTREAM_COMMIT",
+      "source_revision": "fa0f79190142bc309307967c058f89c1b36eb6b8",
+      "upstream": "https://github.com/libimobiledevice/libimobiledevice"
+    },
+    {
+      "name": "libimobiledevice-glue",
+      "path": "third_party/libimobiledevice-glue",
+      "license_summary": "LGPL-2.1-or-later",
+      "evidence": "observed local license files and source headers,2026-11-16",
+      "notices": [
+        {
+          "path": "third_party/libimobiledevice-glue/COPYING",
+          "sha256": "e237fa56668030e928551ddd60f05df5fe957f75eab874bbd017e085ed722e7c"
+        }
+      ],
+      "pin_file": "third_party/libimobiledevice-glue/UPSTREAM_COMMIT",
+      "source_revision": "10ddafa16458a012bcbd3e83a6ab36a032dc84d8",
+      "upstream": "https://github.com/libimobiledevice/libimobiledevice-glue"
+    },
+    {
+      "name": "libirecovery",
+      "path": "third_party/libirecovery",
+      "license_summary": "LGPL-2.1-or-later",
+      "evidence": "observed local license files and source headers,2026-11-16",
+      "notices": [
+        {
+          "path": "third_party/libirecovery/COPYING",
+          "sha256": "a1a33180d02960ab1c5de36cf20b1a2f0fe9888d83826ad263da5db52f1b183b"
+        }
+      ],
+      "pin_file": "third_party/libirecovery/UPSTREAM_COMMIT",
+      "source_revision": "046344f7fe4413e42e71046a34230850be3f758a",
+      "upstream": "https://github.com/libimobiledevice/libirecovery"
+    },
+    {
+      "name": "libplist",
+      "path": "third_party/libplist",
+      "license_summary": "LGPL library/libcnary and GPL tools; file notices govern",
+      "evidence": "observed local license files and source headers,2026-11-16",
+      "notices": [
+        {
+          "path": "third_party/libplist/COPYING",
+          "sha256": "7619c753cac95d4740220223bde48a032606fcaccde5e546f9bc444c81ab356d"
+        },
+        {
+          "path": "third_party/libplist/COPYING.LESSER",
+          "sha256": "e237fa56668030e928551ddd60f05df5fe957f75eab874bbd017e085ed722e7c"
+        },
+        {
+          "path": "third_party/libplist/libcnary/COPYING",
+          "sha256": "e237fa56668030e928551ddd60f05df5fe957f75eab874bbd017e085ed722e7c"
+        }
+      ],
+      "pin_file": "third_party/libplist/UPSTREAM_COMMIT",
+      "source_revision": "fe3dc34dc3484006e12b403f7ceb06f0ad40b6f4",
+      "upstream": "https://github.com/libimobiledevice/libplist"
+    },
+    {
+      "name": "libtatsu",
+      "path": "third_party/libtatsu",
+      "license_summary": "LGPL-2.1-or-later",
+      "evidence": "observed local license files and source headers,2026-11-16",
+      "notices": [
+        {
+          "path": "third_party/libtatsu/COPYING",
+          "sha256": "e237fa56668030e928551ddd60f05df5fe957f75eab874bbd017e085ed722e7c"
+        }
+      ],
+      "pin_file": "third_party/libtatsu/UPSTREAM_COMMIT",
+      "source_revision": "e7d6ad13ef928aa609d0ccdfc586f7d6e8e049bf",
+      "upstream": "https://github.com/libimobiledevice/libtatsu"
+    },
+    {
+      "name": "libusb-1.0",
+      "path": "third_party/libusb-1.0",
+      "license_summary": "LGPL-2.1-or-later public header; implementation is Henge shim",
+      "evidence": "observed local license files and source headers,2026-11-16",
+      "notices": [
+        {
+          "path": "LICENSES/LGPL-2.1.txt",
+          "sha256": "e237fa56668030e928551ddd60f05df5fe957f75eab874bbd017e085ed722e7c"
+        }
+      ],
+      "source_revision": "via Henge e98920ce3b108d17f98acaff87f74e5a477ec4b2"
+    },
+    {
+      "name": "libusbmuxd",
+      "path": "third_party/libusbmuxd",
+      "license_summary": "LGPL-2.1-or-later",
+      "evidence": "observed local license files and source headers,2026-11-16",
+      "notices": [
+        {
+          "path": "third_party/libusbmuxd/COPYING",
+          "sha256": "e237fa56668030e928551ddd60f05df5fe957f75eab874bbd017e085ed722e7c"
+        }
+      ],
+      "pin_file": "third_party/libusbmuxd/UPSTREAM_COMMIT",
+      "source_revision": "93eb168bf6b07472d17781328c21df0c60300524",
+      "upstream": "https://github.com/libimobiledevice/libusbmuxd"
+    },
+    {
+      "name": "libzip",
+      "path": "third_party/libzip",
+      "license_summary": "BSD-3-Clause",
+      "evidence": "observed local license files and source headers,2026-11-16",
+      "notices": [
+        {
+          "path": "third_party/libzip/LICENSE",
+          "sha256": "84a3444c82344fe8e6e13e5745a3e74dc13abd714d307aa0eb41ae26e51f9ae7"
+        }
+      ],
+      "pin_file": "third_party/libzip/UPSTREAM_COMMIT",
+      "source_revision": "36d89355e0de44e31c5f7b9141561670b20e61d8"
+    },
+    {
+      "name": "mbedtls",
+      "path": "third_party/mbedtls",
+      "license_summary": "Apache-2.0 OR GPL-2.0-or-later; preserve dual-license notice",
+      "evidence": "observed local license files and source headers,2026-11-16",
+      "notices": [
+        {
+          "path": "third_party/mbedtls/LICENSE",
+          "sha256": "9b405ef4c89342f5eae1dd828882f931747f71001cfba7d114801039b52ad09b"
+        }
+      ],
+      "pin_file": "third_party/mbedtls/UPSTREAM_COMMIT",
+      "source_revision": "mbedtls-3.6.2"
+    },
+    {
+      "name": "usbmuxd",
+      "path": "third_party/usbmuxd",
+      "license_summary": "GPL-2.0-only OR GPL-3.0-only source grant",
+      "evidence": "observed local license files and source headers,2026-11-16",
+      "notices": [
+        {
+          "path": "third_party/usbmuxd/COPYING.GPLv2",
+          "sha256": "7619c753cac95d4740220223bde48a032606fcaccde5e546f9bc444c81ab356d"
+        },
+        {
+          "path": "third_party/usbmuxd/COPYING.GPLv3",
+          "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+        }
+      ],
+      "pin_file": "third_party/usbmuxd/UPSTREAM_COMMIT",
+      "source_revision": "3ded00c9985a5108cfc7591a309f9a23d57a8cba",
+      "upstream": "https://github.com/libimobiledevice/usbmuxd"
+    },
+    {
+      "name": "Henge compatibility/configuration headers",
+      "path": "third_party/restore_config",
+      "license_summary": "Henge GPL-2.0-or-later",
+      "evidence": "observed local license files and source headers,2026-11-16",
+      "notices": [
+        {
+          "path": "LICENSE",
+          "sha256": "6f04ae8364d0079a192b14635f4b1da294ce18724c034c39a6a41d1b09df6100"
+        }
+      ],
+      "source_revision": "via Henge e98920ce3b108d17f98acaff87f74e5a477ec4b2"
+    },
+    {
+      "name": "Henge curl API shim header",
+      "path": "third_party/curl_include",
+      "license_summary": "Henge GPL-2.0-or-later; not the curl implementation",
+      "evidence": "observed local license files and source headers,2026-11-16",
+      "notices": [
+        {
+          "path": "LICENSE",
+          "sha256": "6f04ae8364d0079a192b14635f4b1da294ce18724c034c39a6a41d1b09df6100"
+        }
+      ],
+      "source_revision": "via Henge e98920ce3b108d17f98acaff87f74e5a477ec4b2"
+    },
+    {
+      "name": "curl fetched implementation",
+      "license_summary": "curl",
+      "upstream": "https://curl.se/download/",
+      "source_revision": "see pinned Android dependency manifest or fetch script",
+      "notices": [
+        {
+          "path": "LICENSES/curl-COPYING.txt",
+          "sha256": "82f2f4427d6545ee5aaac4f0b80428da6cc8ba41c2cf5da3a03680ec327b9681"
+        }
+      ],
+      "evidence": "observed pinned source/notice; external implementation not bundled in source tree"
+    },
+    {
+      "name": "PanVK patch context",
+      "license_summary": "MIT and upstream per-file licenses",
+      "upstream": "https://github.com/JimVulkan/mali-panvk",
+      "source_revision": "see pinned Android dependency manifest or fetch script",
+      "notices": [
+        {
+          "path": "LICENSES/PanVK-MIT.txt",
+          "sha256": "25235cd7632caac9eed14e55b96c45cd3bc2bad06dc2bbcf2824f8e1615c5936"
+        }
+      ],
+      "evidence": "observed pinned source/notice; external implementation not bundled in source tree"
+    },
+    {
+      "name": "Reims/metal2vulkan patches",
+      "license_summary": "GPL-2.0-or-later OR LGPL-3.0-or-later",
+      "upstream": "https://github.com/steelbrain/reims-vgpu",
+      "source_revision": "see pinned Android dependency manifest or fetch script",
+      "notices": [
+        {
+          "path": "LICENSE",
+          "sha256": "6f04ae8364d0079a192b14635f4b1da294ce18724c034c39a6a41d1b09df6100"
+        },
+        {
+          "path": "LICENSES/LGPL-3.0.txt",
+          "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+        },
+        {
+          "path": "LICENSES/GPL-3.0.txt",
+          "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+        }
+      ],
+      "evidence": "observed pinned source/notice; external implementation not bundled in source tree"
+    },
+    {
+      "name": "Android NDK runtime notices",
+      "license_summary": "File-specific terms in official NDK toolchain NOTICE; recipe summary alone is insufficient",
+      "evidence": "observed official prepared toolchain notice files,2026-11-16",
+      "notices": [
+        {
+          "path": "LICENSES/Android-NDK-NOTICE.txt",
+          "sha256": "f96f763beb66a7ba7a667647fc64c0226ace875e590c831fdd9579ec1c1d91e1"
+        }
+      ]
+    },
+    {
+      "name": "Rust standard library",
+      "license_summary": "Rust 1.98.1 standard-library copyright and bundled dependency licenses; file-specific terms prevail",
+      "evidence": "observed official prepared toolchain notice files,2026-11-16",
+      "notices": [
+        {
+          "path": "LICENSES/Rust-standard-library-COPYRIGHT.html",
+          "sha256": "68129500b616d5838629e68f55ff3aed5e096dacf60ce9eb41bbe599a563afa6"
+        },
+        {
+          "path": "LICENSES/Rust-standard-library-licenses/Apache-2.0.txt",
+          "sha256": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff"
+        },
+        {
+          "path": "LICENSES/Rust-standard-library-licenses/BSD-2-Clause.txt",
+          "sha256": "f32fb3b417a194167cfad068223fc975ba96c5960513a10f66a3c28720aec1df"
+        },
+        {
+          "path": "LICENSES/Rust-standard-library-licenses/CC-BY-SA-4.0.txt",
+          "sha256": "23ee78c8bae49cf08ea2f0c84945c66b987ebe4520881fb51b3dad4fb43d07c2"
+        },
+        {
+          "path": "LICENSES/Rust-standard-library-licenses/GCC-exception-3.1.txt",
+          "sha256": "a3966c9410ef94a1efbfa9ec04e9c1994026a70623fbf0885ce36737bfba3b54"
+        },
+        {
+          "path": "LICENSES/Rust-standard-library-licenses/GPL-2.0-only.txt",
+          "sha256": "54b212ba1f97f6948fa5486239ab505dd820b02e50cbfd296b4062c8609a70af"
+        },
+        {
+          "path": "LICENSES/Rust-standard-library-licenses/GPL-3.0-or-later.txt",
+          "sha256": "05315fce6c35f79b8a35454828995fa26336f235895ac64557abc028f4ffcea2"
+        },
+        {
+          "path": "LICENSES/Rust-standard-library-licenses/ISC.txt",
+          "sha256": "0ff61769b238634e042ab759dddfd104a8e69d091e3600ae3410e401a6164381"
+        },
+        {
+          "path": "LICENSES/Rust-standard-library-licenses/LLVM-exception.txt",
+          "sha256": "e34c58338bd89d43e709e226610d8f32b3e3c47f4ad9a99a8dc1d4ac7842488e"
+        },
+        {
+          "path": "LICENSES/Rust-standard-library-licenses/MIT.txt",
+          "sha256": "b85dcd3e453d05982552c52b5fc9e0bdd6d23c6f8e844b984a88af32570b0cc0"
+        },
+        {
+          "path": "LICENSES/Rust-standard-library-licenses/NCSA.txt",
+          "sha256": "39cb0234065c92b9e6cee3830cbb52b1aa289aa8fe9ba2e66730fec5cf05c630"
+        },
+        {
+          "path": "LICENSES/Rust-standard-library-licenses/OFL-1.1.txt",
+          "sha256": "8eea8287e5876b539670cadb82e99f9a7afddec6f6730811be1daf25d2e9bcfd"
+        },
+        {
+          "path": "LICENSES/Rust-standard-library-licenses/Unicode-3.0.txt",
+          "sha256": "f5062c9a188d81dfe66b56db4182dcf9e4b17c0d9b0d311a8e20b3a1b075c443"
+        }
+      ]
+    },
+    {
+      "name": "Apple LZFSE decoder",
+      "path": "third_party/lzfse",
+      "license_summary": "BSD-3-Clause",
+      "evidence": "observed upstream license and pinned vendored source,2026-11-16",
+      "notices": [
+        {
+          "path": "third_party/lzfse/LICENSE",
+          "sha256": "2a20082c2219edbbdb2e862a0566ba4f762a564ade7c04b09250ae4464bc4b32"
+        }
+      ],
+      "source_revision": "e634ca58b4821d9f3d560cdc6df5dec02ffc93fd",
+      "upstream": "https://github.com/lzfse/lzfse",
+      "pin_file": "third_party/lzfse/UPSTREAM_COMMIT"
+    }
+  ],
+  "primary_guidance": [
+    "https://spdx.org/licenses/GPL-3.0-or-later.html",
+    "https://apache.org/licenses/GPL-compatibility.html",
+    "https://www.gnu.org/licenses/gpl-faq.html#AllCompatibility",
+    "https://www.apple.com/legal/sla/docs/macOSSequoia.pdf"
+  ]
+}

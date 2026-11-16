@@ -1,0 +1,28 @@
+{
+  "label": "observed-pinned-source",
+  "project": "https://github.com/lzfse/lzfse",
+  "commit": "e634ca58b4821d9f3d560cdc6df5dec02ffc93fd",
+  "archive_url": "https://codeload.github.com/lzfse/lzfse/tar.gz/e634ca58b4821d9f3d560cdc6df5dec02ffc93fd",
+  "archive_sha256": "ca98aa6644d44500e3315858daa747ce15bd06d49e3edb12a5458e5525e8ebdb",
+  "license": "BSD-3-Clause",
+  "files": {
+    "LICENSE": "2a20082c2219edbbdb2e862a0566ba4f762a564ade7c04b09250ae4464bc4b32",
+    "src/lzfse.h": "a71a29096c022ac4b42af79a8b014538b93cc00bd30295f51ad8b49f3f65a304",
+    "src/lzfse_decode.c": "4211f54b19b9e75adfe9c1c3797e24ecde16620d0c48a30e5bab2e57fb1a8e0f",
+    "src/lzfse_decode_base.c": "721b4061e4e655f0940b7cabcf506356c152716526e630981caf0e708d2f73d9",
+    "src/lzfse_encode.c": "0fc987ce4bdf7676eb3707c174a09e23b2edb4987938fa0c92150cdc46558387",
+    "src/lzfse_encode_base.c": "ad69af28e09d5a4e40912bfbe67fb4c570a1e3186c7621dca15b72c41830e34e",
+    "src/lzfse_encode_tables.h": "628319241e7ff7b95e1bd9f02c0dcd38a92e48c3ef0662beb31e50d2e65f70a9",
+    "src/lzfse_fse.c": "a97e309975487af269456a4e87ef516aedaf82ce469e37971fd5676f9cd5956b",
+    "src/lzfse_fse.h": "4e5c2228a4bb5e5f3faf4639d5688bc7caa5cf0c0f3a971ada4fbe3631f3a533",
+    "src/lzfse_internal.h": "d08dc29d5440775de279d36783729131329df10cffd43ec6eff7dcfceef9f570",
+    "src/lzfse_main.c": "b7ad741e632f5bca916c00e902cdd0ca4b7bf35ca338f144792f48e9e997d189",
+    "src/lzfse_tunables.h": "99d435ca45b32ba0cc273a2862ba714762610513eed469bc590bb092ea476b36",
+    "src/lzvn_decode_base.c": "434647c83d4f3ed95c11465c5a3ec46f992ec94843928138039ea40be623957d",
+    "src/lzvn_decode_base.h": "d4c13bbf13b3616c1b1472e80b117857f1339a29a48006e5aad450bcd6204c09",
+    "src/lzvn_encode_base.c": "6abf10e82e46e0ae7f2ed1cb07a8636d28ae4e72f93e5a7dff5c4831f6e76a07",
+    "src/lzvn_encode_base.h": "9525055fbcf2a4057727eab2092f1382d8a25e75dcf9cfa32a7ae2cecf0ec282",
+    "UPSTREAM_COMMIT": "311ceb4a8db6781948078e8bf3be47170992d77977995ba3c0f10a31187fe48b"
+  },
+  "provenance_note": "UPSTREAM_COMMIT is project-authored pin metadata; other selected files are verbatim archive members."
+}

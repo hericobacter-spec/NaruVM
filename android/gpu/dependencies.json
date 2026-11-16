@@ -1,0 +1,54 @@
+{
+  "metal2vulkan": {
+    "url": "https://github.com/steelbrain/metal2vulkan.git",
+    "commit": "219f01365dc4c8eb346816c405b5b17403793764",
+    "license": "GPL-2.0-or-later OR LGPL-3.0-or-later"
+  },
+  "rust": "1.98.1",
+  "rustup": {
+    "url": "https://static.rust-lang.org/rustup/archive/1.29.3/aarch64-apple-darwin/rustup-init",
+    "sha256": "63752a1919a3a4793173ec70f8f212621a7ce38ba6a246095984482f4de20f9f"
+  },
+  "android_port": {
+    "scope": "Ordered attachment ROG subset and explicit ordered single-primitive GPU render-pass contract; restricted direct/indexed triangle lists with preserved draw IDs only; native interlock/full ROG capability unchanged. PanVK retains two idle command pools per family; completed excess pools release scratch.",
+    "patch_sha256": "e0d47368fb0bcdc8763b68bfd50319b1500b234aaf90339caf226e75f91d4698",
+    "files": {
+      "crates/metal2vulkan-runtime/README.md": "19e5fbe92ebc1823ceb23c8aa740c2139267edad17458d81bfefd0534c12a321",
+      "crates/metal2vulkan-runtime/src/device/mod.rs": "5f5db5c7bb5de830a55a07c4ea61b71ce823cfd12224540a343f775fff70bbfe",
+      "crates/metal2vulkan-runtime/src/error.rs": "7d26ee659dd1ef5a38d57eea222cfbf31f03ff3fefa4cba6d5a79e5f9d35f786",
+      "crates/metal2vulkan-runtime/src/render.rs": "75d565181e26326c96b8179e13071be9e49a8e5a19372fc41f1fb94767228683",
+      "crates/metal2vulkan-runtime/src/render_state.rs": "9f2906812f3800aaa2606ed1f37be45a15b1b9d6996d23db783b97011155bc51",
+      "crates/metal2vulkan-runtime/src/spares.rs": "1df6a25ea40b27aab3bddf88c98a7ffb4dada2e51e9e0d89dd7bed9fca7ec6f6",
+      "crates/metal2vulkan-runtime/src/tests/copied_log.rs": "0c85f82082cb7bd56f32a378878cb0becd8a7c39aa762bb6b79eb2919ff68665",
+      "crates/metal2vulkan-runtime/src/tests/spares.rs": "0f6de984525fed40287c0eae01d4f4906b95ad846977fe3fed1fd0a1b59979bf",
+      "crates/metal2vulkan-validation/runtime-sources.sha256": "a6db5959461fd6aef539f3e19f8b808db6e3f17308a04d75a829881f37cdb956",
+      "crates/metal2vulkan/src/cache/codec.rs": "d8575fedb9dc3b9b98249d98789277d3e8e03b3ef0de08646474d4de9f2a7d20",
+      "crates/metal2vulkan/src/cache/mod.rs": "8559ad57e963d856ae8627fc603816f2a92e097a26870cb602db0f32452faa53",
+      "crates/metal2vulkan/src/device/mechanism.rs": "2e0fb7615d523312075fb90163dd7fe1c66b5550e5f5c047c3f3dc5ddae80d5a",
+      "crates/metal2vulkan/src/device/tests/mechanism.rs": "c279d3d7b23e07b7ce3aba14ac7f90bc2ff4ed94eb62b851842c472fc9adc683",
+      "crates/metal2vulkan/src/env_vars.rs": "acf631ee3c00f54034f9deb32ea0f9620b39e0c6feb5dd3a6bf9ec4a5083cd9e",
+      "crates/metal2vulkan/src/error/mod.rs": "0a6562ef5240e14f065ac12535394b3df6a7b1fa7ba5d266870b49ab309393bd",
+      "crates/metal2vulkan/src/lower/fragment/coverage.rs": "85a8cd52fef7ac4324a2bc29cffa380849b719ffd80ae8d98c51283347cfe901",
+      "crates/metal2vulkan/src/lower/fragment/mod.rs": "7bc3d79a391029f2a22a782473e6aba65c57fe1b7c66d138919bdd817f38b033",
+      "crates/metal2vulkan/src/lower/fragment/rog.rs": "36c4819d9791b3f2806cc9b65a0a967d32447719ff5acee03673c1af86702573",
+      "crates/metal2vulkan/src/pipeline/api_tests.rs": "2c60ccc2f7f26a560d4a8c35a085e6e43c6cc539f506ebde05109ee8a228a9cf",
+      "crates/metal2vulkan/src/pipeline/compile.rs": "35763512accfa5ab3c560704a5ef18be87d050eb224df112a972f4df61037f85",
+      "crates/metal2vulkan/src/pipeline/compile/key.rs": "4565abc10b78d12a0ac7a0fc7f0b24dd851752b033a1a77146bb7431453066b5",
+      "crates/metal2vulkan/src/pipeline/compile/tests.rs": "774fb989527f359b06f382244a078b480e478941e1f9c04d2b740cf96a88e586",
+      "crates/metal2vulkan/src/pipeline/descriptor.rs": "cc88753cfa035754df05a64c2aec6d3f403e7312e03786eb01b2f530ed8a472b",
+      "crates/metal2vulkan/src/pipeline/facts.rs": "4542c6cb89b92c55dad2c3aafc788f89e4e9e25244e7d8e6a93ec3742c07d239",
+      "crates/metal2vulkan/src/pipeline/lower_inputs.rs": "08dfcf2bad48ff739e3666881effb17fae54659cfe50f89e501615816d0e3979",
+      "crates/metal2vulkan/src/tests/engine_fragment.rs": "d5d4353a2c928d5b1b06c8c447dbf82ae5b81e0151c513c87d47c814fe6a2a80",
+      "crates/metal2vulkan/tests/api_signatures.tsv": "733f86862c723536e32b1d44df1808a82e79d1b2ec42e02797b8e503e3e438de",
+      "crates/metal2vulkan/tests/golden_hashes.tsv": "3237f230086affeb9b5bec372bf8b46df4fc59edc63b96c8c33d940fb2a3a1ed",
+      "crates/metal2vulkan/tests/public_fixture_expectations_engine.tsv": "5c52b6ab728cab377ba6584d1b65a472f51aefd8e37ae7c163d323951bd0cfb8",
+      "docs/API.md": "2474b07818ba99ee1bad4c63aa7f9f85a5e8165f815817b96d5cebf2f330771a",
+      "docs/FAST-PATHS.md": "eabff5fbad40405663317a9c7748b9316fa980c2499323126277ff1c6b7c0b98",
+      "docs/REFUSALS.md": "137eb0cd6e6ce23d5b06530f45957665f1aa57a7a4fcce5bec1bc0df85f8d891",
+      "scripts/refusal-surface/reach.tsv": "267e21d4575aef986908edc9c9e22cfe42048c1c760b506d05afe742fca25e23"
+    },
+    "local_commit": "c29e372751f77cb75fd58c7f4932619debd44f84",
+    "semantics_version": 1931,
+    "runtime_version": 1712
+  }
+}

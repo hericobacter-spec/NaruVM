@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ui_no_session_logs_yet_run_a_mac_or_a_diagnostic_to_see_results" formatted="false">"아직 실행 기록이 없습니다. 실행하거나 진단하면 결과가 여기에 표시됩니다."</string>
+    <string name="ui_testing_mali_composition_authored_test_pattern" formatted="false">"Mali 화면 합성 검사 중 · 자체 테스트 패턴"</string>
+    <string name="ui_gpu_copy_path_passed_not_yet_applied_to_macos" formatted="false">"GPU 복사 경로 검사 통과 · macOS 적용 전"</string>
+    <string name="ui_mali_gpu_shared_memory_computation_passed_macos_connection_u" formatted="false">"Mali GPU 공유 메모리 계산 통과 · macOS 연결 검증은 별도입니다"</string>
+    <string name="ui_virtual_network_test_passed" formatted="false">"가상 네트워크 검사 통과"</string>
+    <string name="ui_input_direct_touch" formatted="false">"입력: 직접 터치"</string>
+    <string name="ui_clone_test_passed" formatted="false">"복제 검사 통과"</string>
+    <string name="ui_3_cores" formatted="false">"3코어"</string>
+    <string name="ui_running_boot_rom_15_second_experiment" formatted="false">"부트 ROM 실행 중 · 15초 실험"</string>
+    <string name="ui_virtual_gpu_test_error" formatted="false">"가상 GPU 검사 오류"</string>
+    <string name="ui_latin_letters_numbers_symbols" formatted="false">"영문·숫자·기호"</string>
+    <string name="ui_device_diagnostics" formatted="false">"기기 진단"</string>
+    <string name="ui_recovery_experiment_stopped_check_progress_in_the_log" formatted="false">"복구 실험 중단 · 진행 단계는 로그를 확인하세요"</string>
+    <string name="ui_the_graphics_backend_failed_preflight_select_cpu_rendering_o" formatted="false">"선택한 그래픽 경로가 사전 검사를 통과하지 못했습니다. CPU 렌더링을 선택하거나 그래픽 로그를 확인하세요."</string>
+    <string name="ui_auto_selects_after_preflight_checks_cpu_rendering_is_very_sl" formatted="false">"자동은 사전 검사 후 선택합니다. CPU 렌더링은 매우 느립니다. 다른 기기의 실행은 미검증입니다."</string>
+    <string name="ui_mali_composition_failed_check_the_log" formatted="false">"Mali 화면 합성 검사 미통과 · 로그를 확인하세요"</string>
+    <string name="ui_this_cpu_memory_page_and_jit_combination_does_not_meet_execu" formatted="false">"이 CPU·메모리 페이지·JIT 조합은 현재 실행 조건을 충족하지 않습니다. 로그의 PLATFORM_RESULT를 확인하세요."</string>
+    <string name="ui_testing_mali_memory_api" formatted="false">"Mali 메모리 API 검사 중"</string>
+    <string name="ui_input_trackpad" formatted="false">"입력: 트랙패드"</string>
+    <string name="ui_gpu_copy_path_test_error" formatted="false">"GPU 복사 경로 검사 오류"</string>
+    <string name="ui_launch_settings" formatted="false">"실행 설정"</string>
+    <string name="ui_stop_normally" formatted="false">"정상 종료"</string>
+    <string name="ui_disk_clone_error" formatted="false">"디스크 복제 오류"</string>
+    <string name="ui_shared_memory_display_test_passed" formatted="false">"공유 메모리 화면 검사 통과"</string>
+    <string name="ui_preflight_then_boot_cpu" formatted="false">" 확인 후 부팅 · CPU "</string>
+    <string name="ui_keep_running" formatted="false">"실행 유지"</string>
+    <string name="ui_run_rom_1_gb_15_seconds" formatted="false">"ROM 실행 · 1GB / 15초"</string>
+    <string name="ui_panvk_compatibility_failed_check_the_log" formatted="false">"PanVK 호환성 검사 미통과 · 로그를 확인하세요"</string>
+    <string name="ui_macos_execution_requires_separate_verification" formatted="false">" · macOS 실행은 별도 검증이 필요합니다."</string>
+    <string name="ui_apple_server_connection_passed" formatted="false">"Apple 서버 연결 검사 통과"</string>
+    <string name="ui_close" formatted="false">"닫기"</string>
+    <string name="ui_individual_firmware_recovery_and_disk_tests_use_launch_setti" formatted="false">"펌웨어·복구·디스크의 개별 검사입니다. 일반 Mac 실행은 위의 실행 설정을 사용하세요."</string>
+    <string name="ui_test_apple_server_connection" formatted="false">"Apple 서버 연결 검사"</string>
+    <string name="ui_seconds" formatted="false">"초"</string>
+    <string name="ui_distribution_source_and_modifications" formatted="false">"배포 정보 · 소스 및 변경 방법"</string>
+    <string name="ui_virtual_gpu_initialization_passed_macos_display_unverified" formatted="false">"가상 GPU 초기화 검사 통과 · macOS 화면은 미검증"</string>
+    <string name="ui_graphics_backend" formatted="false">"그래픽 실행 방식"</string>
+    <string name="ui_display_cache_test_passed" formatted="false">"화면 캐시 검사 통과"</string>
+    <string name="ui_guest_display_d_d_recent_updates_1f_s" formatted="false">"게스트 화면 %d × %d · 최근 갱신 %.1f회/초"</string>
+    <string name="ui_preflight_cancelled" formatted="false">"실행 확인을 취소했습니다."</string>
+    <string name="ui_tests_failed" formatted="false">"검사 실패 · "</string>
+    <string name="ui_start_from_your_saved_mac_disk_choose_resources_for_your_nex" formatted="false">"저장된 Mac 디스크로 실행합니다.\n실행 설정에서 다음 실행의 자원을 선택하세요."</string>
+    <string name="ui_tap_to_return_to_your_mac" formatted="false">"화면을 눌러 돌아갈 수 있습니다"</string>
+    <string name="ui_shared_memory_display_failed_check_the_log" formatted="false">"공유 메모리 화면 검사 실패 · 로그 확인"</string>
+    <string name="ui_choose_keep_running_to_continue_using_your_mac" formatted="false">"계속 사용하려면 실행 유지를 선택하세요."</string>
+    <string name="ui_boot_experiment_ended_check_logs_and_frames_for_os_progress" formatted="false">"부팅 실험 종료 · OS 실행 여부는 로그와 프레임으로 확인하세요"</string>
+    <string name="ui_testing_display_cache" formatted="false">"화면 캐시 검사 중"</string>
+    <string name="ui_ready_to_continue" formatted="false">"작업을 이어갈 준비"</string>
+    <string name="ui_finishing_disk_writes_and_stopping" formatted="false">"디스크 기록을 마치고 종료하는 중"</string>
+    <string name="ui_testing_clone_preservation_sparse_regions_and_overwrite_refu" formatted="false">"디스크 복제의 원본 보존·빈 영역·덮어쓰기 거부 검사 중"</string>
+    <string name="ui_lock_external_mouse_esc_to_release" formatted="false">"외부 마우스 잠금 · Esc로 해제"</string>
+    <string name="ui_tests_computation_and_pixels_from_authored_shaders_macos_dis" formatted="false">"직접 작성한 테스트 셰이더의 계산과 픽셀을 검사합니다. macOS 화면 출력과는 별도 검사입니다."</string>
+    <string name="ui_select_a_latin_input_source_in_the_mac_before_typing_english" formatted="false">"영문 입력 전 Mac의 입력 소스를 영문으로 선택해 주세요. 태블릿의 키보드 언어와 별개입니다."</string>
+    <string name="ui_rom_must_be_1_mb_or_smaller" formatted="false">"ROM 크기는 1MB 이하여야 합니다"</string>
+    <string name="ui_tools" formatted="false">"도구"</string>
+    <string name="ui_2_cores_recommended" formatted="false">"2코어 · 추천"</string>
+    <string name="ui_mali_gpu_shared_memory_computation_error" formatted="false">"Mali GPU 공유 메모리 계산 오류"</string>
+    <string name="ui_virtual_mac_is_running" formatted="false">"가상 Mac 실행 중"</string>
+    <string name="ui_testing_gpu_shared_memory" formatted="false">"GPU 공유 메모리 검사 중"</string>
+    <string name="ui_manual_stop" formatted="false">"수동 종료"</string>
+    <string name="ui_rom_import_error" formatted="false">"ROM 가져오기 오류 · "</string>
+    <string name="ui_1_core" formatted="false">"1코어"</string>
+    <string name="ui_shared_memory_test_failed_check_the_log" formatted="false">"공유 메모리 검사 실패 · 로그를 확인하세요"</string>
+    <string name="ui_virtual_network_test_error" formatted="false">"가상 네트워크 검사 오류"</string>
+    <string name="ui_tap_click_two_fingers_scroll" formatted="false">"원하는 위치 누르기: 클릭 · 두 손가락: 스크롤"</string>
+    <string name="ui_boot_experiment_error_check_the_log" formatted="false">"부팅 실험 오류 · 로그를 확인하세요"</string>
+    <string name="ui_mali_memory_map_unmap_observed_gpu_computation_unverified" formatted="false">"Mali 메모리 매핑·해제 관측 · GPU 연산 미검증"</string>
+    <string name="ui_prepare_your_mac" formatted="false">"Mac을 준비해 주세요"</string>
+    <string name="ui_booting_waiting_for_this_session_s_display" formatted="false">"부팅 중 · 이번 실행의 화면을 기다립니다"</string>
+    <string name="ui_testing_software_vulkan_test_pattern" formatted="false">"CPU 소프트웨어 Vulkan 검사 중 · 테스트 패턴"</string>
+    <string name="ui_testing_virtual_network" formatted="false">"가상 네트워크 검사 중"</string>
+    <string name="ui_up_to" formatted="false">"최대 "</string>
+    <string name="ui_checking_cpu_and_graphics_mac_disk_stays_closed" formatted="false">"CPU·그래픽 기초 검사 중 · Mac 디스크를 열지 않습니다"</string>
+    <string name="ui_display_cache_test_error" formatted="false">"화면 캐시 검사 오류"</string>
+    <string name="ui_virtual_network_test_failed_check_the_log" formatted="false">"가상 네트워크 검사 실패 · 로그를 확인하세요"</string>
+    <string name="ui_full_screen_test_error" formatted="false">"전체 화면 검사 오류"</string>
+    <string name="ui_testing_shared_memory_display" formatted="false">"공유 메모리 화면 검사 중"</string>
+    <string name="ui_gpu_test_failed_check_translator_and_device_logs" formatted="false">"GPU 검사 실패 · 변환기와 장치 로그를 확인하세요"</string>
+    <string name="ui_mali_composition_passed_macos_needs_separate_verification" formatted="false">"Mali 화면 합성 검사 통과 · macOS 검증은 별도입니다"</string>
+    <string name="ui_timeout_normal_stop_requested" formatted="false">"TIMEOUT · 정상 종료 요청\n"</string>
+    <string name="ui_full_screen_test_authored_fixture" formatted="false">"전체 화면 검사 · 작성된 시험 데이터"</string>
+    <string name="ui_install_disk_boot_experiment_up_to" formatted="false">"설치 디스크 부팅 실험 중 · 최대 "</string>
+    <string name="ui_mali_memory_api_test_failed_check_the_log" formatted="false">"Mali 메모리 API 검사 미통과 · 로그를 확인하세요"</string>
+    <string name="ui_cannot_read_the_list" formatted="false">"목록을 읽을 수 없습니다"</string>
+    <string name="ui_testing_gpu_copy_path" formatted="false">"GPU 복사 경로 검증 중"</string>
+    <string name="ui_hide_recovery_and_firmware_tools" formatted="false">"복구·펌웨어 도구 접기"</string>
+    <string name="ui_virtual_mac_session_ended_check_the_log" formatted="false">"가상 Mac 실행 종료 · 로그를 확인하세요"</string>
+    <string name="ui_rom_experiment_ended_check_the_log" formatted="false">"ROM 실험 종료 · 실행 로그를 확인하세요"</string>
+    <string name="ui_test_virtual_disk_read_write" formatted="false">"가상 디스크 읽기·쓰기 검사"</string>
+    <string name="ui_rom_execution_error" formatted="false">"ROM 실행 오류"</string>
+    <string name="ui_testing_https_connection_to_apple_servers" formatted="false">"Apple 서버의 HTTPS 연결 검사 중"</string>
+    <string name="ui_macos_install_experiment_2_gb_20_minutes" formatted="false">"macOS 설치 실험 · 2GB / 20분"</string>
+    <string name="ui_mali_memory_import_accepted_gpu_execution_unverified" formatted="false">"Mali 메모리 가져오기 접수 관측 · GPU 실행 미검증"</string>
+    <string name="ui_diagnostics" formatted="false">"진단"</string>
+    <string name="ui_send" formatted="false">"전송"</string>
+    <string name="ui_rotate_display" formatted="false">"화면 회전"</string>
+    <string name="ui_test_gpu_shader_translation" formatted="false">"GPU 셰이더 변환 검사"</string>
+    <string name="ui_switch_input_source_space" formatted="false">"입력 소스 전환 (⌃Space)"</string>
+    <string name="ui_session_test_error" formatted="false">"실행 유지 검사 오류"</string>
+    <string name="ui_license_reading_error" formatted="false">"라이선스 읽기 오류"</string>
+    <string name="ui_session_test_ended" formatted="false">"실행 유지 검사 종료"</string>
+    <string name="ui_show_recovery_and_firmware_tools" formatted="false">"복구·펌웨어 도구 펼치기"</string>
+    <string name="ui_logs" formatted="false">"기록"</string>
+    <string name="ui_no_graphics_backend_passed_preflight_check_the_log" formatted="false">"실행 가능한 그래픽 방식을 찾지 못했습니다. 로그를 확인하세요."</string>
+    <string name="ui_boot_experiment_error" formatted="false">"부팅 실험 오류"</string>
+    <string name="ui_cloning_research_macos_disk_source_is_read_only" formatted="false">"실험용 macOS 디스크 복제 중 · 원본은 읽기 전용"</string>
+    <string name="ui_testing_mali_gpu_memory_computation_no_macos_disk" formatted="false">"Mali GPU 메모리 계산 검사 중 · macOS 디스크 사용 없음"</string>
+    <string name="ui_testing_keep_the_app_open" formatted="false">"검사 중 · 앱을 열어 두세요"</string>
+    <string name="ui_notice_file_exceeds_the_size_limit" formatted="false">"고지 파일의 크기 제한을 초과했습니다"</string>
+    <string name="ui_testing" formatted="false">"검사 중 · "</string>
+    <string name="ui_number_of_cpu_cores" formatted="false">"CPU 코어 수"</string>
+    <string name="ui_allocating_more_memory_leaves_less_for_android" formatted="false">"메모리를 늘리면 Android 여유가 줄어듭니다."</string>
+    <string name="ui_rom_execution_error_check_exit_code_and_log" formatted="false">"ROM 실행 오류 · 종료 코드와 로그를 확인하세요"</string>
+    <string name="ui_virtual_mac_display_tap_a_location_to_click_it" formatted="false">"가상 Mac 화면. 원하는 위치를 누르면 해당 위치를 클릭합니다."</string>
+    <string name="ui_gpu_test_error" formatted="false">"GPU 검사 오류"</string>
+    <string name="ui_external_mouse_speed" formatted="false">"외부 마우스 속도"</string>
+    <string name="ui_close_tools" formatted="false">"도구 닫기"</string>
+    <string name="ui_session_logs" formatted="false">"실행 기록"</string>
+    <string name="ui_experimental_stability_and_speed_under_development_normal_se" formatted="false">"실험 버전 · 안정성·속도 개선 중\n일반 실행은 직접 종료할 때까지 유지됩니다."</string>
+    <string name="ui_testing_virtual_mac_recovery_connection" formatted="false">"가상 Mac의 복구 연결 검사 중"</string>
+    <string name="ui_2_gb_recommended" formatted="false">"2GB · 추천"</string>
+    <string name="ui_recovery_and_firmware" formatted="false">"복구·펌웨어"</string>
+    <string name="ui_restore_recommended_settings" formatted="false">"추천값으로 되돌리기"</string>
+    <string name="ui_mali_gpu_shared_memory_computation_failed_check_the_log" formatted="false">"Mali GPU 공유 메모리 계산 미통과 · 로그를 확인하세요"</string>
+    <string name="ui_preflight_check_does_not_open_the_mac_disk" formatted="false">"Mac 디스크를 열지 않는 사전 검사"</string>
+    <string name="ui_preflight_passed" formatted="false">"기초 검사 통과 · "</string>
+    <string name="ui_loading" formatted="false">"불러오는 중…"</string>
+    <string name="ui_start_mac" formatted="false">"Mac 실행 · "</string>
+    <string name="ui_service_test_does_not_open_a_virtual_mac_disk" formatted="false">"가상 Mac 디스크를 열지 않는 서비스 검사입니다."</string>
+    <string name="ui_virtual_dfu_connection_passed_identifiers_are_in_the_log" formatted="false">"가상 DFU 연결 통과 · 식별값은 로그에서 확인하세요"</string>
+    <string name="ui_testing_cpu_gpu_shared_memory_no_macos_disk" formatted="false">"CPU·GPU 공유 메모리 검사 중 · macOS 디스크 사용 없음"</string>
+    <string name="ui_testing_panvk_gpu_compatibility_authored_test_pattern" formatted="false">"PanVK 실제 GPU 호환성 검사 중 · 자체 테스트 패턴"</string>
+    <string name="ui_open_source_licenses" formatted="false">"오픈소스 라이선스"</string>
+    <string name="ui_stop_this_mac_session" formatted="false">"Mac 실행을 종료할까요?"</string>
+    <string name="ui_boot_install_disk_experiment_2_gb_2_minutes" formatted="false">"설치 디스크 부팅 실험 · 2GB / 2분"</string>
+    <string name="ui_cpu_check_passed_5_test_groups" formatted="false">"CPU 검사 통과 · 5개 테스트 묶음"</string>
+    <string name="ui_virtual_disk_test_error" formatted="false">"가상 디스크 검사 오류"</string>
+    <string name="ui_server_connection_test_error" formatted="false">"서버 연결 검사 오류"</string>
+    <string name="ui_gpu_shared_memory_failed_check_the_log" formatted="false">"GPU 공유 메모리 검사 실패 · 로그를 확인하세요"</string>
+    <string name="ui_file_size_limit_exceeded" formatted="false">"파일 크기 제한 초과"</string>
+    <string name="ui_read_error" formatted="false">"읽기 오류: "</string>
+    <string name="ui_4_cores" formatted="false">"4코어"</string>
+    <string name="ui_virtual_mac_recovery_experiment_up_to" formatted="false">"가상 Mac 복구 실험 중 · 최대 "</string>
+    <string name="ui_test_virtual_gpu_initialization" formatted="false">"가상 GPU 초기화 검사"</string>
+    <string name="ui_virtual_disk_test_passed" formatted="false">"가상 디스크 검사 통과"</string>
+    <string name="ui_recommended_start_2_cores_2_gb_your_current_choices_appear_i" formatted="false">"추천 시작값  2코어 · 2GB\n현재 선택값은 실행 설정에 표시됩니다."</string>
+    <string name="ui_display_transport_test_test_colors" formatted="false">"화면 전송 검사 · 테스트 색상"</string>
+    <string name="ui_unknown_graphics_backend" formatted="false">"알 수 없는 그래픽 방식입니다."</string>
+    <string name="ui_virtual_dfu_connection_error" formatted="false">"가상 DFU 연결 오류"</string>
+    <string name="ui_testing_gpu_shader_translation_test_pattern" formatted="false">"GPU 셰이더 변환 검사 중 · 테스트 패턴"</string>
+    <string name="ui_cpu_jit_requirements_are_not_met_check_the_log" formatted="false">"현재 CPU·JIT 실행 조건을 충족하지 않습니다. 로그를 확인하세요."</string>
+    <string name="ui_save_session_log" formatted="false">"실행 기록 저장"</string>
+    <string name="ui_click" formatted="false">"클릭"</string>
+    <string name="ui_cannot_save_the_rom_file" formatted="false">"ROM 파일을 저장할 수 없습니다"</string>
+    <string name="ui_result_file_saved" formatted="false">"결과 파일을 저장했습니다"</string>
+    <string name="ui_research_clone_complete_source_preserved" formatted="false">"실험용 복제 완료 · 원본 보존"</string>
+    <string name="ui_compatibility_check_error_check_the_log" formatted="false">"호환성 검사 오류 · 로그를 확인하세요"</string>
+    <string name="ui_launch" formatted="false">"실행"</string>
+    <string name="ui_send_text_to_virtual_mac" formatted="false">"가상 Mac에 문자 보내기"</string>
+    <string name="ui_testing_temporary_virtual_disk" formatted="false">"임시 가상 디스크 검사 중"</string>
+    <string name="ui_close_virtual_mac_tools" formatted="false">"가상 Mac 도구 닫기"</string>
+    <string name="ui_gpu_shared_memory_test_error" formatted="false">"GPU 공유 메모리 검사 오류"</string>
+    <string name="ui_movement_is_independent_of_display_scaling_try_1_5_2_if_poin" formatted="false">"화면 확대와 무관한 상대 이동 · 작게 움직이면 1.5~2배로 조절"</string>
+    <string name="ui_clone_failed_check_the_log" formatted="false">"복제 실패 · 로그를 확인하세요"</string>
+    <string name="ui_display_cache_test_failed_check_the_log" formatted="false">"화면 캐시 검사 실패 · 로그를 확인하세요"</string>
+    <string name="ui_tests_library_initialization_device_registers_and_shutdown_w" formatted="false">"라이브러리 초기화·장치 레지스터·종료를 검사합니다. macOS 디스크는 열지 않습니다."</string>
+    <string name="ui_recovery_writes_installation_data_to_a_new_virtual_disk_disk" formatted="false">"복구는 새 가상 디스크에 설치 데이터를 씁니다. 기존 파티션이 있는 디스크는 보존을 위해 거부합니다."</string>
+    <string name="ui_graphics" formatted="false">"그래픽"</string>
+    <string name="ui_second_limit" formatted="false">"초 제한\n"</string>
+    <string name="ui_virtual_gpu_initialization_failed_check_the_log" formatted="false">"가상 GPU 초기화 실패 · 로그를 확인하세요"</string>
+    <string name="ui_original_mbedtls_notice" formatted="false">"MbedTLS 원본 고지"</string>
+    <string name="ui_sha_256_does_not_match_the_supported_avpbooter" formatted="false">"지원하는 AVPBooter의 SHA-256과 일치하지 않습니다"</string>
+    <string name="ui_memory" formatted="false">"메모리"</string>
+    <string name="ui_cancel" formatted="false">"취소"</string>
+    <string name="ui_groups_check_the_log" formatted="false">"개 묶음, 로그를 확인하세요"</string>
+    <string name="ui_ready_review_your_mac_launch_settings" formatted="false">"준비 · Mac 실행 설정을 확인하세요"</string>
+    <string name="ui_session_cancelled" formatted="false">"실행을 취소했습니다."</string>
+    <string name="ui_checking_rom_file" formatted="false">"ROM 파일 검사 중"</string>
+    <string name="ui_rom_check_passed_firmware_experiments_are_available" formatted="false">"ROM 검사 통과 · 펌웨어 실험을 실행할 수 있습니다"</string>
+    <string name="ui_test_cpu_instructions_memory_and_graphics_separately_expand" formatted="false">"명령어·메모리·그래픽을 개별 검사합니다. 복구 도구는 아래에서 펼칠 수 있습니다."</string>
+    <string name="ui_cannot_open_the_save_location" formatted="false">"저장 위치를 열 수 없습니다"</string>
+    <string name="ui_the_tablet_is_low_on_memory_close_other_apps_and_try_again" formatted="false">"현재 태블릿 메모리가 부족합니다. 다른 앱을 닫고 다시 실행하세요."</string>
+    <string name="ui_cpu_gpu_shared_memory_passed_guest_acceleration_unverified" formatted="false">"CPU·GPU 공유 메모리 검사 통과 · 게스트 가속 검증은 별도입니다"</string>
+    <string name="ui_save_error" formatted="false">"저장 오류 · "</string>
+    <string name="ui_cpu_cores" formatted="false">"CPU 코어"</string>
+    <string name="ui_virtual_mac_session_error_check_the_log" formatted="false">"가상 Mac 실행 오류 · 로그를 확인하세요"</string>
+    <string name="ui_applies_to_your_next_mac_session" formatted="false">"다음 Mac 실행에 적용됩니다"</string>
+    <string name="ui_session_test_authored_fixture" formatted="false">"실행 유지 검사 · 작성된 시험 데이터"</string>
+    <string name="ui_swipe_move_pointer_tap_click_two_fingers_scroll" formatted="false">"밀기: 포인터 이동 · 누르기: 현재 포인터 클릭 · 두 손가락: 스크롤"</string>
+    <string name="ui_stop_mac" formatted="false">"Mac 종료"</string>
+    <string name="ui_virtual_disk_test_failed_check_the_log" formatted="false">"가상 디스크 검사 실패 · 로그를 확인하세요"</string>
+    <string name="ui_original_henge_gplv2_or_later" formatted="false">"Henge 원본 GPLv2 · 이후 버전 선택 가능"</string>
+    <string name="ui_cores_memory" formatted="false">"코어 · 메모리 "</string>
+    <string name="ui_graphics_preflight_failed_choose_another_backend_or_check_th" formatted="false">"그래픽 기초 검사를 통과하지 못했습니다. 다른 방식을 선택하거나 로그를 확인하세요."</string>
+    <string name="ui_virtual_mac_session" formatted="false">"가상 Mac 실행"</string>
+    <string name="ui_mali_memory_api_test_error" formatted="false">"Mali 메모리 API 검사 오류"</string>
+    <string name="ui_local_mac_workspace" formatted="false">"나루VM"</string>
+    <string name="ui_test_ended_normally" formatted="false">"검사 정상 종료"</string>
+    <string name="ui_the_selected_graphics_backend_failed_preflight_check_the_log" formatted="false">"선택한 그래픽 방식의 사전 검사가 실패했습니다. 다른 방식으로 조용히 대체하지 않습니다. 로그를 확인하세요."</string>
+    <string name="ui_gpu_shared_memory_passed_macos_acceleration_not_connected" formatted="false">"GPU 공유 메모리 검사 통과 · macOS 가속은 미연결"</string>
+    <string name="ui_this_dialog_supports_latin_letters_numbers_and_symbols_only" formatted="false">"이 전송창은 영문·숫자·기호만 지원합니다"</string>
+    <string name="ui_cannot_open_the_file" formatted="false">"파일을 열 수 없습니다"</string>
+    <string name="ui_virtual_dfu_connection_failed_check_the_log" formatted="false">"가상 DFU 연결 실패 · 로그를 확인하세요"</string>
+    <string name="ui_testing_virtual_gpu_library_initialization_no_guest" formatted="false">"가상 GPU 라이브러리 초기화 검사 중 · 게스트 실행 없음"</string>
+    <string name="ui_shared_memory_test_error" formatted="false">"공유 메모리 검사 오류"</string>
+    <string name="ui_timeout_no_stop_response" formatted="false">"TIMEOUT · 종료 응답 없음\n"</string>
+    <string name="ui_my_mac" formatted="false">"나의 Mac"</string>
+    <string name="ui_import_rom_file" formatted="false">"ROM 파일 가져오기"</string>
+    <string name="ui_gpu_computation_pixels_passed_macos_display_unverified" formatted="false">"GPU 계산·픽셀 검사 통과 · macOS 화면 검증은 별도입니다"</string>
+    <string name="ui_open_the_app_and_try_again_foreground_service_error" formatted="false">"앱을 앞에 열고 다시 실행하세요 · 실행 유지 서비스 오류"</string>
+    <string name="ui_macos_is_booting_waiting_for_the_display" formatted="false">"macOS 부팅 중 · 화면을 기다립니다"</string>
+    <string name="ui_run_cpu_tests" formatted="false">"CPU 테스트 실행"</string>
+    <string name="ui_list" formatted="false">"목록"</string>
+    <string name="ui_panvk_compatibility_test_error" formatted="false">"PanVK 호환성 검사 오류"</string>
+    <string name="ui_recovery_tool_finished_check_the_log" formatted="false">"복구 도구 완료 · 로그를 확인하세요"</string>
+    <string name="ui_a_rom_and_an_existing_mac_disk_are_required_a_new_installati" formatted="false">"아래에서 버전을 선택하면 다운로드·검증·새 디스크 설치 후 Mac을 시작합니다."</string>
+    <string name="ui_panvk_shader_test_passed_macos_acceleration_not_connected" formatted="false">"PanVK 자체 셰이더 검사 통과 · macOS 가속은 미연결"</string>
+    <string name="ui_open_virtual_mac_input_and_stop_tools" formatted="false">"가상 Mac 입력 및 종료 도구 열기"</string>
+    <string name="ui_a_rom_and_an_existing_mac_disk_are_required_to_start" formatted="false">"실행하려면 ROM과 기존 Mac 디스크가 필요합니다."</string>
+    <string name="ui_test_virtual_dfu_connection" formatted="false">"가상 DFU 연결 검사"</string>
+    <string name="ui_gpu_copy_path_failed_macos_use_deferred" formatted="false">"GPU 복사 경로 미통과 · macOS 적용 보류"</string>
+    <string name="ui_recovery_experiment_error" formatted="false">"복구 실험 오류"</string>
+    <string name="ui_licenses_and_source" formatted="false">"라이선스·소스 정보"</string>
+    <string name="ui_check_device_compatibility" formatted="false">"기기 호환성 검사"</string>
+    <string name="ui_not_enough_memory_would_remain_for_android_choose_a_lower_al" formatted="false">"Android에 남길 메모리가 부족합니다. 더 낮은 메모리를 선택하세요."</string>
+    <string name="ui_external_mouse_movement_speed" formatted="false">"외부 마우스 이동 속도"</string>
+    <string name="ui_apple_server_connection_failed_check_network_log" formatted="false">"Apple 서버 연결 실패 · 네트워크 로그를 확인하세요"</string>
+    <string name="ui_type_text" formatted="false">"문자 입력"</string>
+    <string name="ui_memory_allocated_to_the_mac" formatted="false">"Mac에 할당할 메모리"</string>
+    <string name="resource_summary">%1$d코어 / %2$dGB</string>
+    <string-array name="gpu_labels">
+        <item>자동 · 추천</item>
+        <item>CPU 렌더링 · 범용·느림</item>
+        <item>시스템 Vulkan · 실험용</item>
+        <item>Mali PanVK · 실험용</item>
+        <item>Adreno Turnip · 별도 드라이버</item>
+    </string-array>
+    <string-array name="mouse_speed_labels">
+        <item>0.5배</item>
+        <item>1배 · 추천</item>
+        <item>1.5배</item>
+        <item>2배</item>
+        <item>3배</item>
+    </string-array>
+    <string name="install_title">macOS 설치</string>
+    <string name="install_action">다운로드·설치 후 실행</string>
+    <string name="install_another">다른 Mac 설치</string>
+    <string name="install_description">버전을 고르면 다운로드·검증·새 디스크 설치·첫 부팅을 이어서 진행합니다. 계정 설정은 macOS에서 마쳐 주세요.</string>
+    <string name="install_version">macOS 버전</string>
+    <string name="install_observed">15.6.1 · Android 부팅 관측</string>
+    <string name="install_unverified">%1$s · Android 실행 미검증</string>
+    <string name="install_size">다운로드 %1$.1f GiB · 약 %2$.1f GiB 여유 공간을 권장합니다. 공간은 추정값이며 기존 Mac은 유지합니다.</string>
+    <string name="install_experimental">이 버전은 Android 설치·부팅을 시험하지 않았습니다. 실험 경로는 실패할 수 있으며 호환성을 보장하지 않습니다.</string>
+    <string name="install_15_note">15.6.1은 이전 태블릿 시험에서 바탕화면 진입을 관측했습니다. 새 자동 설치 흐름의 전체 실기기 검증은 별도로 필요합니다.</string>
+    <string name="install_legal">Apple에서 직접 다운로드합니다. macOS 사용권을 확인하고 허용된 환경에서 사용해 주세요. Apple 이미지는 앱에 포함하지 않습니다.</string>
+    <string name="install_preparing">새 Mac 준비 중</string>
+    <string name="install_rom">부팅 ROM 다운로드·검증 중</string>
+    <string name="install_downloading">macOS 다운로드 중</string>
+    <string name="install_verifying">SHA-256 검증 중</string>
+    <string name="install_restoring">새 디스크에 설치 중 · 앱을 열어 두세요</string>
+    <string name="install_ready">설치 완료 · 앱으로 돌아오면 Mac을 시작합니다</string>
+    <string name="install_failed">설치가 중단되었습니다 · 상세 내용을 확인하고 다시 시도하세요</string>
+    <string name="install_paused">중단됨 · 다시 시도하면 다운로드를 이어받습니다</string>
+    <string name="install_pause">설치 중단</string>
+    <string name="install_pause_note">다운로드는 이어받을 수 있습니다. 중단한 설치 디스크는 보존하며 다시 시도하면 새 디스크를 만듭니다.</string>
+    <string name="install_stopping">디스크 쓰기를 마친 뒤 중단 중…</string>
+    <string name="install_busy">실행 중인 Mac이나 설치를 먼저 중단해 주세요.</string>
+    <string name="install_memory">설치에는 기기 전체 메모리 4 GiB 이상과 Android 여유 메모리가 필요합니다.</string>
+    <string name="install_space">약 %1$.1f GiB의 여유 공간이 필요합니다. 기존 파일은 유지했습니다.</string>
+    <string name="install_android_timeout">Android가 백그라운드 다운로드를 중단했습니다. 앱을 열고 다시 시도하면 이어받습니다.</string>
+    <string name="nav_tests">진단</string>
+    <string name="home_unprepared">macOS 버전을 선택해 설치를 시작하세요.</string>
+    <string name="resource_first_boot">선택한 자원은 첫 부팅부터 적용됩니다. 설치 중에는 메모리 2GB를 사용합니다.</string>
+</resources>

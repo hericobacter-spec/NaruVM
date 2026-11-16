@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "as_of": "2026-11-16",
+  "purpose": "Research matrix, never a runtime support allowlist",
+  "runtime_contract": {
+    "abi": "arm64-v8a only; Android API28 build minimum is not runtime coverage",
+    "cpu": "Fixed M1-era guest ISA: platform_compat.c checks HWCAP/HWCAP2 and JIT mapping before guest files open; missing features are not emulated",
+    "pages": {
+      "4096": "observed on TB373FU",
+      "16384": "policy/build alignment checked; device runtime untested",
+      "65536": "rejected"
+    },
+    "memory": "Default guest 2048MiB / 2vCPU / JIT384MiB; retain host headroom; does not imply stability on low-RAM phones",
+    "graphics": "Reims requires exact shared guest-memory access plus a successful authored4096-pixel probe; Vulkan version/GPU name alone is insufficient",
+    "auto_unknown_model": [
+      "optional bundled Turnip",
+      "system Vulkan",
+      "CPU Lavapipe"
+    ],
+    "auto_observed_TB373FU": [
+      "PanVK userptr; no automatic replacement after failure"
+    ],
+    "limits": "No fallback after guest start. CPU rendering is slow. Probe success is not macOS/driver/thermal stability certification."
+  },
+  "devices": [
+    {
+      "name": "Lenovo TB373FU",
+      "soc": "Dimensity8300",
+      "gpu_family": "Mali",
+      "spec_label": "observed-local",
+      "execution_label": "observed-bounded",
+      "path": "PanVK userptr",
+      "limits": "Desktop/devtools previously observed; reboot/CS_FAULT and responsiveness remain unresolved"
+    },
+    {
+      "name": "Lenovo Legion Tab 8.8 Gen3 / TB321FU",
+      "soc": "Snapdragon8Gen3",
+      "gpu_family": "Adreno",
+      "spec_label": "observed-primary-source",
+      "source": "https://psref.lenovo.com/syspool/Sys/PDF/Lenovo_Tablets/Legion_Tab_8_8_3/Legion_Tab_8_8_3_Spec.html",
+      "execution_label": "unknown-untested",
+      "path": "capability-gated auto; hardware acceleration conditional",
+      "limits": "Y700 regional/generation names vary; identify exact model. This row does not cover all Y700 generations."
+    },
+    {
+      "name": "Samsung Galaxy Tab S8 / S8+ Wi-Fi",
+      "soc": "Snapdragon8Gen1",
+      "gpu_family": "Adreno",
+      "spec_label": "observed-primary-source",
+      "source": "https://image-us.samsung.com/SamsungUS/samsungbusiness/pdfs/spec-sheet/Galaxy_Tab_S8_S8plus_Spec_Sheet_Wi-Fi.pdf",
+      "execution_label": "unknown-untested",
+      "path": "capability-gated auto; hardware acceleration conditional",
+      "gpu_source": "https://www.qualcomm.com/smartphones/products/8-series/snapdragon-8-gen-1-mobile-platform"
+    },
+    {
+      "name": "Samsung Galaxy Tab S9 / S9+ / Ultra",
+      "soc": "Snapdragon8Gen2 for Galaxy",
+      "gpu_family": "Adreno",
+      "spec_label": "observed-primary-source",
+      "source": "https://news.samsung.com/global/samsung-galaxy-tab-s9-sets-the-new-standard-to-bring-galaxys-premium-experience-to-a-tablet",
+      "execution_label": "unknown-untested",
+      "path": "capability-gated auto; hardware acceleration conditional",
+      "gpu_source": "https://www.qualcomm.com/smartphones/products/8-series/snapdragon-8-gen-2-mobile-platform"
+    },
+    {
+      "name": "Samsung Galaxy S25 / S25+ / Ultra",
+      "soc": "Snapdragon8Elite for Galaxy",
+      "gpu_family": "Adreno",
+      "spec_label": "observed-primary-source",
+      "source": "https://news.samsung.com/global/galaxy-s25",
+      "execution_label": "unknown-untested",
+      "path": "capability-gated auto; hardware acceleration conditional",
+      "limits": "No assumption that a newer Adreno is supported by a supplied Turnip build",
+      "gpu_source": "https://www.qualcomm.com/smartphones/products/8-series/snapdragon-8-elite-mobile-platform"
+    },
+    {
+      "name": "Other ARM64 Android tablets/phones, including older Y700 and non-Snapdragon Galaxy",
+      "spec_label": "unknown-model-dependent",
+      "execution_label": "unknown-untested",
+      "path": "same capability checks; explicit software/system options",
+      "limits": "Older ISA, 32-bit OS, missing JIT/shared-memory support or insufficient RAM may prevent execution. No all-Android support claim."
+    }
+  ],
+  "driver_research": [
+    {
+      "source": "https://docs.mesa3d.org/drivers/freedreno.html",
+      "label": "observed-source",
+      "finding": "Turnip is Mesa's Adreno Vulkan driver; supported chips/builds must be checked individually"
+    },
+    {
+      "source": "https://raw.githubusercontent.com/bylaws/libadrenotools/master/include/adrenotools/driver.h",
+      "label": "observed-source",
+      "finding": "Private driver loading/import facilities exist; not integrated here and not a general shared-memory guarantee"
+    }
+  ]
+}

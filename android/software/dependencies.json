@@ -1,0 +1,198 @@
+{
+  "source": "https://packages.termux.dev/apt/termux-main/",
+  "index_sha256": "0f728fbf328b8b0ad4c1138cbcfbad324928ef64d0879c4605639331e5bc7586",
+  "packages": [
+    {
+      "Package": "vulkan-loader-generic",
+      "Version": "1.4.368",
+      "Depends": null,
+      "Filename": "pool/main/v/vulkan-loader-generic/vulkan-loader-generic_1.4.368_aarch64.deb",
+      "Size": "144272",
+      "SHA256": "8043459b6d4efd4834b756c6eeb539e8ae184d71046ffddff3ca75e85b1fcb27"
+    },
+    {
+      "Package": "mesa-vulkan-icd-swrast",
+      "Version": "26.2.7",
+      "Depends": "libandroid-shmem, libc++, libdrm, libllvm (<< 22), libx11, libxcb, libxshmfence, libwayland, ncurses, vulkan-loader-generic, zlib, zstd",
+      "Filename": "pool/main/m/mesa-vulkan-icd-swrast/mesa-vulkan-icd-swrast_26.2.7_aarch64.deb",
+      "Size": "1630192",
+      "SHA256": "09ab1392ff465a0ffc73d9fd8f77114a0238f435b1250f053c86a460dc994a28"
+    },
+    {
+      "Package": "zstd",
+      "Version": "1.5.7-1",
+      "Depends": "liblzma, zlib",
+      "Filename": "pool/main/z/zstd/zstd_1.5.7-1_aarch64.deb",
+      "Size": "360488",
+      "SHA256": "e1b4a5113648da8de189620ba1fce74c48b2d0833d9043391b9a1c91fb606fd3"
+    },
+    {
+      "Package": "zlib",
+      "Version": "1.4",
+      "Depends": null,
+      "Filename": "pool/main/z/zlib/zlib_1.4_aarch64.deb",
+      "Size": "63780",
+      "SHA256": "e3027565ae50bcd8ba5113c988b589754ae192c9cc3e6afbe3e4ed7c06b2598e"
+    },
+    {
+      "Package": "liblzma",
+      "Version": "5.8.4",
+      "Depends": null,
+      "Filename": "pool/main/libl/liblzma/liblzma_5.8.4_aarch64.deb",
+      "Size": "194796",
+      "SHA256": "44e95e6e60dddb3705e60a344a4f009a1085a210797342b721eaff41b44033c0"
+    },
+    {
+      "Package": "ncurses",
+      "Version": "6.6.20260307+really6.5.20250830",
+      "Depends": null,
+      "Filename": "pool/main/n/ncurses/ncurses_6.6.20260307+really6.5.20250830_aarch64.deb",
+      "Size": "557792",
+      "SHA256": "f44bbfdc3d42ec0217bffa978309390e59cea5a48a9a83226d4a496c42ad0b99"
+    },
+    {
+      "Package": "libwayland",
+      "Version": "1.26.0",
+      "Depends": "libandroid-support, libexpat, libffi, libxml2",
+      "Filename": "pool/main/libw/libwayland/libwayland_1.26.0_aarch64.deb",
+      "Size": "129444",
+      "SHA256": "f03ea02f7d523399514e2463c5459dab234b802bbda41a61c0340b4011dc773d"
+    },
+    {
+      "Package": "libxml2",
+      "Version": "2.15.4-1",
+      "Depends": "libandroid-glob, libiconv, zlib",
+      "Filename": "pool/main/libx/libxml2/libxml2_2.15.4-1_aarch64.deb",
+      "Size": "442652",
+      "SHA256": "d315861bbcf716cfb088f53cddab9fb6a96430cc66769f79774cc69c2f53bcff"
+    },
+    {
+      "Package": "libiconv",
+      "Version": "1.19.1",
+      "Depends": null,
+      "Filename": "pool/main/libi/libiconv/libiconv_1.19.1_aarch64.deb",
+      "Size": "562252",
+      "SHA256": "a1c6323eff4f660e16ae6f5832356444b3269c19a4f61146355a49e7c4be5ed1"
+    },
+    {
+      "Package": "libandroid-glob",
+      "Version": "0.6-3",
+      "Depends": null,
+      "Filename": "pool/main/liba/libandroid-glob/libandroid-glob_0.6-3_aarch64.deb",
+      "Size": "7032",
+      "SHA256": "2276ae8adedf0db76c2f4ffc94cc4cceb2f4f5d78e021b54e2e046d1233e7826"
+    },
+    {
+      "Package": "libffi",
+      "Version": "3.8.0",
+      "Depends": null,
+      "Filename": "pool/main/libf/libffi/libffi_3.8.0_aarch64.deb",
+      "Size": "37592",
+      "SHA256": "4f255badf74cd31f6a2801c17fa1444199c84c834b517b7c843e2fe9ebe91d77"
+    },
+    {
+      "Package": "libexpat",
+      "Version": "2.10.0",
+      "Depends": null,
+      "Filename": "pool/main/libe/libexpat/libexpat_2.10.0_aarch64.deb",
+      "Size": "102436",
+      "SHA256": "0e4411f01f6fb664f3f04f9420289472f9afc30db01ea1c5d1e57fd9fa2354be"
+    },
+    {
+      "Package": "libandroid-support",
+      "Version": "29-1",
+      "Depends": null,
+      "Filename": "pool/main/liba/libandroid-support/libandroid-support_29-1_aarch64.deb",
+      "Size": "10880",
+      "SHA256": "f2f145d6135ad4843ac9670153be3e3944dc1e6f1736d46d2306c28f2b86f517"
+    },
+    {
+      "Package": "libxshmfence",
+      "Version": "1.3.3-1",
+      "Depends": null,
+      "Filename": "pool/main/libx/libxshmfence/libxshmfence_1.3.3-1_aarch64.deb",
+      "Size": "4548",
+      "SHA256": "7644c2969c2ce4d763785bd2a85eb32ccf8e5ad40228cd92b193f7edb6398d92"
+    },
+    {
+      "Package": "libxcb",
+      "Version": "1.17.0-1",
+      "Depends": "libxau, libxdmcp",
+      "Filename": "pool/main/libx/libxcb/libxcb_1.17.0-1_aarch64.deb",
+      "Size": "913948",
+      "SHA256": "191c3642b6a8c754bc75b69b94a81858ecb5f18766dc085aff55559b8087ad34"
+    },
+    {
+      "Package": "libxdmcp",
+      "Version": "1.1.5-2",
+      "Depends": null,
+      "Filename": "pool/main/libx/libxdmcp/libxdmcp_1.1.5-2_aarch64.deb",
+      "Size": "24460",
+      "SHA256": "caea0cf5c0028af0840774094b8900ef7afffd8f9bbd7b1abfbe66851f0d6077"
+    },
+    {
+      "Package": "libxau",
+      "Version": "1.0.12-2",
+      "Depends": null,
+      "Filename": "pool/main/libx/libxau/libxau_1.0.12-2_aarch64.deb",
+      "Size": "9120",
+      "SHA256": "2d86bed61ce89dd8fdb55e565aede10155f2ce3adaccb61d5f1375aec3314083"
+    },
+    {
+      "Package": "libx11",
+      "Version": "1.8.14",
+      "Depends": "libandroid-support, libxcb, xorgproto",
+      "Filename": "pool/main/libx/libx11/libx11_1.8.14_aarch64.deb",
+      "Size": "1910512",
+      "SHA256": "c5206ee9cc26a63985d110b57bc24f23c7c97505e6100c4d6a8547a1aeed5532"
+    },
+    {
+      "Package": "xorgproto",
+      "Version": "2026.1",
+      "Depends": "xorg-util-macros",
+      "Filename": "pool/main/x/xorgproto/xorgproto_2026.1_all.deb",
+      "Size": "249848",
+      "SHA256": "2463651143a386eba0d7baebac87ca5d2db5239d36cf38f9b2086f3c1bfdcbce"
+    },
+    {
+      "Package": "xorg-util-macros",
+      "Version": "1.20.2",
+      "Depends": null,
+      "Filename": "pool/main/x/xorg-util-macros/xorg-util-macros_1.20.2_all.deb",
+      "Size": "21948",
+      "SHA256": "11765ad1a6f181e36f807464f7b4360593d847dce245202a393eb2ca156520d0"
+    },
+    {
+      "Package": "libllvm",
+      "Version": "21.1.8-3",
+      "Depends": "libc++, libffi, libxml2, ncurses, zlib, zstd",
+      "Filename": "pool/main/libl/libllvm/libllvm_21.1.8-3_aarch64.deb",
+      "Size": "30733892",
+      "SHA256": "5056a73f2645fc9c0759e6f94a1bd6edcf36305acaef58dc685211ced9cc2a02"
+    },
+    {
+      "Package": "libc++",
+      "Version": "30",
+      "Depends": null,
+      "Filename": "pool/main/libc/libc++/libc++_30_aarch64.deb",
+      "Size": "341604",
+      "SHA256": "53d0b84a7ba7459024257cb94d5b136fe13ef858567f65a8064b35950799f2ca"
+    },
+    {
+      "Package": "libdrm",
+      "Version": "2.4.134",
+      "Depends": null,
+      "Filename": "pool/main/libd/libdrm/libdrm_2.4.134_aarch64.deb",
+      "Size": "180604",
+      "SHA256": "0cbe82140cf325c15473fbf53a3711fc7a2fb88e36a3eea58a3267c461ab4a17"
+    },
+    {
+      "Package": "libandroid-shmem",
+      "Version": "0.7",
+      "Depends": null,
+      "Filename": "pool/main/liba/libandroid-shmem/libandroid-shmem_0.7_aarch64.deb",
+      "Size": "7216",
+      "SHA256": "0da3a24d558b93c92bcf8d611e0826a99ff96e396b148e6cdf33b47c47c57ff6"
+    }
+  ]
+}

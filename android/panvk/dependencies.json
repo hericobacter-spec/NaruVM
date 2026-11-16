@@ -1,0 +1,9 @@
+{
+  "project": "JimVulkan/mali-panvk",
+  "commit": "58f2c55854bd48b18df756edb11f187af9cd2fde",
+  "release": "v1.6.0",
+  "filename": "mali-panvk-27.0.0-devel-r10.zip",
+  "url": "https://github.com/JimVulkan/mali-panvk/releases/download/v1.6.0/mali-panvk-27.0.0-devel-r10.zip",
+  "sha256": "7e97db4d79d81ec9461d1e0676b62a865561cb56e21c151693aa25ffbe749f1c",
+  "scope": "Optional isolated authored-shader diagnostic; not the guest GPU backend. Published binary, not a locally reproduced build."
+}

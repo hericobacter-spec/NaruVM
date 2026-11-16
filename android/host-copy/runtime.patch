@@ -1,0 +1,255 @@
+diff --git a/crates/metal2vulkan-runtime/src/buffer_descriptor.rs b/crates/metal2vulkan-runtime/src/buffer_descriptor.rs
+index f61d800..0da38c4 100644
+--- a/crates/metal2vulkan-runtime/src/buffer_descriptor.rs
++++ b/crates/metal2vulkan-runtime/src/buffer_descriptor.rs
+@@ -480,10 +480,6 @@ impl Device {
+             return Err(Error::DeviceLost);
+         }
+         let shared = self.shared();
+-        let importer = shared
+-            .host_import
+-            .as_ref()
+-            .map_err(|unsupported| Error::Unsupported(unsupported.clone()))?;
+         let HostParts {
+             pointer,
+             source,
+@@ -492,6 +488,35 @@ impl Device {
+             gate,
+             runs,
+         } = memory.into_parts();
++        let importer = match shared.host_import.as_ref() {
++            Ok(importer) => importer,
++            Err(unsupported) => {
++                // A device without pointer imports can still run over the existing copied
++                // backing, with its announced commit/completion visibility limits. Private
++                // writes require the read-only import and remain refused here.
++                if drops_writes {
++                    return Err(Error::Unsupported(unsupported.clone()));
++                }
++                if of_heap {
++                    let alignment = super::host_memory::host_page().ok_or_else(not_importable)?;
++                    if !(pointer.as_ptr() as u64).is_multiple_of(alignment) {
++                        let problem = HeapProblem::HostMemoryAlignment { alignment };
++                        return Err(invalid(call, Problem::Heap(problem)));
++                    }
++                }
++                let release = release.of(pointer, length);
++                let log = pages_log((pointer, length), dirty.as_ref(), None, 0);
++                // SAFETY: the caller's pages meet HostMemory's contract for these bytes.
++                return unsafe {
++                    self.copied_buffer(
++                        (call, pointer, length, modes, placement, of_heap),
++                        release,
++                        dirty,
++                        Some(Error::Unsupported(unsupported.clone())),
++                    )
++                }.map(|buffer| kept_log(buffer, log));
++            }
++        };
+         let host = host_window(call, importer, pointer, length, source, drops_writes)?;
+         let window = host.window;
+         if of_heap && window.offset != 0 {
+diff --git a/crates/metal2vulkan-runtime/src/copied.rs b/crates/metal2vulkan-runtime/src/copied.rs
+index e44173e..3b96110 100644
+--- a/crates/metal2vulkan-runtime/src/copied.rs
++++ b/crates/metal2vulkan-runtime/src/copied.rs
+@@ -832,7 +832,7 @@ pub(crate) unsafe fn read_caller(
+ /// page the process cannot read (unmapped, or mapped without read permission) with a failure, not a
+ /// fault: `false` then. On Linux `process_vm_readv` of the process's own pages; on macOS
+ /// `mach_vm_read_overwrite` of its own task's; elsewhere nothing is read and the answer is `false`.
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ pub(crate) fn read_pages(pages: NonNull<u8>, into: &mut [u8]) -> bool {
+     let mut done = 0;
+     while done < into.len() {
+@@ -885,7 +885,7 @@ pub(crate) fn read_pages(pages: NonNull<u8>, into: &mut [u8]) -> bool {
+ }
+ 
+ /// [`read_pages`] where the system is not asked: nothing is copied.
+-#[cfg(not(any(target_os = "linux", target_os = "macos")))]
++#[cfg(not(any(target_os = "linux", target_os = "android", target_os = "macos")))]
+ pub(crate) fn read_pages(_pages: NonNull<u8>, _into: &mut [u8]) -> bool {
+     false
+ }
+diff --git a/crates/metal2vulkan-runtime/src/host_memory.rs b/crates/metal2vulkan-runtime/src/host_memory.rs
+index 1efe71c..d095505 100644
+--- a/crates/metal2vulkan-runtime/src/host_memory.rs
++++ b/crates/metal2vulkan-runtime/src/host_memory.rs
+@@ -662,7 +662,7 @@ pub(super) fn import_refused(error: vk::Result) -> Error {
+ /// the reading, which cost about 4.5 ms per import in a process of 34,000 mappings. Each mapping
+ /// asked is counted in `counts` (`WorkCounts::host_mappings_queried`). When the file cannot be
+ /// opened, every import is refused as not implemented here.
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ pub(super) fn refuse_unwritable(window: &ImportWindow, counts: &Counters) -> Result<(), Error> {
+     let mut asked = 0;
+     let answer = mappings_permitted(
+@@ -701,14 +701,14 @@ impl super::Device {
+ 
+ /// Whether the kernel pins every mapping over `size` bytes of host pages at `pages`
+ /// ([`Access::Pin`]); `false` where the mappings cannot be asked.
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ fn kernel_pins(pages: NonNull<u8>, size: u64) -> bool {
+     let start = pages.as_ptr() as u64;
+     mappings_permitted(start, start.saturating_add(size), Access::Pin, &mut 0) == Some(true)
+ }
+ 
+ /// [`kernel_pins`] off Linux, where no driver is kept from host pages: `true`.
+-#[cfg(not(target_os = "linux"))]
++#[cfg(not(any(target_os = "linux", target_os = "android")))]
+ fn kernel_pins(_pages: NonNull<u8>, _size: u64) -> bool {
+     true
+ }
+@@ -717,13 +717,13 @@ fn kernel_pins(_pages: NonNull<u8>, _size: u64) -> bool {
+ /// answers now ([`mappings_permitted`]): where it does, the CPU reads the bytes with plain loads,
+ /// as a copied host buffer's comparisons read them at each commit (`copied.rs`). `false` where
+ /// the mappings cannot be read (`/proc/self/maps` does not open).
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ pub(super) fn mapped_readable(start: u64, end: u64) -> bool {
+     mappings_permitted(start, end, Access::Read, &mut 0) == Some(true)
+ }
+ 
+ /// [`mapped_readable`] where the runtime does not ask the system for its mappings: `false`.
+-#[cfg(not(target_os = "linux"))]
++#[cfg(not(any(target_os = "linux", target_os = "android")))]
+ pub(super) fn mapped_readable(_start: u64, _end: u64) -> bool {
+     false
+ }
+@@ -732,7 +732,7 @@ pub(super) fn mapped_readable(_start: u64, _end: u64) -> bool {
+ /// answers now ([`mappings_permitted`]): where it does not, a copied host buffer of the pages drops
+ /// the GPU's writes rather than write them back (`copied.rs`). `false` where the mappings cannot be
+ /// read (`/proc/self/maps` does not open), so that no write back faults.
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ pub(super) fn mapped_writable(start: u64, end: u64) -> bool {
+     mappings_permitted(start, end, Access::Write, &mut 0) == Some(true)
+ }
+@@ -792,13 +792,13 @@ pub(super) fn mapped_writable(start: u64, end: u64) -> bool {
+ 
+ /// [`mapped_writable`] where the runtime does not ask the system for its mappings: `false` (and no
+ /// copy is made here: the runtime reads no caller's page, [`mapped_readable`]).
+-#[cfg(not(any(target_os = "linux", target_os = "macos")))]
++#[cfg(not(any(any(target_os = "linux", target_os = "android"), target_os = "macos")))]
+ pub(super) fn mapped_writable(_start: u64, _end: u64) -> bool {
+     false
+ }
+ 
+ /// A permission the process's mappings are asked for.
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+ pub(super) enum Access {
+     /// `VM_READ`, the `r` of a mapping's line in the maps: a copy reads the pages (`copied.rs`).
+@@ -814,7 +814,7 @@ pub(super) enum Access {
+     Pin,
+ }
+ 
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ impl Access {
+     /// The mapping's flag of the permission in `PROCMAP_QUERY`'s answer (`vma_flags`).
+     fn queried(self) -> u64 {
+@@ -850,7 +850,7 @@ impl Access {
+ /// answers now: for the mappings over it ([`queried_permitted`]), or from the lines of
+ /// `/proc/self/maps` where the kernel predates the query ([`permitted`]); `None` when that file
+ /// cannot be opened. Each mapping asked is added to `asked`.
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ fn mappings_permitted(start: u64, end: u64, access: Access, asked: &mut u64) -> Option<bool> {
+     use std::io::BufRead;
+     let maps = kept_maps()?;
+@@ -870,7 +870,7 @@ fn mappings_permitted(start: u64, end: u64, access: Access, asked: &mut u64) ->
+ /// answers as one opened for the call, without the opening, which cost each import about as much
+ /// as its queries (an import over 57 mappings, the consumer's guest pages). A process forked
+ /// since holds the file of its parent's mappings, so one of another id opens its own.
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ pub(super) fn kept_maps() -> Option<std::sync::Arc<std::fs::File>> {
+     static KEPT: Mutex<Option<(u32, std::sync::Arc<std::fs::File>)>> = Mutex::new(None);
+     let process = std::process::id();
+@@ -885,7 +885,7 @@ pub(super) fn kept_maps() -> Option<std::sync::Arc<std::fs::File>> {
+ 
+ /// `struct procmap_query` of Linux's `include/uapi/linux/fs.h` (Linux 6.11): the argument of
+ /// [`PROCMAP_QUERY`].
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ #[repr(C)]
+ #[derive(Default)]
+ struct ProcmapQuery {
+@@ -906,21 +906,21 @@ struct ProcmapQuery {
+     build_id_addr: u64,
+ }
+ 
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ const _: () = assert!(std::mem::size_of::<ProcmapQuery>() == 104);
+ 
+ /// `PROCMAP_QUERY`, `_IOWR('f', 17, struct procmap_query)` in the generic ioctl encoding (an
+ /// architecture of another encoding answers `ENOTTY`, and its imports take the lines).
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ const PROCMAP_QUERY: u64 =
+     (3 << 30) | ((std::mem::size_of::<ProcmapQuery>() as u64) << 16) | ((b'f' as u64) << 8) | 17;
+ 
+ /// `PROCMAP_QUERY_VMA_READABLE`: the mapping's `VM_READ`, the `r` of its line in the maps.
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ const PROCMAP_QUERY_VMA_READABLE: u64 = 0x01;
+ 
+ /// `PROCMAP_QUERY_VMA_WRITABLE`: the mapping's `VM_WRITE`, the `w` of its line in the maps.
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ const PROCMAP_QUERY_VMA_WRITABLE: u64 = 0x02;
+ 
+ /// Whether the process maps `[start, end)` without a gap, each mapping with `access`, as the
+@@ -929,7 +929,7 @@ const PROCMAP_QUERY_VMA_WRITABLE: u64 = 0x02;
+ /// and each added to `asked`. `None` where the kernel does not answer the query (before Linux
+ /// 6.11, `ENOTTY`) or fails it otherwise; a missing mapping (`ENOENT`) is an answer, not
+ /// permitted.
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ pub(super) fn queried_permitted(
+     maps: &std::fs::File,
+     start: u64,
+@@ -973,7 +973,7 @@ pub(super) fn queried_permitted(
+ 
+ /// Refuse the window's pages unless the process can write them: no check off Linux (MoltenVK
+ /// hands the range to Metal, which reads read-only pages).
+-#[cfg(not(target_os = "linux"))]
++#[cfg(not(any(target_os = "linux", target_os = "android")))]
+ pub(super) fn refuse_unwritable(_window: &ImportWindow, _counts: &Counters) -> Result<(), Error> {
+     Ok(())
+ }
+@@ -982,7 +982,7 @@ pub(super) fn refuse_unwritable(_window: &ImportWindow, _counts: &Counters) -> R
+ /// `[start, end)` without a gap, each with `access`, adding to `asked` each mapping it judged (one
+ /// ending past the address it reached). Reading stops at the first line past `end`; a line that
+ /// does not parse is skipped.
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ pub(super) fn permitted(
+     maps: impl IntoIterator<Item = String>,
+     start: u64,
+@@ -1011,7 +1011,7 @@ pub(super) fn permitted(
+ }
+ 
+ /// One line of `/proc/<pid>/maps`: the mapping's start, its end, and whether it has `access`.
+-#[cfg(target_os = "linux")]
++#[cfg(any(target_os = "linux", target_os = "android"))]
+ fn mapping(line: &str, access: Access) -> Option<(u64, u64, bool)> {
+     let mut fields = line.split_ascii_whitespace();
+     let (from, to) = fields.next()?.split_once('-')?;
+diff --git a/crates/metal2vulkan-runtime/src/work_counts.rs b/crates/metal2vulkan-runtime/src/work_counts.rs
+index 46e4103..7f8f305 100644
+--- a/crates/metal2vulkan-runtime/src/work_counts.rs
++++ b/crates/metal2vulkan-runtime/src/work_counts.rs
+@@ -1904,7 +1904,7 @@ impl Counters {
+     /// The kernel was asked about `mappings` of the process's mappings, for their write
+     /// permission, before an import of host pages (`host_memory.rs`'s `refuse_unwritable`, which
+     /// asks only on Linux).
+-    #[cfg(target_os = "linux")]
++    #[cfg(any(target_os = "linux", target_os = "android"))]
+     pub(crate) fn host_mappings_queried(&self, mappings: u64) {
+         if mappings > 0 {
+             self.host_mappings_queried

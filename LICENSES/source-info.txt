@@ -1,0 +1,34 @@
+NaruVM — research build distribution information
+Reviewed 2026-11-16
+
+This is an independent Android adaptation of Henge. Original authors and
+third-party contributors retain their copyrights. There is no warranty under
+the applicable licenses. The root NOTICE and all component notices are available
+in this viewer. The original GPLv2 text and later-version grant remain intact.
+
+The combined research APK selects the permitted GPLv3 option. LGPLv3 is selected
+where LGPL-2.1-or-later applies. See license-selection.json, GPL-3.0.txt,
+LGPL-2.1.txt and LGPL-3.0.txt in the project folder. Other original grants remain.
+
+Source access and replacement
+-----------------------------
+Obtain the source package matching this exact APK from the person or channel
+that supplied it, together with dependency sources, build configuration and
+instructions. A public download destination has not been configured for this
+local research build. Source pins alone are not a completed source offer.
+
+The source package includes README.ko.md / README.md, docs/building.md,
+docs/licensing.md, Android patches and source-input inventories. Replace the
+component source, rebuild with the same selected configuration, then sign and
+install your modified APK using your own key. This app requires no publisher
+key or bootloader unlock. Android rejects an in-place update signed by a
+different key: use a separate test device/profile to preserve existing data.
+Do not uninstall an existing research app merely to bypass that mismatch.
+
+This local build is not a cleared public binary release. Complete source-to-
+binary correspondence and release-specific replacement/installation acceptance
+must still be verified. Source and instructions must accompany any future
+distribution where the applicable licenses require them.
+
+Apple software, ROM/IPSW and guest disks are not provided by this project.
+Open-source licenses for this app do not grant rights to Apple software.

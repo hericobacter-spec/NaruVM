@@ -1,0 +1,51 @@
+{
+  "format": 1,
+  "label": "observed-source-grants-and-selected-options",
+  "reviewed": "2026-11-16",
+  "scope": "Combined research APK distribution choice; not a source-tree relicense or binary-release clearance",
+  "combined_option": "GPL-3.0-only",
+  "source_grants_unchanged": true,
+  "binary_release_ready": false,
+  "selections": [
+    {
+      "component": "Henge / authored Android changes",
+      "source_grant": "GPL-2.0-or-later",
+      "selected_option": "GPL-3.0"
+    },
+    {
+      "component": "usbmuxd",
+      "source_grant": "GPL-2.0-only OR GPL-3.0-only",
+      "selected_option": "GPL-3.0"
+    },
+    {
+      "component": "idevicerestore and LGPL-2.1-or-later library components",
+      "source_grant": "LGPL-2.1-or-later",
+      "selected_option": "LGPL-3.0",
+      "basis": "LGPL 2.1 section 13 later-version permission; retain included LGPLv3 COPYING and original headers"
+    },
+    {
+      "component": "Reims / metal2vulkan",
+      "source_grant": "GPL-2.0-or-later OR LGPL-3.0-or-later",
+      "selected_option": "GPL-3.0"
+    },
+    {
+      "component": "MbedTLS",
+      "source_grant": "Apache-2.0 OR GPL-2.0-or-later",
+      "selected_option": "GPL-3.0 under later-version option"
+    },
+    {
+      "component": "Other dependencies",
+      "selected_option": "Original permissive/per-file grants; retain attribution and inspect actual linked source closure"
+    }
+  ],
+  "limits": [
+    "Selection is not proof of complete external-binary source correspondence.",
+    "No publisher key, account or bootloader unlock is required by the app; signature mismatch must not be resolved by erasing existing research data.",
+    "Visible legal-notice UI and release-specific installation/relink procedure still require verification."
+  ],
+  "primary_sources": [
+    "https://spdx.org/licenses/LGPL-2.1-or-later.html",
+    "https://spdx.org/licenses/LGPL-3.0-or-later.html",
+    "https://github.com/libimobiledevice/idevicerestore/blob/ae8cfb4aa919000b283a0fe7db96b1a321a010d3/src/idevicerestore.c"
+  ]
+}

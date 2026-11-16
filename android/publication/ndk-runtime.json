@@ -1,0 +1,67 @@
+{
+  "label": "observed-official-runtime-and-exact-packaging-reproduction-not-source-rebuild",
+  "observed": "2026-11-16",
+  "official_ndk_archive_sha256": "753611f410d002cfcd3f3dc2ef49aad532089d3180b436c060a90bf0fcb64df2",
+  "runtime_sha256": "7466ed097631a564ed6bff0b47768caa76bf03270d2047b5a65c03f497b824df",
+  "metadata": {
+    "toolchains/llvm/prebuilt/linux-x86_64/clang_source_info.md": {
+      "sha256": "22a60039318372c44c09b6bbb5aa5acb770a006ed3a2efaa372434e5ba4be0b2",
+      "bytes": 13235
+    },
+    "source.properties": {
+      "sha256": "e73b7dc557cea2da9212c09ee1795434957d62e63b7550eef69fd1887a355d94",
+      "bytes": 107
+    }
+  },
+  "llvm_base_revision": "2d287f51eff2a5fbf84458a33f7fb2493cf67965",
+  "llvm_android_revision": "9e20ac0b949feedcfe3da791189310f6ebcbc7a8",
+  "matching_source_complete": false,
+  "limits": [
+    "The pinned Darwin NDK archive/runtime were rechecked; the Termux Linux recipe archive checksum is recorded separately, not claimed downloaded/rebuilt.",
+    "A source-built packaging tool plus the NDK runtime reproduces the entire APK libc++ file exactly; this is not a libc++ source compilation.",
+    "LLVM source and Android build/patch scripts are collected; compiler/runtime rebuild correspondence and release-specific installation remain unverified."
+  ],
+  "source_inputs": [
+    {
+      "name": "llvm-project",
+      "repository": "https://android.googlesource.com/toolchain/llvm-project",
+      "commit": "9f872551d3c681d06fd303b36f16ed5c274735eb",
+      "url": "https://android.googlesource.com/toolchain/llvm-project/+archive/9f872551d3c681d06fd303b36f16ed5c274735eb.tar.gz",
+      "file": "ndk-llvm-project.tar.gz",
+      "bytes": 238276892,
+      "sha256": "071e9ab7ef8bf38bf929f2bf5a54156c3ee4d7bcbe98ee91019ff7881f5a3498",
+      "label": "observed-immutable-official-source-download",
+      "id": "ndk-llvm-project",
+      "kind": "official-source-archive"
+    },
+    {
+      "name": "llvm-android",
+      "repository": "https://android.googlesource.com/toolchain/llvm_android",
+      "commit": "9e20ac0b949feedcfe3da791189310f6ebcbc7a8",
+      "url": "https://android.googlesource.com/toolchain/llvm_android/+archive/9e20ac0b949feedcfe3da791189310f6ebcbc7a8.tar.gz",
+      "file": "ndk-llvm-android.tar.gz",
+      "bytes": 484148,
+      "sha256": "d45b7361b405d2ddb62f68514be1589470f0b66da367298ce4e710c51744317f",
+      "label": "observed-immutable-official-source-download",
+      "id": "ndk-llvm-android",
+      "kind": "official-source-archive"
+    }
+  ],
+  "observed_runtime_platform": "darwin-x86_64 distribution, aarch64-linux-android target",
+  "observed_darwin_archive": {
+    "url": "https://dl.google.com/android/repository/android-ndk-r30-darwin.zip",
+    "sha1": "c060be96767eefbb8e0a27796d6f43115fc1a0c4",
+    "sha256": "d125634de97b26deb1e1bb1a562f9d839aa5803d1784a1e414485f5ccbe6739f",
+    "runtime_member": "android-ndk-r30/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/aarch64-linux-android/libc++_shared.so"
+  },
+  "packaged_runtime_sha256": "05bef9d3901910c3ff8ab450b03bc8b28383d363a2290f2f7b9aed7331ea6ff7",
+  "packaging_reproduction": {
+    "label": "observed-exact-byte-match",
+    "cleaner_source_version": "3.0.1",
+    "cleaner_source_sha256": "1c3c6fb33ad8d1fdfe035eee3a5419f54442b93b1a97c4151b31b82c5626a06a",
+    "api_level": 24,
+    "strip": "NDK llvm-strip --strip-unneeded --preserve-dates",
+    "apk_match": true,
+    "source_rebuilt": false
+  }
+}
