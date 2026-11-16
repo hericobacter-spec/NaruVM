@@ -23,7 +23,8 @@ DENIED_PARTS = {'.git', '.tools', '.impeccable', 'memory', 'build', 'artifacts',
 ROOT_FILES = {'.gitattributes', 'LICENSE', 'NOTICE', 'README.md', 'README.ko.md', '.gitignore',
               'CONTRIBUTING.md', 'SECURITY.md', 'CHANGELOG.md'}
 PUBLIC_DOCS = {'android/DESIGN.md', 'docs/architecture.md', 'docs/licensing.md', 'docs/building.md',
-               'docs/publication.md', 'docs/modifications.json', 'docs/source-correspondence.md'}
+               'docs/publication.md', 'docs/modifications.json', 'docs/source-correspondence.md',
+               'docs/installation.md', 'docs/installation.ko.md'}
 PUBLIC_GITHUB = {'.github/workflows/android-source.yml', '.github/ISSUE_TEMPLATE/bug_report.yml',
                  '.github/ISSUE_TEMPLATE/device_report.yml', '.github/ISSUE_TEMPLATE/config.yml',
                  '.github/pull_request_template.md'}

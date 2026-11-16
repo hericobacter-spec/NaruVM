@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased — Documentation
+
+- Expanded English/Korean project overview and step-by-step source/APK/guest
+  installation guides, with build-profile selection, TB373FU Auto/PanVK behavior,
+  resource and storage estimates, USB updates, input/networking and troubleshooting.
+- Included both guides in the source-publication allowlist. No runtime change,
+  new device acceptance, APK release or change to the v0.1 tag.
+- Corrected `--panvk-userptr-probe` help text to describe its existing use by
+  the TB373FU Auto/Mali PanVK guest backend as well as diagnostics.
+
 ## v0.1 — Experimental source preview — 2026-11-16
 
 - Independent NaruVM app branding with English/Korean native mint/teal UI,

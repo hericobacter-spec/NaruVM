@@ -1,5 +1,9 @@
 # Build and verification scopes
 
+For the complete source → APK → USB install → guest setup sequence, start with
+[the installation guide](installation.md) / [한국어 설치 안내](installation.ko.md).
+This page is the developer reference for build variants and verification scopes.
+
 Audience: developers who can use a shell, Python, C and Git. English and Korean
 READMEs describe the same experimental source preview. This guide distinguishes
 host-only checks, a diagnostic APK, graphics builds and guest provisioning.
@@ -77,7 +81,9 @@ python3 android/fetch_gpu_deps.py --reims
 python3 android/build.py --reims --software
 ```
 
-This bundles the experimental Reims path and CPU Vulkan renderer. It requires
+This bundles the experimental Reims path and CPU Vulkan renderer. On TB373FU,
+explicitly select CPU rendering unless you also build the PanVK profile below:
+Auto on that model requires PanVK and intentionally does not fall back. It requires
 external downloads and, by default, a Reims worktree under `~/.cache/henge-reims-android`.
 To keep source and Rust output inside a separate checkout, set these before
 both the fetch and build commands (same values for each):

@@ -1,7 +1,9 @@
 # Contributing
 
 This is an experimental Android source project. Start with [README.md](README.md)
-and [docs/building.md](docs/building.md). Contributions should make a concrete
+and the [installation guide](docs/installation.md)
+([한국어](docs/installation.ko.md)); [docs/building.md](docs/building.md) is the
+developer reference. Contributions should make a concrete
 behavior or a reproducible check better; broader device support remains experimental.
 
 ## Before changing code

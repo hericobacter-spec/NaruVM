@@ -31,7 +31,7 @@ def main():
     parser.add_argument('--software', action='store_true', help='Also bundle the optional CPU Vulkan diagnostic; implies --gpu')
     parser.add_argument('--host-copy-probe', action='store_true', help='Bundle the isolated experimental copied-memory test; does not accelerate macOS')
     parser.add_argument('--panvk-probe', action='store_true', help='Bundle the pinned private PanVK authored-shader diagnostic; does not change the guest backend')
-    parser.add_argument('--panvk-userptr-probe', action='store_true', help='Bundle the separately named source-built host-pointer diagnostic ICD; no guest backend change')
+    parser.add_argument('--panvk-userptr-probe', action='store_true', help='Bundle the source-built PanVK host-pointer ICD and diagnostics; used by TB373FU Auto and Mali PanVK guest selections')
     parser.add_argument('--panvk-asan', action='store_true', help='Stage the separately built AddressSanitizer ICD; diagnostic only')
     parser.add_argument('--turnip-manifest', type=Path, help='Optional self-contained AArch64 Turnip driver with SHA256/source pin/license/build recipe; runtime support remains experimental')
     args = parser.parse_args()
