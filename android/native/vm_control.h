@@ -5,12 +5,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-enum { LAB_CONTROL_STOP, LAB_CONTROL_HID, LAB_CONTROL_MOVE, LAB_CONTROL_BUTTON, LAB_CONTROL_SCROLL, LAB_CONTROL_POINT, LAB_CONTROL_TAP_AT };
+enum { LAB_CONTROL_STOP, LAB_CONTROL_HID, LAB_CONTROL_MOVE, LAB_CONTROL_BUTTON, LAB_CONTROL_SCROLL, LAB_CONTROL_POINT, LAB_CONTROL_TAP_AT, LAB_CONTROL_RELEASE_ALL };
 typedef struct { int kind, a, b; } LabControl;
 
 /* A bounded line protocol on the worker's private stdin; never a shell command. */
 static int lab_control_parse(const char *line, LabControl *out) {
     if (!strcmp(line, "stop")) { *out = (LabControl){LAB_CONTROL_STOP, 0, 0}; return 0; }
+    if (!strcmp(line, "release_all")) { *out = (LabControl){LAB_CONTROL_RELEASE_ALL, 0, 0}; return 0; }
     const struct { const char *name; int kind, low, high, second_low, second_high; } commands[] = {
         {"hid ", LAB_CONTROL_HID, 4, 255, 0, 1},
         {"move ", LAB_CONTROL_MOVE, -32767, 32767, -32767, 32767},

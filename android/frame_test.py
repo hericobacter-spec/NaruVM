@@ -25,6 +25,7 @@ def main():
     native = re.search(r'legacyNativeLibraryDir=(\S+)', package)
     if not native: raise SystemExit('Installed native directory missing')
     a.output.mkdir(parents=True, exist_ok=True)
+    adb('shell', 'run-as', PACKAGE, 'mkdir', '-p', 'files')
     output = adb('shell', 'run-as', PACKAGE, native[1]+'/arm64/libhenge_frames_test.so',
                  '/data/user/0/'+PACKAGE+'/files')
     (a.output/'cross-process.txt').write_bytes(output)

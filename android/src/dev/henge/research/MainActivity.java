@@ -66,9 +66,9 @@ public final class MainActivity extends Activity implements VmService.Observer, 
     private long macStarted;
     private TextView macStatus;
     private int orientationBeforeMac = Integer.MIN_VALUE;
-    private NativeFrames frameReader;
+    private FramePump framePump;
     private Bitmap liveBitmap;
-    private long framesShown, frameCopyNanos, frameCopyMaxNanos;
+    private long framesShown, frameCopyNanos, frameCopyMaxNanos, framePrepareNanos, frameUiCopyNanos;
     private final long[] frameAges = new long[2048];
     private volatile Process child;
     private VmService.Session vmSession;
@@ -980,31 +980,29 @@ public final class MainActivity extends Activity implements VmService.Observer, 
             if (vmSession != null) vmSession.note("VM_STOP_ORIGIN toolbar\n");
             sendControl("stop"); stop.setEnabled(false); macStatus.setText(getString(R.string.ui_finishing_disk_writes_and_stopping));
         });
-        final AtomicBoolean queued = new AtomicBoolean();
         final long[] last = {System.nanoTime(), 0};
-        frameWatch = timer.scheduleWithFixedDelay(() -> {
-            if (!macVisible || generation != frameGeneration || !queued.compareAndSet(false, true)) return;
-            runOnUiThread(() -> {
-                try {
+        File display = vmSession != null && vmSession.fixture ? new File(vmSession.disk) :
+            new File(getFilesDir(), "Sequoia-24G90-reims/reims-frame.bmp.live");
+        framePump = new FramePump(new android.os.Handler(getMainLooper()), display.getAbsolutePath(), macStarted, 33,
+            new FramePump.Listener() {
+                public void onFrame(FramePump.Frame frame) {
                     if (!macVisible || generation != frameGeneration) return;
-                    File display = vmSession != null && vmSession.fixture ? new File(vmSession.disk) :
-                        new File(getFilesDir(), "Sequoia-24G90-reims/reims-frame.bmp.live");
-                    long sequence = readLiveFrame(display, macStarted);
-                    if (sequence > 0) { image.setImageBitmap(liveBitmap); image.invalidate(); bootHint.setVisibility(View.GONE); }
+                    applyLiveFrame(frame);
+                    image.setImageBitmap(liveBitmap); image.invalidate(); bootHint.setVisibility(View.GONE);
                     long now = System.nanoTime();
-                    if (liveBitmap != null && now - last[0] >= 2000000000L) {
+                    if (now - last[0] >= 2000000000L) {
                         double rate = (framesShown - last[1]) * 1e9 / (now - last[0]);
                         macStatus.setText(String.format(Locale.ROOT, getString(R.string.ui_guest_display_d_d_recent_updates_1f_s),
                             liveBitmap.getWidth(), liveBitmap.getHeight(), rate));
                         last[0] = now; last[1] = framesShown;
                     }
-                } finally { queued.set(false); }
+                }
+                public void onError(String reason) {
+                    if (generation == frameGeneration) append("ANDROID_FRAME_ERROR " + reason + "\n");
+                }
             });
-        // The software guest presents full surfaces at at most 30 Hz. Polling and
-        // uploading its cursor-composited bitmap at 60 Hz consumes host CPU needed
-        // by the guest. Keep the live UI at 30 Hz; independent fixture timing stays.
-        }, 0, 33, TimeUnit.MILLISECONDS);
     }
+
     private void macImmersive(boolean enabled) {
         if (enabled) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -1026,35 +1024,30 @@ public final class MainActivity extends Activity implements VmService.Observer, 
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus && macVisible) macImmersive(true);
     }
-    private long readLiveFrame(File path, long epoch) {
-        if (frameReader == null) {
-            NativeFrames reader = new NativeFrames(path.getAbsolutePath(), epoch);
-            if (!reader.ready()) { reader.close(); return 0; }
-            frameReader = reader;
-        }
-        long size = frameReader.size();
-        if (size == 0) return 0;
-        int width = (int)(size >>> 32), height = (int)size;
-        if (liveBitmap == null || liveBitmap.getWidth() != width || liveBitmap.getHeight() != height)
-            liveBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        long started = System.nanoTime(), sequence = frameReader.copy(liveBitmap);
-        if (sequence > 0) {
-            long elapsed = System.nanoTime() - started;
-            framesShown++; frameCopyNanos += elapsed; frameCopyMaxNanos = Math.max(frameCopyMaxNanos, elapsed);
-            frameAges[(int)((framesShown - 1) % frameAges.length)] = frameReader.ageNs();
-        }
-        return sequence;
+    private void applyLiveFrame(FramePump.Frame frame) {
+        if (liveBitmap == null || liveBitmap.getWidth() != frame.width || liveBitmap.getHeight() != frame.height)
+            liveBitmap = Bitmap.createBitmap(frame.width, frame.height, Bitmap.Config.ARGB_8888);
+        long began=System.nanoTime();
+        frame.rgba.rewind();
+        // Only this short, format-preserving memcpy and presentation remain on UI.
+        liveBitmap.copyPixelsFromBuffer(frame.rgba);
+        long uiCopy=System.nanoTime()-began, elapsed=frame.prepareNs+uiCopy;
+        framesShown++; framePrepareNanos+=frame.prepareNs; frameUiCopyNanos+=uiCopy;
+        frameCopyNanos+=elapsed; frameCopyMaxNanos=Math.max(frameCopyMaxNanos,elapsed);
+        frameAges[(int)((framesShown-1)%frameAges.length)]=frame.ageNs+System.nanoTime()-frame.preparedNs;
     }
     private void closeFrames() {
-        if (frameReader != null) { frameReader.close(); frameReader = null; }
+        if (framePump != null) { framePump.close(); framePump = null; }
         if (framesShown != 0) {
             int count = (int)Math.min(framesShown, frameAges.length);
             long[] ages = Arrays.copyOf(frameAges, count); Arrays.sort(ages);
             append("ANDROID_FRAME_READER shown=" + framesShown + " copy_mean_us=" +
                 frameCopyNanos / framesShown / 1000 + " copy_max_us=" + frameCopyMaxNanos / 1000 +
+                " prepare_mean_us=" + framePrepareNanos / framesShown / 1000 +
+                " ui_copy_mean_us=" + frameUiCopyNanos / framesShown / 1000 +
                 " publication_to_copy_p95_us=" + ages[(int)Math.ceil(count * .95) - 1] / 1000 + " age_samples=" + count + "\n");
         }
-        liveBitmap = null; framesShown = frameCopyNanos = frameCopyMaxNanos = 0;
+        liveBitmap = null; framesShown = frameCopyNanos = frameCopyMaxNanos = framePrepareNanos = frameUiCopyNanos = 0;
     }
     private void startFrameTransportTest() {
         if (working) return;
@@ -1065,44 +1058,42 @@ public final class MainActivity extends Activity implements VmService.Observer, 
         fixture.addView(fixtureImage, new LinearLayout.LayoutParams(-1, 0, 1)); setContentView(fixture);
         final long epoch = System.currentTimeMillis(), generation = ++frameGeneration;
         final File path = new File(getFilesDir(), "authored-frame-test.bin");
-        final int[] errors = {0}, modes = {0}, previousWidth = {0};
+        final int[] errors = {0}, modes = {0}, previousWidth = {0}, maxWidth = {0};
         final long[] previous = {0};
-        final AtomicBoolean queued = new AtomicBoolean();
         final int[][] sample = {null};
-        frameWatch = timer.scheduleWithFixedDelay(() -> {
-            if (!queued.compareAndSet(false, true)) return;
-            runOnUiThread(() -> {
-                try {
+        framePump = new FramePump(new android.os.Handler(getMainLooper()),path.getAbsolutePath(),epoch,16,
+            new FramePump.Listener() {
+                public void onFrame(FramePump.Frame frame) {
                     if (generation != frameGeneration) return;
                     Bitmap before=liveBitmap;
                     int beforeGeneration=before == null ? 0 : before.getGenerationId();
-                    long n = readLiveFrame(path, epoch);
-                    if (n < 0) errors[0]++;
-                    if (n > 0) {
-                        if (before == liveBitmap && beforeGeneration == liveBitmap.getGenerationId()) errors[0]++;
-                        if (n <= previous[0]) errors[0]++;
-                        previous[0] = n;
-                        fixtureImage.setImageBitmap(liveBitmap); fixtureImage.invalidate();
-                        if (liveBitmap.getWidth() != previousWidth[0]) { modes[0]++; previousWidth[0] = liveBitmap.getWidth(); }
-                        int expected = 0xff000000 | ((int)n & 255) << 16 | ((int)(n >> 8) & 255) << 8 | (((int)n ^ 0x5a) & 255);
-                        int length = liveBitmap.getWidth()*liveBitmap.getHeight();
-                        if (sample[0] == null || sample[0].length != length) sample[0] = new int[length];
-                        int[] pixels = sample[0];
-                        liveBitmap.getPixels(pixels, 0, liveBitmap.getWidth(), 0, 0, liveBitmap.getWidth(), liveBitmap.getHeight());
-                        for (int p : pixels) if (p != expected) { errors[0]++; break; }
-                    }
-                } finally { queued.set(false); }
+                    applyLiveFrame(frame);
+                    long n=frame.sequence;
+                    if (frame.preparedThreadId == Thread.currentThread().getId()) errors[0]++;
+                    if (before == liveBitmap && beforeGeneration == liveBitmap.getGenerationId()) errors[0]++;
+                    if (n <= previous[0]) errors[0]++;
+                    previous[0] = n;
+                    fixtureImage.setImageBitmap(liveBitmap); fixtureImage.invalidate();
+                    maxWidth[0]=Math.max(maxWidth[0],liveBitmap.getWidth());
+                    if (liveBitmap.getWidth() != previousWidth[0]) { modes[0]++; previousWidth[0] = liveBitmap.getWidth(); }
+                    int expected = 0xff000000 | ((int)n & 255) << 16 | ((int)(n >> 8) & 255) << 8 | (((int)n ^ 0x5a) & 255);
+                    int length = liveBitmap.getWidth()*liveBitmap.getHeight();
+                    if (sample[0] == null || sample[0].length != length) sample[0] = new int[length];
+                    int[] pixels = sample[0];
+                    liveBitmap.getPixels(pixels, 0, liveBitmap.getWidth(), 0, 0, liveBitmap.getWidth(), liveBitmap.getHeight());
+                    for (int pixel : pixels) if (pixel != expected) { errors[0]++; break; }
+                }
+                public void onError(String reason) { errors[0]++; append("ANDROID_FRAME_ERROR " + reason + "\n"); }
             });
-        }, 0, 16, TimeUnit.MILLISECONDS);
         jobs.execute(() -> {
             int code;
             try { code = run("henge_frames_test", "--produce-large", path.getAbsolutePath(), Long.toString(epoch)); }
             catch (Exception e) { append("ERROR " + e + "\n"); code = -1; }
             final int result = code;
             runOnUiThread(() -> {
-                frameGeneration++; frameWatch.cancel(false); frameWatch = null;
-                if (result != 0 || framesShown < 10 || modes[0] < 2 || previous[0] != 150) errors[0]++;
-                append("FRAME_TRANSPORT_BITMAP_RESULT failures=" + errors[0] + " shown=" + framesShown + " modes=" + modes[0] + " last=" + previous[0] + "\n");
+                frameGeneration++;
+                if (result != 0 || framesShown < 10 || modes[0] < 2 || maxWidth[0] < 1280 || previous[0] != 150) errors[0]++;
+                append("FRAME_TRANSPORT_BITMAP_RESULT failures=" + errors[0] + " shown=" + framesShown + " modes=" + modes[0] + " max_width=" + maxWidth[0] + " last=" + previous[0] + "\n");
                 closeFrames(); path.delete();
                 finish(errors[0] == 0 ? getString(R.string.ui_shared_memory_display_test_passed) : getString(R.string.ui_shared_memory_display_failed_check_the_log));
             });

@@ -34,7 +34,7 @@ def main():
     if 'isForeground=true' in adb('shell','dumpsys','activity','services',PACKAGE):
         raise SystemExit('Foreground session active; do not interrupt it')
     a.output.mkdir(parents=True,exist_ok=True)
-    if a.install: adb('install','--no-incremental','-r',str(ROOT/'android/artifacts/Henge-Lab-arm64-debug.apk'))
+    if a.install: adb('install','--no-incremental','-r',str(ROOT/'android/artifacts/NaruVM-arm64-debug.apk'))
     adb('shell','am','force-stop',PACKAGE)
     adb('shell','run-as',PACKAGE,'rm','-f','files/last-report.txt')
     adb('shell','am','start','-W','-n',PACKAGE+'/.MainActivity','--ez','run_service_test','true')
@@ -46,8 +46,8 @@ def main():
     service=adb('shell','dumpsys','activity','services',PACKAGE)
     power=adb('shell','dumpsys','power')
     save('active-services.txt',service);save('active-worker.txt',status)
-    save('active-wake.txt','\n'.join(x for x in power.splitlines() if 'HengeLab:LocalVm' in x)+'\n')
-    if 'isForeground=true' not in service or not re.search(r'PARTIAL_WAKE_LOCK.*HengeLab:LocalVm',power):
+    save('active-wake.txt','\n'.join(x for x in power.splitlines() if 'NaruVM:LocalVm' in x)+'\n')
+    if 'isForeground=true' not in service or not re.search(r'PARTIAL_WAKE_LOCK.*NaruVM:LocalVm',power):
         raise SystemExit('Foreground/wake state absent; not a pass')
     adb('shell','am','start','-W','-n',PACKAGE+'/.MainActivity','--ez','recreate_active','true')
     wait_for(lambda: report('live-report.txt').count('VM_SCREEN_ATTACHED')>=2)
@@ -64,7 +64,7 @@ def main():
     if boot[1] != 'unavailable' and boot[1] != shell_boot:raise SystemExit('App/shell boot identity mismatch')
     wait_for(lambda:'isForeground=true' not in adb('shell','dumpsys','activity','services',PACKAGE))
     power=adb('shell','dumpsys','power')
-    if re.search(r'PARTIAL_WAKE_LOCK.*HengeLab:LocalVm',power):raise SystemExit('Wake lock still active')
+    if re.search(r'PARTIAL_WAKE_LOCK.*NaruVM:LocalVm',power):raise SystemExit('Wake lock still active')
     if adb('shell','pidof','libhenge_frames_test.so',check=False).strip():raise SystemExit('Fixture still active')
     result={'failures':0,'same_worker_pid':first,'activity_attachments':final.count('VM_SCREEN_ATTACHED'),
             'active_cpuset':cpuset,'normal_stop':True,'foreground_released':True,'wake_released':True,

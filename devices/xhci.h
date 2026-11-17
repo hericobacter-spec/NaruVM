@@ -1,4 +1,4 @@
-/* Android port modifications: 2026-11-14 through 2026-11-16.
+/* Android port modifications: 2026-11-14 through 2026-11-17.
  * See NOTICE and docs/modifications.json; original copyright notices retained. */
 #ifndef HENGEVM_XHCI_H
 #define HENGEVM_XHCI_H
@@ -74,6 +74,7 @@ typedef struct HvXhci {
         uint8_t state; /* the report's 3-bit state: 0 none, 3 near, 4 contact, 7 stop */
     } tp_fingers[HV_TP_FINGERS];
     uint8_t absolute_report[5]; /* Android standard absolute HID pointer */
+    int absolute_valid, absolute_delivered_buttons;
     int tp_button;     /* the pad's full press (report byte 1, bit 0) */
     uint32_t tp_ts;    /* the report timestamp, one per report */
     uint8_t tp_reports[HV_TP_REPORTS][HV_TP_REPORT_LEN];
@@ -91,6 +92,8 @@ typedef struct HvXhci {
 HvXhci *hv_xhci_create(HvMachine *m, HvPcie *bus);
 /* Any thread: a key went down or up (HID usage page 7 usage, e.g. 4 = A; 0xe0-0xe7 are modifiers). */
 void hv_xhci_key(HvXhci *x, uint8_t usage, int down);
+/* Discard stale pending keyboard reports and queue one authoritative all-up. */
+void hv_xhci_release_keys(HvXhci *x);
 /* The same, by Linux input key code (what the host UI produces). */
 void hv_xhci_key_linux(HvXhci *x, uint16_t code, int down);
 /* Any thread: a Magic Trackpad 2 touch. phase: 0 down, 1 move, 2 up. id: a
@@ -107,6 +110,7 @@ void hv_xhci_touch_frame(HvXhci *x, uint32_t ts_ms);
 void hv_xhci_touch_button(HvXhci *x, int down);
 /* Android port2 absolute pointer: 0..32767 axes and three button bits. */
 void hv_xhci_absolute(HvXhci *x, unsigned px, unsigned py, int buttons);
+void hv_xhci_release_absolute(HvXhci *x);
 /* CPU thread: hand waiting reports to the guest. */
 void hv_xhci_poll(HvXhci *x);
 

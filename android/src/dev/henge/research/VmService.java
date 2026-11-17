@@ -34,7 +34,10 @@ public final class VmService extends Service {
         final int jitMb;
         final boolean fixture, mallocDebug, mallocTrace, cpuPerformance, monolithic, pooled, portableCounter;
         final StringBuilder report = new StringBuilder();
-        final ExecutorService controls = Executors.newSingleThreadExecutor();
+        final ExecutorService controls = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
+            new ArrayBlockingQueue<Runnable>(1));
+        final ControlQueue pendingControls = new ControlQueue();
+        boolean controlDraining;
         final AtomicBoolean updateQueued = new AtomicBoolean();
         volatile boolean running = true;
         volatile int exitCode = -1;
@@ -75,13 +78,34 @@ public final class VmService extends Service {
             if (!running || target == null || !target.isAlive()) return;
             if (!guestStarted) { if (stopRequested) target.destroy(); return; }
             if ("stop".equals(line)) note("VM_STOP_REQUEST source=host_control\n");
-            try { controls.execute(() -> {
-                if (process != target || !target.isAlive()) return;
-                try {
-                    MacInput.write(target.getOutputStream(), line);
-                } catch (IOException e) { note("INPUT_ERROR "+e+"\n"); }
-                catch (InterruptedException e) { Thread.currentThread().interrupt(); }
-            }); } catch (RejectedExecutionException ignored) { }
+            long resets = pendingControls.resets;
+            if (!pendingControls.offer(line)) return;
+            if (pendingControls.resets != resets)
+                note("INPUT_BACKPRESSURE_RESET resets="+pendingControls.resets+" discarded="+pendingControls.discarded+"\n");
+            if (controlDraining) return;
+            controlDraining = true;
+            try { controls.execute(() -> drainControls(target)); }
+            catch (RejectedExecutionException ignored) { controlDraining=false; pendingControls.clear(); }
+        }
+        private void drainControls(Process target) {
+            while (true) {
+                String line;
+                synchronized (this) {
+                    if (!running || process != target || !target.isAlive()) {
+                        pendingControls.clear(); controlDraining=false; return;
+                    }
+                    line=pendingControls.poll();
+                    if (line == null) { controlDraining=false; return; }
+                }
+                try { MacInput.write(target.getOutputStream(), line); }
+                catch (IOException e) {
+                    synchronized (this) { pendingControls.clear(); controlDraining=false; }
+                    note("INPUT_ERROR "+e+"\n"); return;
+                } catch (InterruptedException e) {
+                    synchronized (this) { pendingControls.clear(); controlDraining=false; }
+                    Thread.currentThread().interrupt(); return;
+                }
+            }
         }
     }
     static synchronized Session start(Context context, int cpus, int seconds, String rom, String disk) {
@@ -304,6 +328,11 @@ public final class VmService extends Service {
         UI.post(() -> {
             if (wake != null && wake.isHeld()) wake.release(); wake=null;
             stopForeground(STOP_FOREGROUND_REMOVE);
+            synchronized (s) {
+                s.running=false; s.process=null; s.pendingControls.clear();
+                s.note("INPUT_QUEUE_RESULT high_water="+s.pendingControls.highWater+" merged="+s.pendingControls.merged+
+                    " resets="+s.pendingControls.resets+" discarded="+s.pendingControls.discarded+"\n");
+            }
             s.note("VM_SERVICE_CLEANUP foreground=0 wake_lock=0\n");
             s.note("EXIT_CODE="+result+"\n\n"); s.exitCode=result;
             synchronized (s) {
@@ -316,7 +345,7 @@ public final class VmService extends Service {
                 try (OutputStream out=new FileOutputStream(new File(getFilesDir(), "vm-last-report.txt"))) { out.write(s.snapshot().getBytes(StandardCharsets.UTF_8)); }
                 catch (IOException e) { s.note("VM_REPORT_SAVE_ERROR "+e+"\n"); }
             }
-            s.running=false; s.process=null; s.controls.shutdown(); s.notifyChanged(); stopSelf();
+            s.controls.shutdown(); s.notifyChanged(); stopSelf();
             if (s.fixture) new File(s.disk).delete();
         });
     }

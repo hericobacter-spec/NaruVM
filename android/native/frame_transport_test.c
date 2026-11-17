@@ -113,7 +113,7 @@ int main(int argc, char **argv) {
     if (argc == 4 && (!strcmp(argv[1], "--produce") || !strcmp(argv[1], "--produce-large") || !strcmp(argv[1], "--produce-service") || !strcmp(argv[1], "--produce-service-long"))) {
         int service = !strcmp(argv[1], "--produce-service") || !strcmp(argv[1], "--produce-service-long");
         unsigned count = !strcmp(argv[1], "--produce-service-long") ? 7500 : service ? 1000 : 150;
-        return produce(argv[2], strtoull(argv[3], NULL, 10), count, 16000, !strcmp(argv[1], "--produce"), service);
+        return produce(argv[2], strtoull(argv[3], NULL, 10), count, 16000, !strcmp(argv[1], "--produce-large"), service);
     }
     if (argc == 2) return selftest(argv[1]);
     fprintf(stderr, "Usage: frames_test directory | --produce path epoch_ms\n"); return 2;

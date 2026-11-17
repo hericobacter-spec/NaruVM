@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased — Input and display response — 2026-11-17
+
+Observed source changes and authored-test scope:
+
+- Bound pending input, combine adjacent relative motion without losing net travel,
+  preserve key/button boundaries, and prioritize normal stop over queued input.
+- Recover explicitly from input overload; atomic USB all-up and newest keyboard
+  state retention prevent the reproduced dropped-modifier-release scenario.
+- Prepare shared frames on a worker with one bounded UI handoff; use NEON BGRA
+  conversion and retain only the final Bitmap copy/presentation on the UI thread.
+- Correct the large-frame fixture selector and require a 1280-pixel-wide mode;
+  support a fresh test install and PATH-only JDKs in the new host checks.
+- Run `python3 android/check_response.py` for authored host regression checks.
+  These changes do not establish physical macOS speed, historical reboot repair
+  or long-run stability. Existing published APKs remain unchanged.
+
 ## v0.1.2-preview — Graphics preflight repair — 2026-11-17
 
 - Reject Vulkan devices without required shared host-memory import before adoption,

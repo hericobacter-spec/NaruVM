@@ -90,10 +90,16 @@ static void control_line(const char *line) {
     if (lab_control_parse(line, &c)) { input_rejected++; return; }
     input_accepted++;
     if (restoring && c.kind!=LAB_CONTROL_STOP) { input_rejected++; input_accepted--; return; }
-    if (c.kind==LAB_CONTROL_STOP || c.kind==LAB_CONTROL_MOVE || c.kind==LAB_CONTROL_BUTTON) cancel_pointing();
+    if (c.kind==LAB_CONTROL_STOP || c.kind==LAB_CONTROL_MOVE || c.kind==LAB_CONTROL_BUTTON || c.kind==LAB_CONTROL_RELEASE_ALL) cancel_pointing();
     switch (c.kind) {
     case LAB_CONTROL_STOP:
         requested_stop = 1; hv_machine_halt(&m, HV_HALT_HOST); break;
+    case LAB_CONTROL_RELEASE_ALL:
+        hv_xhci_release_keys(board.usb);
+        absolute_buttons=0;
+        hv_xhci_release_absolute(board.usb);
+        hv_virtio_input_release_all(board.mouse);
+        printf("VM_INPUT_STATE_RESET\n"); break;
     case LAB_CONTROL_HID: hv_xhci_key(board.usb, (uint8_t)c.a, c.b); break;
     case LAB_CONTROL_MOVE:
         absolute_ready=0;

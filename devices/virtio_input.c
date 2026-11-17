@@ -1,4 +1,7 @@
+/* Android port modifications: 2026-11-17.
+ * See NOTICE and docs/modifications.json; original copyright notices retained. */
 #include "virtio_input.h"
+#include "virtio_input_queue.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -100,15 +103,13 @@ static void notify(HvVirtio *v, int q) {
 void hv_virtio_input_send(HvVirtioInput *d, uint16_t type, uint16_t code, int32_t value) {
     if (!d) return;
     pthread_mutex_lock(&d->mu);
-    if (d->tail - d->head == HV_VINPUT_RING) {
-        d->head++; /* full: lose the oldest */
-        d->dropped++;
-    }
-    uint32_t i = d->tail++ % HV_VINPUT_RING;
-    d->ring[i].type = type;
-    d->ring[i].code = code;
-    d->ring[i].value = (uint32_t)value;
+    uint64_t before=d->recoveries;
+    hv_vinput_enqueue(d,type,code,value);
+    uint64_t recoveries=d->recoveries, dropped=d->dropped;
     pthread_mutex_unlock(&d->mu);
+    if (recoveries != before && !(recoveries & (recoveries-1)))
+        fprintf(stderr,"virtio-input overload recoveries=%llu discarded=%llu state_reset=1\n",
+            (unsigned long long)recoveries,(unsigned long long)dropped);
     hv_machine_wake(d->vio.m);
 }
 
@@ -133,6 +134,14 @@ void hv_virtio_input_poll(HvVirtioInput *d) {
     }
     pthread_mutex_unlock(&d->mu);
     if (any) hv_virtio_interrupt(v);
+}
+
+void hv_virtio_input_release_all(HvVirtioInput *d) {
+    if (!d) return;
+    pthread_mutex_lock(&d->mu);
+    hv_vinput_reset(d);
+    pthread_mutex_unlock(&d->mu);
+    hv_machine_wake(d->vio.m);
 }
 
 HvVirtioInput *hv_virtio_input_create(HvMachine *m, HvPcie *bus, int kind) {

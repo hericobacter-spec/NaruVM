@@ -78,13 +78,13 @@
     {
       "path": "devices/xhci.c",
       "upstream_sha256": "52b05f9d1e09397edb2383b955f4ef54e8ba203d783c6ee206e635431bcdfa79",
-      "modified": "2026-11-14/2026-11-16",
+      "modified": "2026-11-14/2026-11-16/2026-11-17",
       "notice": "Android port adaptations; retained upstream license, no rights transfer"
     },
     {
       "path": "devices/xhci.h",
       "upstream_sha256": "b5308f6bc10f9a2e588ce05d088f5e545314ff5f03ff9ce1252f1c2692c49d21",
-      "modified": "2026-11-14/2026-11-16",
+      "modified": "2026-11-14/2026-11-16/2026-11-17",
       "notice": "Android port adaptations; retained upstream license, no rights transfer"
     },
     {
@@ -122,6 +122,18 @@
       "upstream_sha256": "a5df1dc33a7de99d6857977f93abb5b528b3be963cff39327000763fd8bd387b",
       "modified": "2026-11-14/2026-11-16",
       "notice": "Android port adaptations; retained upstream license, no rights transfer"
+    },
+    {
+      "path": "devices/virtio_input.c",
+      "upstream_sha256": "105f270d2bc209076d08048f34ebaf19ec4d205b80095d368a254df73056d83d",
+      "modified": "2026-11-17",
+      "notice": "Bounded input overload recovery; retained upstream license, no rights transfer"
+    },
+    {
+      "path": "devices/virtio_input.h",
+      "upstream_sha256": "edf55041c780e16e0a1b644cba594da3550fb1def5e5c5a730b3ff314a78d35c",
+      "modified": "2026-11-17",
+      "notice": "Bounded input overload recovery; retained upstream license, no rights transfer"
     }
   ],
   "new_port_paths": [

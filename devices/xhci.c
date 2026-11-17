@@ -1,4 +1,4 @@
-/* Android port modifications: 2026-11-14 through 2026-11-16.
+/* Android port modifications: 2026-11-14 through 2026-11-17.
  * See NOTICE and docs/modifications.json; original copyright notices retained. */
 #include "xhci.h"
 
@@ -548,6 +548,7 @@ static void run_ep_in(HvXhci *x, int slot) {
             uint32_t n = want < len ? want : len;
             const uint8_t *rep = x->tp_reports[x->tp_rhead % HV_TP_REPORTS];
             wr(x, buf, rep, n);
+            if (len==5 && n==5) x->absolute_delivered_buttons=rep[0];
             x->tp_rhead++;
             x->tp_delivered++;
             if (x->tp_delivered <= 32) fprintf(stderr, "hengevm: xhci: pointer: %u bytes to the guest buttons=%u (delivered %llu)\n", n, rep[0], (unsigned long long)x->tp_delivered);
@@ -783,6 +784,7 @@ static void reset(HvXhci *x) {
     memset(x->tp_fingers, 0, sizeof x->tp_fingers);
     x->tp_button = 0;
     memset(x->absolute_report,0,sizeof x->absolute_report);
+    x->absolute_valid=x->absolute_delivered_buttons=0;
     x->tp_ts = 0;
     x->tp_rhead = x->tp_rtail = 0;
     x->tp_mt = 0;
@@ -968,6 +970,7 @@ void hv_xhci_key(HvXhci *x, uint8_t usage, int down) {
     if (!x || !usage) return;
     pthread_mutex_lock(&x->mu);
     uint8_t *s = x->state;
+    uint8_t previous[8]; memcpy(previous,s,8);
     if (usage >= 0xe0 && usage <= 0xe7) { /* modifiers live in byte 0 */
         uint8_t bit = (uint8_t)(1u << (usage - 0xe0));
         s[0] = down ? s[0] | bit : s[0] & ~bit;
@@ -982,7 +985,21 @@ void hv_xhci_key(HvXhci *x, uint8_t usage, int down) {
             s[7] = 0;
         }
     }
-    if (x->rtail - x->rhead < HV_XHCI_REPORTS) memcpy(x->reports[x->rtail++ % HV_XHCI_REPORTS], s, 8);
+    if (!memcmp(previous,s,8)) { pthread_mutex_unlock(&x->mu); return; }
+    // Every report is a complete state. Under overload keep the newest state
+    // instead of dropping the release that would clear a guest-held modifier.
+    uint32_t next=x->rtail-x->rhead < HV_XHCI_REPORTS ? x->rtail++ : x->rtail-1;
+    memcpy(x->reports[next % HV_XHCI_REPORTS],s,8);
+    pthread_mutex_unlock(&x->mu);
+    hv_machine_wake(x->m);
+}
+
+void hv_xhci_release_keys(HvXhci *x) {
+    if (!x) return;
+    pthread_mutex_lock(&x->mu);
+    memset(x->state,0,sizeof x->state);
+    x->rhead=x->rtail;
+    memcpy(x->reports[x->rtail++ % HV_XHCI_REPORTS],x->state,8);
     pthread_mutex_unlock(&x->mu);
     hv_machine_wake(x->m);
 }
@@ -1138,9 +1155,25 @@ void hv_xhci_absolute(HvXhci *x, unsigned px, unsigned py, int buttons) {
     uint8_t *r=x->absolute_report;
     r[0]=(uint8_t)buttons; r[1]=(uint8_t)px; r[2]=(uint8_t)(px>>8);
     r[3]=(uint8_t)py; r[4]=(uint8_t)(py>>8);
-    if (x->tp_rtail-x->tp_rhead<HV_TP_REPORTS) {
-        unsigned at=x->tp_rtail++%HV_TP_REPORTS;
-        memcpy(x->tp_reports[at],r,5); x->tp_rlen[at]=5;
+    x->absolute_valid=1;
+    unsigned at=(x->tp_rtail-x->tp_rhead<HV_TP_REPORTS ? x->tp_rtail++ : x->tp_rtail-1)%HV_TP_REPORTS;
+    memcpy(x->tp_reports[at],r,5); x->tp_rlen[at]=5;
+    pthread_mutex_unlock(&x->mu); hv_machine_wake(x->m);
+}
+
+void hv_xhci_release_absolute(HvXhci *x) {
+    if (!x) return;
+    pthread_mutex_lock(&x->mu);
+    if (x->absolute_valid) {
+        int needs_up=x->absolute_report[0] || x->absolute_delivered_buttons;
+        x->tp_rhead=x->tp_rtail; // stale down reports cannot follow the reset
+        x->absolute_report[0]=0;
+        if (needs_up) {
+            unsigned at=x->tp_rtail++%HV_TP_REPORTS;
+            memcpy(x->tp_reports[at],x->absolute_report,5); x->tp_rlen[at]=5;
+        }
+        // With both states already up, do not reposition a relative mouse at
+        // an old absolute coordinate merely to acknowledge a keyboard reset.
     }
     pthread_mutex_unlock(&x->mu); hv_machine_wake(x->m);
 }

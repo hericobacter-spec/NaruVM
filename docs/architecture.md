@@ -65,3 +65,28 @@ serialized service writer.
 Implemented paths are distinct from observed device behavior. Read
 [the device matrix](../android/device-support.json), [build scopes](building.md)
 and [license boundaries](licensing.md) before extending capability claims.
+
+
+## Input and frame ownership (observed source, 2026-11-17)
+
+The service has one serialized pipe writer and a 256-entry pending control queue.
+Adjacent physical relative moves accumulate their deltas; key, button, scroll and
+absolute-position commands form ordering boundaries. Stop abandons pending input
+and requests an all-up state before normal shutdown. The writer cannot preempt a
+pipe write already in flight. Discrete-input overload is explicitly logged and
+recovers state; unlimited input is not claimed to be losslessly retained. USB
+keyboard reports retain the newest full state when their queue fills.
+
+A dedicated frame reader owns the native handle and RGBA staging buffer. A single
+pending UI handoff prevents buffer reuse while the UI consumes it. NEON converts
+BGRA on ARM64 with a scalar tail/fallback. The UI copies the completed RGBA buffer
+into its own Bitmap and presents it; the worker never mutates a displayed Bitmap.
+Close queues native cleanup behind any in-flight worker copy. Resize creates the
+new staging buffer only when the previous UI handoff is complete. This still uses
+CPU readback and a final UI copy; it is not a zero-copy GPU surface.
+
+Authored host regression command: `python3 android/check_response.py` (C compiler
+and JDK required, supplied through JAVA_HOME/--jdk or PATH). The real Android
+`android/frame_test.py` exercises asynchronous conversion, Bitmap generation and
+full-frame color consistency across 1024x768/1280x800 modes. Emulator fixtures
+do not establish physical guest throughput or resolve the historical tablet reboot.

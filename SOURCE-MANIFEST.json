@@ -61,8 +61,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "548dc700533881a9857f43bfae9519beb39e81661e5fb30685621770295dbaab",
-      "bytes": 4660
+      "sha256": "39991d92739a575d53e77e737caec217ffeeb5b6ec241eedbc3c51d5a525eeb4",
+      "bytes": 5631
     },
     {
       "path": "CONTRIBUTING.md",
@@ -270,6 +270,11 @@
       "bytes": 4880
     },
     {
+      "path": "android/check_response.py",
+      "sha256": "97e0e0b0bae0b39f9827575bbeac016d94aa9324daf9022df5a4c99f37500641",
+      "bytes": 2217
+    },
+    {
       "path": "android/convert_asm.py",
       "sha256": "6b56deae721af54146c7839b12536bd1fb9ba58a702b6af8f1d4568287e6f192",
       "bytes": 430
@@ -301,8 +306,8 @@
     },
     {
       "path": "android/frame_test.py",
-      "sha256": "28157e84cadcb6fa23fedbfb231e0b869762ffc2493e28496ff4c6fd47a6e93a",
-      "bytes": 2382
+      "sha256": "5b7bb5c53e37a378c784a07f4f2ce5579fe036364eccc0146f7b76c634a255f2",
+      "bytes": 2442
     },
     {
       "path": "android/gpu/Cargo.lock",
@@ -541,8 +546,8 @@
     },
     {
       "path": "android/native/frame_jni.c",
-      "sha256": "bc7953e6deb4f4a6c3b088ce2e15e2569cc75423ff4d75c9a43cff6657169a04",
-      "bytes": 2832
+      "sha256": "cc9312752d22b0345bdd78b4ee1b2189b971ecc26048af4afdec265487f382f2",
+      "bytes": 3391
     },
     {
       "path": "android/native/frame_transport.c",
@@ -556,8 +561,8 @@
     },
     {
       "path": "android/native/frame_transport_test.c",
-      "sha256": "eb8a35793ec92b4d6d2b344bc4bafdf457e797f57f1a14d9350cb5458fe48f7b",
-      "bytes": 6392
+      "sha256": "18917d67a1eedeb43b37d1b8b50efa03076d307e66141aa5ad9b46522e87eb49",
+      "bytes": 6398
     },
     {
       "path": "android/native/guest_programs.S",
@@ -655,6 +660,11 @@
       "bytes": 1634
     },
     {
+      "path": "android/native/pixel_convert.h",
+      "sha256": "3ec68ee6f56f580c57ced7f1fb61efdecc1989bcd6729f0848f4f08bb64bf6c7",
+      "bytes": 955
+    },
+    {
       "path": "android/native/platform_compat.c",
       "sha256": "4f8b4d2a169e12661b2e0f5f40b0c3428dff735890dc2319c137b167c568eb7a",
       "bytes": 2071
@@ -696,8 +706,8 @@
     },
     {
       "path": "android/native/restore_runner.c",
-      "sha256": "bb4bf614da1f39c0c02a1b0dfe4655cf73f0da7d960f1db12a19212218322165",
-      "bytes": 23273
+      "sha256": "2d957bb7e53a6cc03edd6e759c1f6c9b93722b89784b48a18120c1dc479ba2df",
+      "bytes": 23555
     },
     {
       "path": "android/native/rom_decode.c",
@@ -735,9 +745,19 @@
       "bytes": 905
     },
     {
+      "path": "android/native/test_input_queue.c",
+      "sha256": "4c611323a633e17705b9f7c90755535c0cacf4046f8a10fea32c3620b827f140",
+      "bytes": 1500
+    },
+    {
       "path": "android/native/test_installed_guard.c",
       "sha256": "33dc2adee598827465cda9d4974212dbf1ed91f643841a8c526d20c69526ef5e",
       "bytes": 2103
+    },
+    {
+      "path": "android/native/test_keyboard_queue.c",
+      "sha256": "b0dda34705932b77bb4fc945b5a1971974bba246827a59bf26c4cab0f59c784b",
+      "bytes": 2086
     },
     {
       "path": "android/native/test_lavapipe_policy.c",
@@ -755,6 +775,11 @@
       "bytes": 1751
     },
     {
+      "path": "android/native/test_pixel_convert.c",
+      "sha256": "a3769c31bb8b72e1d84e823d5d0c03fa2d2fa88d378a7f0c35b04c2f9eb84d74",
+      "bytes": 2879
+    },
+    {
       "path": "android/native/test_platform_compat.c",
       "sha256": "e46d5c3fa7ef5d01a1ac342123a0f7bad7744b73603248aa48f8ae7af077d22d",
       "bytes": 1280
@@ -766,8 +791,8 @@
     },
     {
       "path": "android/native/test_vm_control.c",
-      "sha256": "a699a247839049be1497bffc4da3819c10a6ba179f8fcbee22af1db715943fc6",
-      "bytes": 1420
+      "sha256": "1b7a0bc17b36ac5c927bd258d4a8df6d6aee32eed88625644808210e2fa04d0f",
+      "bytes": 1550
     },
     {
       "path": "android/native/test_zero_array.c",
@@ -781,8 +806,8 @@
     },
     {
       "path": "android/native/vm_control.h",
-      "sha256": "d49f969830c65bcfbd6f274275ef943243bf4f2b97aa2a3922ff0acc52667bbe",
-      "bytes": 1682
+      "sha256": "1309443f6084ea8e508451e078faedb2a4d5fb8b966d24eb3e7c5483822e0f65",
+      "bytes": 1811
     },
     {
       "path": "android/native_test.py",
@@ -966,8 +991,8 @@
     },
     {
       "path": "android/service_test.py",
-      "sha256": "b208b7a344964861d33332ac3c2e2729cbfffb6e6ac7278c976949b15735c793",
-      "bytes": 4627
+      "sha256": "216ac81c602f68cec1fd087d86f2ba5fbb5a08bc591ba339045b19407939fa3c",
+      "bytes": 4618
     },
     {
       "path": "android/software/dependencies.json",
@@ -978,6 +1003,16 @@
       "path": "android/src/dev/henge/research/BootRom.java",
       "sha256": "59580bc0e54bc0706eefd59b950096f3cfedda162e14ccd6e53f469d3d5beaf5",
       "bytes": 1846
+    },
+    {
+      "path": "android/src/dev/henge/research/ControlQueue.java",
+      "sha256": "037544c7db9d8a264ba2d3381f3aacbde5a6c7a8b4b5f3e9463165ef5aaaa1a2",
+      "bytes": 2801
+    },
+    {
+      "path": "android/src/dev/henge/research/FramePump.java",
+      "sha256": "64dd0dd498ab062a8f05c2714048b49e2b7a22f1526d28b37909c5d461f0945a",
+      "bytes": 3558
     },
     {
       "path": "android/src/dev/henge/research/GpuConfig.java",
@@ -1016,8 +1051,8 @@
     },
     {
       "path": "android/src/dev/henge/research/MainActivity.java",
-      "sha256": "76644b52cae365def85e302c6b49450391d7f5e6daabb08575bfcbe30ba9bfb2",
-      "bytes": 86981
+      "sha256": "3804423ba779e667d55f0b2a0a363e9930540d9aed5bf860b9ba7d067fd5326e",
+      "bytes": 86824
     },
     {
       "path": "android/src/dev/henge/research/ManagedMachine.java",
@@ -1026,8 +1061,8 @@
     },
     {
       "path": "android/src/dev/henge/research/NativeFrames.java",
-      "sha256": "a0c93b5932890516929ca3e5d4031bea4f030a34f69fe017ceec08b26a1cad7e",
-      "bytes": 959
+      "sha256": "0e0e372c64dc2ca9d7e1e7f6ccd7a657f09d014a327aa0898e61123c368e2e15",
+      "bytes": 1154
     },
     {
       "path": "android/src/dev/henge/research/VerifiedDownload.java",
@@ -1041,8 +1076,8 @@
     },
     {
       "path": "android/src/dev/henge/research/VmService.java",
-      "sha256": "1fc896a18eb53584679c0bce1d993f0c90b934b967d80cba32d44499b15d5d89",
-      "bytes": 23070
+      "sha256": "717f1da95a199a8e337a3862a02e5ce65851d0e1dbc6e9b66693c05f220fe6c3",
+      "bytes": 24633
     },
     {
       "path": "android/symbolize_native.py",
@@ -1063,6 +1098,11 @@
       "path": "android/tests/AndroidManifest-input.xml",
       "sha256": "6eb29dc036da56b9fce8c43637a237f8aeda17d951fa63e799fcfef0285c19ca",
       "bytes": 581
+    },
+    {
+      "path": "android/tests/ControlQueueTest.java",
+      "sha256": "2f5036d4fe8c594f244085925a140192e1046fe6ad877b25244b357e3b90a556",
+      "bytes": 3219
     },
     {
       "path": "android/tests/GpuConfigTest.java",
@@ -1391,13 +1431,18 @@
     },
     {
       "path": "devices/virtio_input.c",
-      "sha256": "105f270d2bc209076d08048f34ebaf19ec4d205b80095d368a254df73056d83d",
-      "bytes": 5142
+      "sha256": "b0a045aae1d7130ac95ca8fcdad83f8a0d0b5ffdbfd7d10bd284c59d87b55579",
+      "bytes": 5602
     },
     {
       "path": "devices/virtio_input.h",
-      "sha256": "edf55041c780e16e0a1b644cba594da3550fb1def5e5c5a730b3ff314a78d35c",
-      "bytes": 1418
+      "sha256": "d517d1283a15ad60100ec03fb36ae54f4fc3487adf76be6575f6c94ba715f3f3",
+      "bytes": 1608
+    },
+    {
+      "path": "devices/virtio_input_queue.h",
+      "sha256": "7b7060eb6c5267ff199cdc1da222a66847023b279b9935f59e53c60a3354ecf4",
+      "bytes": 1501
     },
     {
       "path": "devices/virtio_net.c",
@@ -1441,13 +1486,13 @@
     },
     {
       "path": "devices/xhci.c",
-      "sha256": "8f68a99b3b613c9d5ba473379d715feaeecc11da10d72611f6c9f7f544e46994",
-      "bytes": 51198
+      "sha256": "60f7da8ca07c7ed647b88baac44631981c17260d36f0e171646cdac9ff8c3ce2",
+      "bytes": 52633
     },
     {
       "path": "devices/xhci.h",
-      "sha256": "de02bae08287b2871019b22481273a8ce98f87a72386e65eb5618f3c32c58e0c",
-      "bytes": 5191
+      "sha256": "54806d6d54e9de80a1d0498c851723fee458a875e42c2a7223df872ed7abf76f",
+      "bytes": 5404
     },
     {
       "path": "docs/apk-release.ko.md",
@@ -1461,8 +1506,8 @@
     },
     {
       "path": "docs/architecture.md",
-      "sha256": "e730b3265b7022b22ce2184720665e4c65a1b617c5a9712401c4c9b6163b20ae",
-      "bytes": 3487
+      "sha256": "a5d9591754db93ca6d58a11f52479167e8a24048c2bc6db565fd8bd30357137f",
+      "bytes": 5068
     },
     {
       "path": "docs/binary-release.ko.md",
@@ -1526,8 +1571,8 @@
     },
     {
       "path": "docs/modifications.json",
-      "sha256": "f5cb65e4ba67ff90be4a3094048e9ca495babdb050dd6a7147291eb656462e2f",
-      "bytes": 6099
+      "sha256": "9c7da6245f61f7640acf3fefd72b314014206c6a3a79ec936ff3638cfd0d5641",
+      "bytes": 6671
     },
     {
       "path": "docs/publication.md",
@@ -5721,8 +5766,8 @@
     },
     {
       "path": "tools/check_android_portability.py",
-      "sha256": "45d37c7c3070cac7c7c0f2d41fe453ed2314db5cab8cbb329d1c738de3cd2f8a",
-      "bytes": 2749
+      "sha256": "98e7467a86676af973b3e1b1f7c78706c51ffeaefdfb876eefa714330987146b",
+      "bytes": 2916
     },
     {
       "path": "tools/check_publication.py",

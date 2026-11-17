@@ -1,3 +1,5 @@
+/* Android port modifications: 2026-11-17.
+ * See NOTICE and docs/modifications.json; original copyright notices retained. */
 #ifndef HENGEVM_VIRTIO_INPUT_H
 #define HENGEVM_VIRTIO_INPUT_H
 
@@ -32,12 +34,13 @@ typedef struct HvVirtioInput {
     pthread_mutex_t mu;
     struct { uint16_t type, code; uint32_t value; } ring[HV_VINPUT_RING];
     uint32_t head, tail; /* under mu */
-    uint64_t delivered, dropped;
+    uint64_t delivered, dropped, recoveries;
 } HvVirtioInput;
 
 HvVirtioInput *hv_virtio_input_create(HvMachine *m, HvPcie *bus, int kind);
 /* Any thread: queue one event (send HV_EV_SYN, 0, 0 after each group). */
 void hv_virtio_input_send(HvVirtioInput *d, uint16_t type, uint16_t code, int32_t value);
+void hv_virtio_input_release_all(HvVirtioInput *d);
 /* CPU thread: hand queued events to the guest's buffers. */
 void hv_virtio_input_poll(HvVirtioInput *d);
 
