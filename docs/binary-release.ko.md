@@ -2,7 +2,17 @@
 
 [English](binary-release.md) · [설치 안내](installation.ko.md) · [대응 소스 검사](source-correspondence.md)
 
-## 지금 받을 수 있는 파일
+## 서명된 실험용 APK
+
+[v0.1.1-preview](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.1-preview)에서 ARM64 APK·두 소스 묶음·체크섬을 제공합니다.
+[APK 안내](apk-release.ko.md)에서 검증 범위·설치·수정 방법을 확인하세요. 기존 v0.1은 소스 전용입니다.
+
+## 이전 연구 APK에 대한 기록
+
+아래는 새 서명 후보가 아닌 `55d78d6f…ee37` 연구 APK의 이전 판정입니다.
+당시 보수적 검사 플래그와 생산 커밋 미입증 기록은 그대로 보존합니다. 현재 후보의 검증은 위 안내에 있습니다.
+
+## 서명 미리보기 이전 배포 상태
 
 **2026-11-17 확인:** [v0.1 릴리스](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1)에는
 프로젝트 소스 압축 파일과 체크섬이 있으며 **공개 APK는 없습니다.** 로컬 연구용 APK는

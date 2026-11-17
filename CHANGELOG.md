@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.1.1-preview — Experimental APK — 2026-11-17
+
+- Added explicit release signing, non-debuggable manifest, compiler-path remapping
+  and native stripping; preserved research signing and the original v0.1 assets.
+- Provided the ARM64 graphics/software/PanVK APK alongside project and dependency
+  source archives, notices, checksums and the public signer fingerprint.
+- Added a disk-free libplist behavior probe and recipient repackage/signing helper;
+  changed LGPL source and independent-key installation observed on Android35 ARM64.
+- Documented the different-key update restriction and existing-data preservation.
+  Exact-candidate physical guest, sustained use and full automatic install remain
+  unverified; this release makes no new speed or stability claim.
+
 ## Unreleased — Documentation
 
 - Expanded English/Korean project overview and step-by-step source/APK/guest

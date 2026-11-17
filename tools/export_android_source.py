@@ -26,7 +26,8 @@ PUBLIC_DOCS = {'android/DESIGN.md', 'docs/architecture.md', 'docs/licensing.md',
                'docs/publication.md', 'docs/modifications.json', 'docs/source-correspondence.md',
                'docs/installation.md', 'docs/installation.ko.md',
                'docs/binary-release.md', 'docs/binary-release.ko.md', 'docs/images/README.md',
-               'docs/videos/README.md', 'docs/videos/README.ko.md'}
+               'docs/videos/README.md', 'docs/videos/README.ko.md',
+               'docs/apk-release.md', 'docs/apk-release.ko.md'}
 # Individually inspected historical captures and labeled walkthrough only; never glob research media.
 PUBLIC_MEDIA = {'docs/images/macos-setup.png', 'docs/images/macos-safari.png',
                 'docs/images/macos-vscode.png', 'docs/videos/historical-captures.mp4'}

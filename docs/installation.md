@@ -8,11 +8,12 @@ as of 2026-11-17. Commands are run on an Apple Silicon Mac unless stated otherwi
 
 ## 1. Understand what is available
 
-The [v0.1 prerelease](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1)
-contains **source code and checksums, with no downloadable APK**. Build a local
-APK below. The repository is an experimental source preview; complete binary
-corresponding-source verification is still open. These instructions do not clear
-an APK for redistribution.
+The [v0.1.1-preview release](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.1-preview)
+provides a signed ARM64 APK and both source archives. Follow the
+[APK verification/install guide](apk-release.md) to install without building,
+then continue at [app/resource setup](#6-check-the-app-and-choose-resources).
+The original v0.1 remains source-only. The steps below also explain local builds.
+An emulator install is observed; physical/guest retesting of this candidate is unverified.
 
 There are two installations: installing the **NaruVM Android app**, then using
 its experimental installer to create a **macOS guest**. Installing the APK alone
@@ -29,7 +30,7 @@ from a separate research installation.
 All profiles write the same APK filename and use the same local signing key.
 The **last successful build** determines which profile that file contains.
 
-See the [APK release status and remaining work](binary-release.md).
+See the [APK release evidence and limits](apk-release.md).
 
 ## 2. Check prerequisites
 

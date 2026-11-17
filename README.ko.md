@@ -4,11 +4,13 @@
 
 [![Android 소스 검사](https://github.com/hericobacter-spec/NaruVM/actions/workflows/android-source.yml/badge.svg?branch=main)](https://github.com/hericobacter-spec/NaruVM/actions/workflows/android-source.yml)
 
-**[v0.1 소스 릴리스](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1)** · **[APK 배포 준비 상태](docs/binary-release.ko.md)** · [문제 해결](docs/installation.ko.md#문제-해결)
+**[v0.1.1-preview APK 다운로드](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.1-preview)** · **[APK 설치·소스·검증](docs/apk-release.ko.md)** · [문제 해결](docs/installation.ko.md#문제-해결)
 
 Henge의 ARM64 JIT·소프트웨어 MMU·가상 장치를 Android NDK/Bionic 앱으로 옮긴 **독립 실험 포트**입니다. 그래픽은 Reims → metal2vulkan → Vulkan 경로를 사용합니다. 원본 Henge의 공식 Android 지원 제품은 아닙니다.
 
-현재 v0.1은 **소스 미리보기**로 공개했습니다. [릴리스](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1)에는 소스와 체크섬이 있으며 **설치용 APK는 없습니다**. APK·Apple ROM/IPSW·게스트 디스크·계정·서명키는 공개 구성에 포함하지 않습니다. APK 배포에는 별도의 대응 소스·라이선스 검증이 남아 있습니다.
+**실험용 미리보기**입니다. v0.1.1-preview에는 서명한 ARM64 APK, 프로젝트·의존성 소스와 체크섬을 제공합니다. 기존 v0.1은 소스 전용으로 유지합니다. GPU 오류·태블릿 재부팅·느린 동작은 해결 완료를 주장하지 않습니다. 이번 후보는 에뮬레이터에서 확인했으며 실기기·macOS 게스트 재검증은 하지 못했습니다. Apple 이미지·게스트 디스크·계정·개인 서명키는 포함하지 않습니다.
+
+기존 연구 앱과 새 APK의 서명키가 다릅니다. **기존 앱을 삭제하거나 데이터를 지우지 말고 별도 기기·에뮬레이터를 사용하세요.** [APK 설치 안내](docs/apk-release.ko.md)를 먼저 확인하세요.
 
 ## 영상
 
@@ -57,7 +59,7 @@ NaruVM이며 내부 `henge` 경로와 `dev.henge.research` 패키지는 이력·
 
 ## 어디서 시작하나요?
 
-현재는 직접 로컬 APK를 빌드합니다. **Android 앱 설치와 앱 안의 macOS 설치는
+[서명된 실험용 APK](docs/apk-release.ko.md)를 설치하거나 직접 빌드할 수 있습니다. **Android 앱 설치와 앱 안의 macOS 설치는
 별도 단계**입니다.
 
 | 목적 | 안내 |
@@ -73,12 +75,12 @@ NaruVM이며 내부 `henge` 경로와 `dev.henge.research` 패키지는 이력·
 호환성 검사·저장 공간·계정 설정·입력·네트워크 순서를 담았습니다.
 [개발자 빌드 참고](docs/building.md)는 드라이버·소스 재현과 검사 세부 사항을 다룹니다.
 
-처음 시험하는 순서는 **그래픽 구성 빌드 → APK 설치 → CPU·RAM·그래픽 선택과
+처음 시험하는 순서는 **APK 다운로드·서명 확인 → APK 설치 → CPU·RAM·그래픽 선택과
 호환성 검사 → 새 게스트 다운로드·설치 시작 → macOS 초기 설정**입니다.
 2코어 / RAM 2048 MiB부터 시작하세요. TB373FU의 자동/PanVK는 빌드 C를 사용하고,
 빌드 B라면 CPU 렌더링을 직접 선택해야 합니다. 각 단계의 준비물과 명령은
-[전체 설치 안내](docs/installation.ko.md)에 있습니다. 공개 APK가 없는 이유와
-남은 작업은 [배포 준비 상태](docs/binary-release.ko.md)를 확인하세요.
+[전체 설치 안내](docs/installation.ko.md)에 있습니다. 공개 APK의 구성·검증·한계는
+[APK 배포 안내](docs/apk-release.ko.md)를 확인하세요.
 
 ## 현재 상태
 
@@ -169,9 +171,8 @@ Henge/Android 변경의 GPL-2.0-or-later와 구성요소별 원본 고지를 유
 
 ## 자주 묻는 질문
 
-**빌드 대신 APK를 받을 수 있나요?** 아직은 소스 배포입니다.
-[APK 배포 준비 문서](docs/binary-release.ko.md)에 실제 검사 결과, 대응 소스·빌드·서명
-준비 항목과 향후 첨부할 파일을 정리했습니다.
+**빌드 대신 APK를 받을 수 있나요?** 네. [v0.1.1-preview](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.1-preview)의 실험용 APK와 소스 묶음을 받으세요.
+[설치·서명·체크섬 안내](docs/apk-release.ko.md)를 확인하세요. 기존 v0.1은 소스 전용으로 유지합니다.
 
 **원격 Mac이나 Android 루팅이 필요한가요?** 게스트는 Android 안에서 실행합니다.
 문서의 빌드 컴퓨터는 Apple Silicon Mac 기준이며 앱은 일반 앱·JIT·드라이버 경로를

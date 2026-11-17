@@ -34,7 +34,17 @@ def main():
     parser.add_argument('--panvk-userptr-probe', action='store_true', help='Bundle the source-built PanVK host-pointer ICD and diagnostics; used by TB373FU Auto and Mali PanVK guest selections')
     parser.add_argument('--panvk-asan', action='store_true', help='Stage the separately built AddressSanitizer ICD; diagnostic only')
     parser.add_argument('--turnip-manifest', type=Path, help='Optional self-contained AArch64 Turnip driver with SHA256/source pin/license/build recipe; runtime support remains experimental')
+    import release_signing
+    release_signing.configure(parser)
     args = parser.parse_args()
+    try:
+        release_signing.validate(args)
+    except ValueError as error:
+        parser.error(str(error))
+    artifacts = APP / 'artifacts'
+    output = args.output or artifacts / ('NaruVM-arm64-' + args.version_name + '.apk' if args.release else 'NaruVM-arm64-debug.apk')
+    if args.output and output.exists() or args.release and output.exists():
+        parser.error('Output exists; choose a new filename')
     turnip = None
     if args.turnip_manifest:
         from turnip_bundle import validate
@@ -82,7 +92,10 @@ def main():
     if generated.exists(): shutil.rmtree(generated)
     generated.mkdir()
     run(BT / 'aapt2', 'compile', '--dir', APP / 'res', '-o', resources)
-    run(BT / 'aapt2', 'link', '-I', android, '--manifest', APP / 'AndroidManifest.xml', '--java', generated, '-o', unsigned, resources)
+    manifest = APP / 'AndroidManifest.xml'
+    if args.release:
+        manifest = release_signing.manifest(manifest, BUILD / 'release/AndroidManifest.xml', args.version_name, args.version_code)
+    run(BT / 'aapt2', 'link', '-I', android, '--manifest', manifest, '--java', generated, '-o', unsigned, resources)
     java = sorted((APP / 'src').rglob('*.java')) + sorted(generated.rglob('*.java'))
     run(JDK / 'bin/javac', '--release', '8', '-classpath', android, '-encoding', 'UTF-8', '-d', classes, *java)
     run(BT / 'd8', '--min-api', '28', '--lib', android, '--output', dex, *sorted(classes.rglob('*.class')))
@@ -90,6 +103,7 @@ def main():
     # clamp metadata rather than requiring a private checkout's file mtimes.
     with zipfile.ZipFile(unsigned, 'a', compression=zipfile.ZIP_DEFLATED, strict_timestamps=False) as archive:
         archive.write(dex / 'classes.dex', 'classes.dex')
+        release_native = []
         for library in sorted((native / 'bin').glob('lib*.so')):
             if library.name == 'libhenge_turnip_driver.so': continue  # never reuse a stale optional driver
             if library.name == 'libhenge_host_copy_probe.so' and not args.host_copy_probe: continue
@@ -103,7 +117,13 @@ def main():
             # Network and software Vulkan share some support libraries. Disabling
             # software Vulkan must not remove the network's required dependencies.
             if (library.name.startswith('libhenge_lvp_') or library.name in known_software) and library.name not in network['libraries'] and (not software or library.name not in software['libraries']): continue
-            archive.write(library, 'lib/arm64-v8a/' + library.name)
+            payload = library
+            if args.release:
+                external = set(network['libraries']) | (set(software['libraries']) - {'libhenge_lvp_loader.so'} if software else set())
+                payload, record = release_signing.native_payload(library, BUILD / 'release-native/bin',
+                    NDK / 'toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-strip', library.name not in external)
+                release_native.append(record)
+            archive.write(payload, 'lib/arm64-v8a/' + library.name)
         if turnip:
             archive.write(turnip[0], 'lib/arm64-v8a/libhenge_turnip_driver.so')
             for name, content in turnip[1].items():
@@ -118,6 +138,9 @@ def main():
         archive.write(ROOT / 'LICENSE', 'assets/Henge-LICENSE.txt')
         for notice in sorted((ROOT / 'LICENSES').rglob('*')):
             if notice.is_file():
+                if args.release and notice.relative_to(ROOT / 'LICENSES').as_posix() == 'source-info.txt':
+                    archive.writestr('assets/licenses/project/source-info.txt', release_signing.source_information(args.version_name))
+                    continue
                 archive.write(notice, 'assets/licenses/project/' + notice.relative_to(ROOT / 'LICENSES').as_posix())
         if (ROOT / 'NOTICE').is_file(): archive.write(ROOT / 'NOTICE', 'assets/licenses/project/NOTICE.txt')
         archive.write(APP / 'publication/license-selection.json', 'assets/licenses/project/license-selection.json')
@@ -166,15 +189,19 @@ def main():
             for notice in sorted(attributions.rglob('*')):
                 if notice.is_file() and '/share/doc/' in str(notice):
                     archive.writestr('assets/licenses/lavapipe/'+str(notice.relative_to(attributions)),notice.read_bytes())
+    if args.release:
+        (BUILD / 'release-native-map.json').write_text(json.dumps(release_native, indent=2) + '\n')
     aligned = BUILD / 'henge-aligned.apk'
     run(BT / 'zipalign', '-f', '-P', '16', '4', unsigned, aligned)
-    keystore = ROOT / '.tools/research-debug.keystore'
-    if not keystore.exists():
+    keystore = args.keystore if args.release else ROOT / '.tools/research-debug.keystore'
+    if not args.release and not keystore.exists():
         run(JDK / 'bin/keytool', '-genkeypair', '-keystore', keystore, '-storepass', 'android', '-keypass', 'android',
             '-alias', 'androiddebugkey', '-dname', 'CN=Henge Research Debug', '-keyalg', 'RSA', '-keysize', '2048', '-validity', '10000')
-    artifacts = APP / 'artifacts'; artifacts.mkdir(exist_ok=True)
-    output = artifacts / 'NaruVM-arm64-debug.apk'
-    run(BT / 'apksigner', 'sign', '--ks', keystore, '--ks-pass', 'pass:android', '--key-pass', 'pass:android', '--out', output, aligned)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    if args.release:
+        run(BT / 'apksigner', 'sign', *release_signing.signing_arguments(args), '--out', output, aligned)
+    else:
+        run(BT / 'apksigner', 'sign', '--ks', keystore, '--ks-pass', 'pass:android', '--key-pass', 'pass:android', '--out', output, aligned)
     run(BT / 'apksigner', 'verify', '--verbose', output)
     run(BT / 'zipalign', '-c', '-P', '16', '4', output)
     print('APK: ' + str(output))

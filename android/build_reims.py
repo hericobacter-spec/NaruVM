@@ -51,6 +51,10 @@ def main():
         CARGO_TARGET_DIR=str(TARGET), CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=str(llvm/'aarch64-linux-android28-clang'),
         RUSTFLAGS='-C target-feature=+lse,+rcpc -C link-arg=-Wl,-z,max-page-size=16384',
         CARGO_PROFILE_RELEASE_OPT_LEVEL='3', CARGO_PROFILE_RELEASE_CODEGEN_UNITS='16')
+    env['CARGO_ENCODED_RUSTFLAGS'] = '\x1f'.join(['-C', 'target-feature=+lse,+rcpc',
+        '-C', 'link-arg=-Wl,-z,max-page-size=16384',
+        '--remap-path-prefix=' + str(Path.home()) + '=/src/build'])
+    env.pop('RUSTFLAGS', None)
     env['PATH'] = str(ROOT/'.tools/cargo/bin')+os.pathsep+env['PATH']
     # Follow the dependency's worktree environment; arguments remain positional shell data.
     run('/bin/bash','-c','. scripts/internal/dev-env.sh; exec "$@"','reims-build',

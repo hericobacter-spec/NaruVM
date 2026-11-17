@@ -268,3 +268,14 @@ installation and exact-build device endurance remain separate acceptance gates.
 For exact APK per-file origin/rebuild evidence and unresolved source gates, see
 [source correspondence](source-correspondence.md). An origin audit pass is not a
 complete corresponding-source or binary-release approval.
+
+## Separate signed APK release
+
+The source gate above deliberately retains `binary_release_ready=0`; it does not
+execute Android or approve binaries. The v0.1.1-preview release adds separately
+recorded signing, source delivery, native origin/packaging, emulator first-launch
+and actual recipient-modified LGPL installation checks. See the [APK guide](apk-release.md)
+and [artifact record](../android/publication/apk-release.json). Both source archives
+are supplied alongside the APK; a project-only source export is not that set.
+Historical external producing commits and whole dependency rebuilds remain
+unattested. Preserve the original source-only v0.1 tag/assets.

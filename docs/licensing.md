@@ -59,7 +59,7 @@ guidance](https://apache.org/licenses/GPL-compatibility.html) distinguishes GPLv
 from GPLv2 compatibility. Preserve the original grants and review the selected
 combination, rather than assuming every permissive or dual license is interchangeable.
 
-An eventual APK needs the exact Henge/Android source, patches, target/feature
+An APK distribution needs the exact Henge/Android source, patches, target/feature
 configuration and all required external dependency source/build/install inputs.
 For the 29 downloaded Termux package entries, a pinned official recipe revision
 now matches all 27 unique full versions. All recipe files and 30 source archives
@@ -69,7 +69,9 @@ The source collector and archive verifier are described in the
 Observed matching versions and source hashes are narrower than proof that these
 recipes produced the downloaded binaries: the deb controls contain no build-commit
 attestation. libc++ copies an NDK prebuilt, which is explicitly not counted as source.
-Its retained NDK notice and provenance record do not replace matching source.
+Its retained NDK notice and provenance record do not replace source. The separate
+dependency archive now includes the recorded LLVM/Android source and build scripts;
+this is source provision, not an independent runtime source-build attestation.
 
 Recipe license summaries describe whole packages, not necessarily the linked
 library. For example, the collected XZ 5.8.4 COPYING identifies liblzma as 0BSD;
@@ -81,8 +83,8 @@ The APK packager includes the NDK toolchain notice, Rust standard-library
 copyright/license collection and target-reachable Rust dependency notices.
 The offline home-screen license viewer exposes packaged texts and source/replacement
 instructions. Its existence does not establish complete source coverage or
-release-specific replacement/installation acceptance. A public source-download
-destination is still unset for this local research build. Selected Cargo, Mesa,
+release-specific replacement/installation acceptance. The signed v0.1.1-preview overrides the research source-information asset with
+its exact release URL and both downloadable source archive names. Selected Cargo, Mesa,
 Rust library and original graphics Git source inputs are now separately collected
 and hash-verified; see the publication procedure for counts and limits.
 
@@ -112,7 +114,8 @@ Review the applicable agreement and any separate rights before deployment or
 commercial distribution.
 
 Do not publish Apple images, guest accounts, private captures or signing keys.
-This preview also excludes compiled APK/IPA/driver artifacts. See the
+The source repository excludes compiled APK/IPA/driver artifacts; the separate
+v0.1.1-preview release supplies its inspected APK and both source archives. See the
 [publication procedure](publication.md) for file-level checks and remaining
 binary gates. No affiliation with Apple, Lenovo, Samsung, Qualcomm, Arm or the
 upstream contributors is claimed.
@@ -120,3 +123,18 @@ upstream contributors is claimed.
 The [source-correspondence audit](source-correspondence.md) maps every native
 payload and distinguishes exact package/packaging identity from source builds.
 A reproduced libc++ packaging transformation does not close its source-build gate.
+
+## v0.1.1-preview artifact review — observed 2026-11-17
+
+The [APK release guide](apk-release.md) records the exact build configuration,
+source delivery, private-key-independent recipient modification/install path and
+remaining limits. All53 native members were mapped; stripping/copy transformations
+were repeated, and a changed libplist source behavior was rebuilt and executed
+from a recipient-signed APK on an isolated Android35 ARM64 emulator. Both source
+archives accompany this APK:94 pinned inputs plus four original Git snapshots,
+including full version-matched Termux recipes/patches and NDK runtime inputs.
+No historical Termux producer-commit attestation or complete independent dependency
+rebuild is claimed. Legacy audit flags preserve that narrower assessment.
+These observed technical checks are not a legal certification or evidence of
+physical guest stability. The [release record](../android/publication/apk-release.json)
+keeps those scopes separate.

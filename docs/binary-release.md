@@ -2,10 +2,22 @@
 
 [Korean guide](binary-release.ko.md) · [Installation](installation.md) · [Source audit](source-correspondence.md)
 
-## Current download status
+## Signed experimental preview
+
+[v0.1.1-preview](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.1-preview) provides the signed ARM64 APK, both source archives and checksums. Follow
+the [APK guide](apk-release.md) for verified scope, installation and modifications.
+The original v0.1 remains source-only.
+
+## Historical research-APK assessment
+
+The following records the earlier `55d78d6f…ee37` research artifact, not the new signed
+candidate. Its conservative audit flags and unresolved producer attestations are
+preserved; current artifact-level checks are in the linked guide.
+
+## Download status before the signed preview
 
 As observed on **2026-11-17**, [v0.1 Releases](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1)
-contains a project source archive and checksums. **No APK is published.**
+contains a project source archive and checksums. **At that assessment, no APK was published.**
 The existing research APK is a local test artifact, not a cleared release asset.
 To try the app now, use the [source build and installation guide](installation.md).
 An APK distribution is a project goal; source-only is not a permanent product restriction.

@@ -272,6 +272,10 @@ int main(int argc, char **argv) {
         if (lab_platform_probe()) return 77;
     if (argc == 1 || !strcmp(argv[1], "selftest")) return selftest();
     if (!strcmp(argv[1], "probe")) return 0;
+    if (!strcmp(argv[1], "license-probe")) {
+        extern int lab_license_probe(void);
+        return lab_license_probe();
+    }
     if (!strcmp(argv[1], "cpu-perf-test")) return cpu_performance_test();
     if (argc==3 && !strcmp(argv[1], "cache-memory")) return cache_memory((unsigned)atoi(argv[2]));
     if (!strcmp(argv[1], "smp-test")) return lab_smp_test();

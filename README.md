@@ -4,17 +4,19 @@
 
 [![Android source checks](https://github.com/hericobacter-spec/NaruVM/actions/workflows/android-source.yml/badge.svg?branch=main)](https://github.com/hericobacter-spec/NaruVM/actions/workflows/android-source.yml)
 
-**[v0.1 source release](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1)** · **[APK release status](docs/binary-release.md)** · [Troubleshooting](docs/installation.md#troubleshooting)
+**[Download v0.1.1-preview APK](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.1-preview)** · **[APK install / source / checks](docs/apk-release.md)** · [Troubleshooting](docs/installation.md#troubleshooting)
 
 An independent, experimental Android port of [Henge](https://github.com/Leviidev/Henge).
 It retains Henge's ARM64-to-ARM64 JIT, software MMU and virtual devices, with
 Android NDK/Bionic host adapters and an experimental Reims → metal2vulkan →
 Vulkan graphics path. It is not an official Android release from upstream Henge.
 
-**Source preview, not a production release.** GPU faults, tablet reboots and slow
-interaction remain unresolved. No near-native performance or everyday stability
-claim is made. The publication set contains source, patches and notices, not an
-APK, Apple image, guest disk, account data or signing key.
+**Experimental preview.** GPU faults, tablet reboots and slow interaction remain
+unresolved. No near-native performance or everyday stability claim is made.
+The v0.1.1-preview release provides a signed ARM64 APK, project/dependency source
+archives, notices and checksums. Apple images, guest disks, accounts and private
+signing keys are excluded. The exact candidate was tested on an emulator; its
+physical-tablet and guest retest was unavailable.
 
 ## Video
 
@@ -68,24 +70,23 @@ independent display name is NaruVM.
 
 ## Choose a starting point
 
-**There is no APK in the v0.1 release.** The [prerelease](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1)
-contains source and checksums. You currently build a local APK; installing that
-app and installing a macOS guest are separate steps.
-[Why the research APK is not attached yet, and what remains](docs/binary-release.md).
+Download the **[experimental APK](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.1-preview)** and follow [verification and installation](docs/apk-release.md).
+The original [v0.1](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1)
+remains source-only. Existing research installs have a different signing key;
+**preserve their guest data and use a separate device/emulator** for this preview.
 
-For a first attempt: **build a graphics profile → install the APK → choose
-CPU/RAM/backend and run preflight → explicitly download/install a new guest →
-finish macOS setup**. Start with 2 vCPU / 2048 MiB; use profile C for TB373FU
-Auto/PanVK, or explicitly choose CPU rendering with profile B. The full guide
-contains the prerequisites and commands for every step.
+For a first attempt: **install the APK → choose CPU/RAM/backend and run preflight
+→ explicitly download/install a new guest → finish macOS setup**.
+Start with 2 vCPU / 2048 MiB. The APK bundles graphics, CPU rendering and the
+experimental PanVK path; Turnip is not bundled. The complete new automatic
+installer remains unverified. [Build from source](docs/installation.md) if preferred.
 
 | You want to… | Start here |
 | --- | --- |
-| Understand requirements and install from source | [Step-by-step installation](docs/installation.md) |
-| Check the source without an Android device | [Host checks below](#start-with-host-checks) |
-| Build the app without graphical guest execution | [Diagnostic profile A](docs/installation.md#a-diagnostic-app) |
-| Try a graphical guest with CPU rendering | [Graphics profile B](docs/installation.md#b-graphics-with-software-rendering) |
-| Reproduce the observed TB373FU driver path | [PanVK profile C](docs/installation.md#c-tb373fu-panvk-research-profile) |
+| Install without building | [APK, checksums and signer](docs/apk-release.md) |
+| Understand requirements and build profiles | [Step-by-step installation](docs/installation.md) |
+| Check source without an Android device | [Host checks below](#start-with-host-checks) |
+| Modify/re-sign a native component | [Recipient modification guide](docs/apk-release.md#replace-an-lgpl-component-and-reinstall) |
 | Recover from a build/install/boot problem | [Troubleshooting and logs](docs/installation.md#troubleshooting) |
 
 The installation guide covers clone/toolchain setup, exact build commands,
@@ -219,9 +220,10 @@ This forwards input events, not arbitrary USB devices. See
 
 ## FAQ
 
-**Can I download an APK instead of building?** Not yet. v0.1 is source-only.
-The [binary release page](docs/binary-release.md) records actual checks, remaining
-source/build/signing work and the planned downloadable bundle.
+**Can I download an APK instead of building?** Yes: the experimental
+[v0.1.1-preview](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.1-preview).
+Follow the [signer, checksum and installation guide](docs/apk-release.md).
+The original v0.1 is preserved as source-only.
 
 **Does it need a remote Mac or root on Android?** Guest execution is local.
 The documented build host is an Apple Silicon Mac; Android runs the app through
@@ -275,9 +277,10 @@ and per-file terms remain in effect. Read [NOTICE](NOTICE), the
 [license review](docs/licensing.md) and [component inventory](android/publication/licenses.json).
 The combined research APK selects the GPLv3 option while retaining upstream
 grants. Version-matched Termux recipes and checksum-pinned source inputs are
-recorded; complete binary/source correspondence is still a separate release
-check. Do not call a combined APK GPLv2-only or treat this source preview as a
-complete APK source offer.
+recorded. Download both project and dependency source archives with the APK;
+the project-only archive is not the complete source set. Historical producer
+attestation and independent external rebuilds remain unclaimed. See the
+[artifact-specific review](docs/apk-release.md#source-provision-versus-rebuild-attestations).
 
 The project license grants no rights to Apple software. The
 [macOS Sequoia license](https://www.apple.com/legal/sla/docs/macOSSequoia.pdf)
@@ -299,8 +302,8 @@ it does not upload anything. Review that tree before any public action.
 The [final source gate](docs/publication.md#3-run-the-final-offline-source-gate)
 checks actual staged Git bytes, host policies, negative boundary tests and
 deterministic source archives. It is also the workflow's check command. A local
-source-gate pass covers source publication preparation; the APK has separate
-unresolved source and runtime release conditions.
+source-gate pass covers source publication preparation. Separate artifact-level
+checks and remaining limits are recorded in the [APK guide](docs/apk-release.md).
 
 See the [current APK source correspondence audit](docs/source-correspondence.md)
 for per-file origins, exact payload/rebuild checks and remaining source gates.

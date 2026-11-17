@@ -15,6 +15,9 @@ import re
 import sys
 import tarfile
 import zipfile
+import tempfile
+import subprocess
+import shutil
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -116,7 +119,7 @@ def verify_project_inputs(source, build):
     for item in manifest['files']:
         name = item['path']
         selected = name.startswith(prefixes) and Path(name).suffix in extensions
-        selected |= name in {'android/CMakeLists.txt', 'android/restore.cmake', 'android/AndroidManifest.xml', 'android/installer_sources.py'}
+        selected |= name in {'android/CMakeLists.txt', 'android/restore.cmake', 'android/AndroidManifest.xml', 'android/installer_sources.py', 'android/release_signing.py'}
         selected |= name.startswith('android/build') and name.endswith('.py')
         if not selected:
             continue
@@ -159,7 +162,7 @@ def native_rows(apk, native, index, build):
                 if file_digest(native / filename) != h:
                     raise ValueError('APK does not match local build output: ' + name)
                 target = filename.removeprefix('lib').removesuffix('.so')
-                link = native.parent / 'CMakeFiles' / (target + '.dir') / 'link.txt'
+                link = build / 'android/build/native/CMakeFiles' / (target + '.dir') / 'link.txt'
                 recipe = 'android/CMakeLists.txt:' + target if link.is_file() else helpers.get(filename)
                 if not recipe:
                     raise ValueError('No build recipe for native member: ' + name)
@@ -171,12 +174,38 @@ def native_rows(apk, native, index, build):
     return rows
 
 
-def audit(apk, build, source, cache, inputs_cache):
+def release_packaging(build):
+    records = json.loads((build / 'android/build/release-native-map.json').read_text())
+    seen = set()
+    strip = build / '.tools/android-sdk/ndk/30.0.16248370/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-strip'
+    with tempfile.TemporaryDirectory(prefix='naruvm-strip-proof-') as folder:
+        for record in records:
+            name = record['name']
+            if Path(name).name != name or name in seen:
+                raise ValueError('Invalid release-native map name')
+            seen.add(name)
+            original = build / 'android/build/native/bin' / name
+            staged = build / 'android/build/release-native/bin' / name
+            if file_digest(original) != record['source_sha256'] or file_digest(staged) != record['packaged_sha256']:
+                raise ValueError('Release native packaging hash mismatch: ' + name)
+            copy = Path(folder) / name
+            shutil.copy2(original, copy)
+            if record['strip_unneeded']:
+                subprocess.run([strip, '--strip-unneeded', copy], check=True)
+            if file_digest(copy) != record['packaged_sha256']:
+                raise ValueError('Release strip transformation differs: ' + name)
+    return records
+
+
+def audit(apk, build, source, cache, inputs_cache, release=False):
     lock = json.loads((ROOT / 'android/publication/termux-sources.json').read_text())
     recipe_files = verify_recipe_files(inputs_cache, lock)
     project_files = verify_project_inputs(source, build)
     index, packages = package_index(ROOT, cache, lock)
-    rows = native_rows(apk, build / 'android/build/native/bin', index, build)
+    packaging = release_packaging(build) if release else []
+    rows = native_rows(apk, build / ('android/build/release-native/bin' if release else 'android/build/native/bin'), index, build)
+    if release and {row['apk_member'].split('/')[-1] for row in rows} != {item['name'] for item in packaging}:
+        raise ValueError('Release native packaging inventory mismatch')
     used = sorted({(p['package'], p['version']) for row in rows for p in row.get('package_matches', [])})
     external = sum(row['origin'] == 'pinned-deb-byte-identical' for row in rows)
     return {'format': 1, 'label': 'observed-offline-origin-audit', 'date': date.today().isoformat(),
@@ -187,6 +216,7 @@ def audit(apk, build, source, cache, inputs_cache):
         'project_input_files_verified': project_files,
         'source_manifest_sha256': file_digest(source / 'SOURCE-MANIFEST.json'),
         'rows': rows, 'input_packages': packages,
+        'release_packaging_verified': packaging,
         'complete_source_correspondence': False, 'binary_release_ready': False,
         'limits': ['Byte-identical package origin is narrower than proof of its binary-producing recipe commit.',
                    'Local output/input matches do not by themselves attest a historical source-to-binary build.',
@@ -203,10 +233,11 @@ def main():
     parser.add_argument('--inputs-cache', type=Path, default=ROOT / '.tools/publication-sources')
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--require-complete-source', action='store_true')
+    parser.add_argument('--release', action='store_true', help='Verify release strip transformations against exact original native outputs')
     args = parser.parse_args()
     if args.output.exists():
         raise ValueError('Audit output exists; choose a new path')
-    report = audit(args.apk, args.build_tree, args.source_tree, args.cache, args.inputs_cache)
+    report = audit(args.apk, args.build_tree, args.source_tree, args.cache, args.inputs_cache, args.release)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2) + '\n')
     print('APK_ORIGIN_AUDIT_RESULT failures=0 native=' + str(report['native_members']) +

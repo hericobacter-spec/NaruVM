@@ -40,7 +40,7 @@ def main():
     steps = [([sys.executable, 'tools/check_publication.py', '--staged'], 'source-and-git-index'),
              ([sys.executable, 'tools/check_android_portability.py'], 'host-policy'),
              *[([sys.executable, 'android/tests/' + name + '.py'], name) for name in
-               ['test_publication', 'test_publication_sources', 'test_source_correspondence', 'test_source_archive']],
+               ['test_publication', 'test_publication_sources', 'test_source_correspondence', 'test_source_archive', 'test_release_signing']],
              (['git', 'fsck', '--strict', '--no-reflogs'], 'git-object-integrity')]
     passed = all([run(command, name) for command, name in steps])
     with tempfile.TemporaryDirectory(prefix='henge-final-source-') as temporary:

@@ -27,6 +27,9 @@ def main():
                RUSTUP_TOOLCHAIN=LOCK['rust'], CARGO_INCREMENTAL='0',
                CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=str(linker),
                RUSTFLAGS='-C link-arg=-Wl,-z,max-page-size=16384')
+    env['CARGO_ENCODED_RUSTFLAGS'] = '\x1f'.join(['-C', 'link-arg=-Wl,-z,max-page-size=16384',
+        '--remap-path-prefix=' + str(Path.home()) + '=/src/build'])
+    env.pop('RUSTFLAGS', None)
     run(ROOT/'.tools/cargo/bin/cargo','build','--locked','--release','--manifest-path',ROOT/'android/gpu/Cargo.toml',
         '--target','aarch64-linux-android',env=env)
     destination = ROOT/'android/build/native/bin'

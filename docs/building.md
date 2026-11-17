@@ -240,3 +240,11 @@ adb -s DEVICE_SERIAL shell am instrument -w dev.henge.research.inputtests/dev.he
 It injects an explicitly authored working state to check visible Stop controls
 outside scrolling/disclosure regions, navigation and cancellation dispatch. It
 does not verify an actual foreground download, restore or automatic first boot.
+
+## Explicit release signing and recipient modifications
+
+The default commands above build a research APK. For the exact published
+v0.1.1-preview configuration, private signing inputs, path remapping and
+recipient re-signing instructions, follow [the APK guide](apk-release.md).
+The published profile is `--gpu --reims --software --panvk-userptr-probe`.
+The publisher key is neither required to rebuild nor included in source assets.

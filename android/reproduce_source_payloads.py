@@ -41,6 +41,7 @@ def main():
     parser.add_argument('--sdk', type=Path, default=ROOT / '.tools/android-sdk')
     parser.add_argument('--jdk', type=Path, default=ROOT / '.tools/jdk-21/Contents/Home')
     parser.add_argument('--libcxx', action='store_true')
+    parser.add_argument('--release', action='store_true', help='Reproduce the explicit 0.1.1-preview release manifest transformation')
     parser.add_argument('--inputs-cache', type=Path, default=ROOT / '.tools/publication-sources')
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
@@ -62,8 +63,12 @@ def main():
         if (args.source_tree / 'android/res').is_dir():
             run(bt / 'aapt2', 'compile', '--dir', args.source_tree / 'android/res', '-o', work / 'resources.zip')
             resource_args = [work / 'resources.zip']
+        manifest_source = args.source_tree / 'android/AndroidManifest.xml'
+        if args.release:
+            from release_signing import manifest as release_manifest
+            manifest_source = release_manifest(manifest_source, work / 'release/AndroidManifest.xml', '0.1.1-preview', 2)
         run(bt / 'aapt2', 'link', '-I', android, '--manifest',
-            args.source_tree / 'android/AndroidManifest.xml', '--java', work / 'generated', '-o', work / 'manifest.apk', *resource_args)
+            manifest_source, '--java', work / 'generated', '-o', work / 'manifest.apk', *resource_args)
         java = sorted((args.source_tree / 'android/src').rglob('*.java')) + sorted((work / 'generated').rglob('*.java'))
         run(args.jdk.resolve() / 'bin/javac', '--release', '8', '-encoding', 'UTF-8',
             '-classpath', android, '-d', classes, *java)
