@@ -162,6 +162,7 @@ public final class VmService extends Service {
         ProcessBuilder builder=new ProcessBuilder(command).redirectErrorStream(true).directory(getFilesDir());
         builder.environment().put("LD_LIBRARY_PATH",getApplicationInfo().nativeLibraryDir);
         if ("software".equals(gpu)) builder.environment().put("HENGE_LVP_POOLED","1");
+        GpuEnvironment.configure(builder,getApplicationInfo().nativeLibraryDir,getFilesDir(),"software".equals(gpu));
         if ("panvk-userptr".equals(gpu)) builder.environment().put("REIMS_VGPU_FRAME_READBACK","buffer");
         Process child;
         synchronized (s) {
@@ -268,6 +269,7 @@ public final class VmService extends Service {
                 s.note("GPU_DIAGNOSTICS pipeline=1 shader_files=1 shader_limit_mb=64\n");
             }
             builder.environment().put("LD_LIBRARY_PATH", nativeDir);
+            GpuEnvironment.configure(builder,nativeDir,getFilesDir(),!s.fixture && "software".equals(backend));
             Process process;
             synchronized (s) {
                 if (s.stopRequested) throw new IOException(getString(R.string.ui_session_cancelled));

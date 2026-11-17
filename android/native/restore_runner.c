@@ -455,7 +455,7 @@ int lab_boot_reims(const char *rom, const char *dir, unsigned ram_mb, unsigned s
     setenv("HENGE_REIMS_LIBRARY", library, 1);
     setenv("HENGE_REIMS_FRAME", frame, 1);
     setenv("REIMS_VGPU_SHADER_CACHE_DIR", cache, 1);
-    setenv("MESA_SHADER_CACHE_DIR", cache, 1);
+    if (!getenv("MESA_SHADER_CACHE_DIR")) setenv("MESA_SHADER_CACHE_DIR", cache, 1);
     setenv("REIMS_VGPU_VULKAN_LOADER", loader, 1);
     return boot_disk(rom, dir, ram_mb, seconds, 1, ncpus);
 }

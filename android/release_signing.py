@@ -75,10 +75,10 @@ def source_information(version_name):
     return f'''NaruVM {version_name} - experimental Android APK
 
 Source, dependency sources, build configuration, notices and checksums:
-https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.1-preview
+https://github.com/hericobacter-spec/NaruVM/releases/tag/v{version_name}
 
-Download BOTH NaruVM-v0.1.1-preview-source.tar.gz and
-NaruVM-v0.1.1-preview-dependency-sources.tar.gz from that release.
+Download BOTH NaruVM-v{version_name}-source.tar.gz and
+NaruVM-v{version_name}-dependency-sources.tar.gz from that release.
 The release record identifies the exact APK, source revision and configuration.
 Original Henge and component grants remain; the combined distribution selects
 GPLv3 and applicable later-version LGPLv3 options. No warranty is provided.

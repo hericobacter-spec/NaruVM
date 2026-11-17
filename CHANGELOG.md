@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.1.2-preview — Graphics preflight repair — 2026-11-17
+
+- Reject Vulkan devices without required shared host-memory import before adoption,
+  preserving explicit backend selection and the actual pixel capability gate.
+- Prevent software shader JIT SIGILL on the observed inconsistent emulator CPU:
+  a child-only capability shim removes derived SVE/SME flags whose base is absent.
+- Use a bounded app-private Mesa shader cache instead of an inaccessible Termux path.
+- On one Android35 ARM64 emulator: five Auto passes, 150 readback stress frames and
+  five CPU/MMU/shutdown suites passed; no crash was logged. A small repeated graphics
+  probe measured 143.7ms without cache versus 70.0ms with warm cache (five each).
+  This is not macOS performance, physical-device stability or a new guest test.
+- Preserve v0.1/v0.1.1-preview and their assets; same release signer, version code 3.
+  See [reproduction and limits](docs/graphics-verification.md).
+
 ## v0.1.1-preview — Experimental APK — 2026-11-17
 
 - Added explicit release signing, non-debuggable manifest, compiler-path remapping

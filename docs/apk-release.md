@@ -4,16 +4,17 @@
 
 ## Download and verify
 
-The **v0.1.1-preview** prerelease provides the first installable `arm64-v8a` APK.
-The original v0.1 tag and its source assets are preserved.
+The **v0.1.2-preview** prerelease provides a signed `arm64-v8a` APK with the
+[graphics preflight repairs](graphics-verification.md). The original v0.1 and
+v0.1.1-preview tags and assets are preserved.
 
-[Open the release and its exact files](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.1-preview):
+[Open the release and its exact files](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.2-preview):
 
-- `NaruVM-v0.1.1-preview-arm64-v8a.apk`
-- `NaruVM-v0.1.1-preview-source.tar.gz` — project source, patches and build/install tools.
-- `NaruVM-v0.1.1-preview-dependency-sources.tar.gz` — upstream source archives,
+- `NaruVM-v0.1.2-preview-arm64-v8a.apk`
+- `NaruVM-v0.1.2-preview-source.tar.gz` — project source, patches and build/install tools.
+- `NaruVM-v0.1.2-preview-dependency-sources.tar.gz` — upstream source archives,
   full pinned Termux recipes/patches, NDK runtime sources and selected Cargo/Mesa/Rust sources.
-- `NaruVM-v0.1.1-preview-release.json` — exact artifact hashes, certificate, configuration and observed checks.
+- `NaruVM-v0.1.2-preview-release.json` — exact artifact hashes, certificate, configuration and observed checks.
 - `SHA256SUMS.txt`
 
 Keep downloaded files together and run `shasum -a 256 -c SHA256SUMS.txt` on macOS,
@@ -24,7 +25,7 @@ dependency-source archive listed above.
 With Android SDK build-tools 36.0.0:
 
 ```sh
-apksigner verify --verbose --print-certs NaruVM-v0.1.1-preview-arm64-v8a.apk
+apksigner verify --verbose --print-certs NaruVM-v0.1.2-preview-arm64-v8a.apk
 ```
 
 Expected certificate SHA-256:
@@ -41,7 +42,7 @@ Open the APK on Android and permit installation from the app that opened it,
 or use USB debugging with Android platform-tools:
 
 ```sh
-adb install NaruVM-v0.1.1-preview-arm64-v8a.apk
+adb install NaruVM-v0.1.2-preview-arm64-v8a.apk
 ```
 
 Open **NaruVM**. Start with **2 vCPU / 2048 MiB**, review the detected backend,
@@ -62,8 +63,10 @@ Future APKs signed with this same release key and a higher version code can use
 See the matching [release record](../android/publication/apk-release.json) and
 the downloadable release JSON for dated, artifact-specific results. The test
 scope is host source checks plus a disposable Android 35 ARM64 emulator:
-installation, first launch, offline legal/source viewer, native disk-free probe,
-recipient-modified LGPL library and independent-key installation. The release
+installation, first launch, repeated authored graphics/surface/readback checks,
+and CPU/MMU/shutdown suites. The earlier v0.1.1-preview recipient-modified LGPL
+library and independent-key installation remain separately recorded historical
+evidence; they were not repeated on this candidate. The release
 manifest disables Android debugging and retains `allowBackup=false`.
 
 No physical tablet was available for this candidate. Earlier TB373FU guest runs
@@ -71,7 +74,9 @@ are historical evidence, not a retest of this signed APK. No macOS guest was
 installed or booted during release acceptance. GPU compatibility, sustained use,
 physical keyboard/mouse input, 16K runtime pages, the complete new installer and
 macOS 26/27 are unverified. Slow interaction and past GPU faults/reboots remain
-open; this is an experimental preview, not a stability or speed improvement.
+open. The bounded emulator graphics fix and small cache-probe timing improvement
+are documented in [graphics verification](graphics-verification.md); neither
+establishes macOS performance or practical stability.
 
 ## Source provision versus rebuild attestations
 
@@ -82,8 +87,8 @@ For example, after extracting the project archive:
 
 ```sh
 mkdir -p .tools/publication-sources
-tar -xzf /path/to/NaruVM-v0.1.1-preview-dependency-sources.tar.gz -C .tools/publication-sources
-python3 android/package_publication_sources.py --verify /path/to/NaruVM-v0.1.1-preview-dependency-sources.tar.gz --ndk-source --graphics
+tar -xzf /path/to/NaruVM-v0.1.2-preview-dependency-sources.tar.gz -C .tools/publication-sources
+python3 android/package_publication_sources.py --verify /path/to/NaruVM-v0.1.2-preview-dependency-sources.tar.gz --ndk-source --graphics
 ```
 
 The verifier reports 94 source inputs and four original Git snapshots. It checks
@@ -121,7 +126,7 @@ password text file; both must have owner-only permissions (`chmod 600`).
 Keep them outside the source/release assets. Then build the recorded profile:
 
 ```sh
-python3 android/build.py --gpu --reims --software --panvk-userptr-probe --release --version-name 0.1.1-preview --version-code 2 --keystore /private/path/recipient.p12 --ks-pass-file /private/path/password.txt --key-alias recipient --output /private/path/NaruVM-recipient.apk
+python3 android/build.py --gpu --reims --software --panvk-userptr-probe --release --version-name 0.1.2-preview --version-code 3 --keystore /private/path/recipient.p12 --ks-pass-file /private/path/password.txt --key-alias recipient --output /private/path/NaruVM-recipient.apk
 ```
 
 The default research build still uses its separate debug key. Release builds
@@ -149,7 +154,7 @@ For an existing APK, recombine only that rebuilt native payload and sign with
 your own key (the file is an executable ELF with an Android packaging `.so` name):
 
 ```sh
-python3 android/repackage_apk.py --apk /path/to/NaruVM-v0.1.1-preview-arm64-v8a.apk --replace-native libhenge_lab.so=android/build/native/bin/libhenge_lab.so --release --keystore /private/path/recipient.p12 --ks-pass-file /private/path/password.txt --key-alias recipient --output /private/path/NaruVM-modified.apk
+python3 android/repackage_apk.py --apk /path/to/NaruVM-v0.1.2-preview-arm64-v8a.apk --replace-native libhenge_lab.so=android/build/native/bin/libhenge_lab.so --release --keystore /private/path/recipient.p12 --ks-pass-file /private/path/password.txt --key-alias recipient --output /private/path/NaruVM-modified.apk
 adb install /private/path/NaruVM-modified.apk
 ```
 

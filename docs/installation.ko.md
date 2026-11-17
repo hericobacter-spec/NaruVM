@@ -8,7 +8,7 @@
 
 ## 1. 현재 배포 형태부터 확인하기
 
-[v0.1.1-preview 릴리스](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.1-preview)에서
+[v0.1.2-preview 릴리스](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.2-preview)에서
 서명한 ARM64 APK와 두 소스 묶음을 제공합니다. 빌드 없이 설치하려면
 [APK 확인·설치 안내](apk-release.ko.md)를 따른 뒤 아래 앱·자원 설정으로 진행하세요.
 기존 v0.1은 소스 전용입니다. 아래에는 직접 빌드하는 절차도 설명합니다.

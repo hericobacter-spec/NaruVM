@@ -504,10 +504,51 @@ index 0000000..4874cd6
 +    false
 +}
 diff --git a/crates/reims-vgpu-vulkan/src/platform.rs b/crates/reims-vgpu-vulkan/src/platform.rs
-index 3e76571..f25a024 100644
+index 3e76571..16f0771 100644
 --- a/crates/reims-vgpu-vulkan/src/platform.rs
 +++ b/crates/reims-vgpu-vulkan/src/platform.rs
-@@ -295,6 +295,8 @@ fn announced_each(every_dies: bool) -> std::collections::BTreeSet<rt::Degradatio
+@@ -160,9 +160,16 @@ impl VulkanPlatform {
+     /// refusal dies here, naming it ([`made_devices`]).
+     pub fn system_default_device() -> Option<VulkanDevice> {
+         made_devices("MTLCreateSystemDefaultDevice()", || {
+-            rt::Device::system_default_with(device_options()).map(|d| vec![d])
++            // Android guests require the caller's actual RAM pages. Consider devices
++            // in runtime preference order and reject an incompatible one before adopt
++            // creates pipelines or guest buffers. A copied buffer breaks that contract.
++            #[cfg(target_os = "android")]
++            { rt::Device::all_with(device_options()) }
++            #[cfg(not(target_os = "android"))]
++            { rt::Device::system_default_with(device_options()).map(|d| vec![d]) }
+         })
+-        .pop()
++        .into_iter()
++        .next()
+         .map(device::adopt)
+     }
+ }
+@@ -181,10 +188,19 @@ fn made_devices(
+     sel: &'static str,
+     make: impl FnOnce() -> Result<Vec<rt::Device>, rt::Error>,
+ ) -> Vec<rt::Device> {
+-    get(sel, || match make() {
++    let made: Vec<rt::Device> = get(sel, || match make() {
+         Err(rt::Error::NoDevice | rt::Error::LoaderNotFound(_)) => Ok(Vec::new()),
+         made => made,
+-    })
++    });
++    #[cfg(target_os = "android")]
++    let made = made.into_iter().filter(|device| {
++        let usable = device.enables_extension(c"VK_EXT_external_memory_host");
++        if !usable {
++            log::warn!("GPU_SHARED_MEMORY eligible=0 reason=VK_EXT_external_memory_host_missing");
++        }
++        usable
++    }).collect();
++    made
+ }
+ 
+ /// The creator [`Platform::open_device`] stands for, which its deaths name.
+@@ -295,6 +311,8 @@ fn announced_each(every_dies: bool) -> std::collections::BTreeSet<rt::Degradatio
  pub(crate) fn device_options() -> &'static rt::DeviceOptions {
      static OPTIONS: LazyLock<rt::DeviceOptions> = LazyLock::new(|| {
          let mut options = rt::DeviceOptions::default();
@@ -516,7 +557,7 @@ index 3e76571..f25a024 100644
          crate::os::add_window_extensions(&mut options);
          options.gpu_times_from_host = true;
          options.policy = exact_policy(std::env::var("REIMS_VGPU_EXACT").ok().as_deref());
-@@ -314,9 +316,15 @@ pub(crate) fn device_options() -> &'static rt::DeviceOptions {
+@@ -314,9 +332,15 @@ pub(crate) fn device_options() -> &'static rt::DeviceOptions {
                  options.announce_each = rt::Degradation::ALL.iter().copied().collect();
              }
          }
@@ -535,7 +576,7 @@ index 3e76571..f25a024 100644
          }
          options.shader_cache.capacity = SHADER_CACHE_CAPACITY;
          options
-@@ -419,9 +427,13 @@ const SHADER_CACHE: &str = ".cache/reims-vgpu-vulkan";
+@@ -419,9 +443,13 @@ const SHADER_CACHE: &str = ".cache/reims-vgpu-vulkan";
  /// hold the pipeline too. An entry this cache drops past its capacity is compiled again at the
  /// next boot that draws with it, unless the driver's cache still holds it: a freeze of 13 to 26 s
  /// there.
@@ -919,10 +960,10 @@ index b674fc9..5e3dadb 100644
 +Native interlock remains preferred. The extra passes can cost substantial GPU time.
 diff --git a/docs/android.md b/docs/android.md
 new file mode 100644
-index 0000000..127e8a9
+index 0000000..a721de7
 --- /dev/null
 +++ b/docs/android.md
-@@ -0,0 +1,55 @@
+@@ -0,0 +1,61 @@
 +# Android embedding research port
 +
 +The Android target selects Vulkan (`--no-default-features --features vulkan`). It
@@ -978,3 +1019,9 @@ index 0000000..127e8a9
 +`surface_spec`'s client ranges: one host address per guest page must carry16KiB,
 +not4KiB. Android now uses the mapper's guest page size for those range lengths as
 +well; the Linux surface backend retains its host-page checks and exact aliases.
++
++Android device admission requires VK_EXT_external_memory_host before adopting the
++GPU. The guest and GPU share actual RAM pages; a SwiftShader device without this
++extension is reported unavailable instead of aborting later in EFI MMIO. Runtime
++preference order is preserved among usable devices. This is a prerequisite, not
++a guarantee that every import or shader will succeed.

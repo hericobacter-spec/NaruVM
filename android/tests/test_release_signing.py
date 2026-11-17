@@ -61,6 +61,13 @@ class ReleaseSigningTests(unittest.TestCase):
         self.assertIn('your own key', text)
         self.assertNotIn('pass:', text)
 
+    def test_source_information_follows_the_selected_version(self):
+        text = release.source_information('0.1.2-preview')
+        self.assertIn('/tag/v0.1.2-preview', text)
+        self.assertIn('NaruVM-v0.1.2-preview-source.tar.gz', text)
+        self.assertIn('NaruVM-v0.1.2-preview-dependency-sources.tar.gz', text)
+        self.assertNotIn('v0.1.1-preview', text)
+
     def test_pkcs12_password_file_is_consumed_once(self):
         args = self.args('--keystore', 'private.p12', '--ks-pass-file', 'private.txt', '--key-alias', 'fixture')
         options = release.signing_arguments(args)

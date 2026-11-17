@@ -2,19 +2,6 @@
   "format": 1,
   "label": "observed-artifact-specific-checks",
   "date": "2026-11-17",
-  "version": "0.1.1-preview",
-  "version_code": 2,
-  "source_reference": "v0.1.1-preview",
-  "apk": {
-    "file": "NaruVM-v0.1.1-preview-arm64-v8a.apk",
-    "bytes": 85774560,
-    "sha256": "29d85d3bd2c33ff3dc706855f6be8a00d0fa66570ef9d2d0672c868e78592811",
-    "abi": "arm64-v8a",
-    "package": "dev.henge.research",
-    "debuggable": false,
-    "allow_backup": false,
-    "certificate_sha256": "d3f0ccbbc25d555d35a2867c2a0848fe7bfde9c0b8cefdd3e0ea3c71b63908be"
-  },
   "build": {
     "profile": [
       "--gpu",
@@ -27,28 +14,6 @@
     "build_tools": "36.0.0",
     "ndk": "30.0.16248370",
     "turnip_bundled": false
-  },
-  "source_assets": [
-    "NaruVM-v0.1.1-preview-source.tar.gz",
-    "NaruVM-v0.1.1-preview-dependency-sources.tar.gz"
-  ],
-  "observed": {
-    "signature_v3": true,
-    "zip_alignment_16k": true,
-    "private_mac_home_paths_in_apk": 0,
-    "native_members_mapped": 53,
-    "unchanged_pinned_package_members": 27,
-    "local_build_outputs": 26,
-    "release_strip_copy_transformations_repeated": 53,
-    "dependency_source_inputs": 94,
-    "original_git_source_snapshots": 4,
-    "emulator": "Android35 ARM64 dedicated disposable AVD",
-    "install_and_first_launch": true,
-    "offline_source_and_legal_viewer": true,
-    "recipient_modified_lgpl_behavior_executed": true,
-    "recipient_independent_key_install_and_launch": true,
-    "different_key_in_place_update_rejected": true,
-    "candidate4_and_final_apk_member_bytes_identical": true
   },
   "provenance_limits": {
     "historical_external_producer_commit_attested": false,
@@ -64,6 +29,147 @@
     "macOS26/27",
     "other device/GPU execution"
   ],
+  "source_boundary": "Project source plus version-matched dependency archives, complete recipes/patches and runtime build inputs are supplied together; no historical binary producer attestation or byte-identical dependency source rebuild is claimed.",
+  "version": "0.1.2-preview",
+  "version_code": 3,
+  "source_reference": "v0.1.2-preview",
+  "apk": {
+    "file": "NaruVM-v0.1.2-preview-arm64-v8a.apk",
+    "bytes": 85770545,
+    "sha256": "af5a2dd38fd4d16c637eae422b43d62feaa05348ee225189186ecc13fc73b17e",
+    "abi": "arm64-v8a",
+    "package": "dev.henge.research",
+    "debuggable": false,
+    "allow_backup": false,
+    "certificate_sha256": "d3f0ccbbc25d555d35a2867c2a0848fe7bfde9c0b8cefdd3e0ea3c71b63908be"
+  },
+  "source_assets": [
+    "NaruVM-v0.1.2-preview-source.tar.gz",
+    "NaruVM-v0.1.2-preview-dependency-sources.tar.gz"
+  ],
+  "observed": {
+    "signature_v3": true,
+    "zip_alignment_16k": true,
+    "private_mac_home_paths_in_apk": 0,
+    "dependency_source_inputs": 94,
+    "original_git_source_snapshots": 4,
+    "emulator": "Android35 ARM64 dedicated disposable AVD",
+    "install_and_first_launch": true,
+    "native_members_mapped": 54,
+    "unchanged_pinned_package_members": 27,
+    "local_build_outputs": 27,
+    "release_strip_copy_transformations_repeated": 54,
+    "java_resources_manifest_recompiled_exact": true,
+    "ndk_libcxx_packaging_reproduced": true,
+    "auto_preflight_passes": 5,
+    "auto_selected_backend": "software",
+    "explicit_system_vulkan_clean_rejections": 1,
+    "authored_efi_pixels_per_probe": 4096,
+    "shared_surface_and_readback_runs": 5,
+    "readback_frames_per_run": 30,
+    "readback_sizes": [
+      32,
+      64,
+      96
+    ],
+    "readback_padding_and_initial_zero_checked": true,
+    "native_cpu_mmu_shutdown_suites_passed": 5,
+    "android_crash_buffer_bytes": 0,
+    "guest": "none",
+    "disk": "none"
+  },
+  "prior_recipient_modification_evidence": {
+    "source_reference": "v0.1.1-preview",
+    "record": "apk-release-v0.1.1.json",
+    "scope": "Prior libplist source modification and independent-key installation; not repeated on this candidate."
+  },
+  "graphics_fixes": {
+    "system_vulkan": "Reject missing VK_EXT_external_memory_host before device adoption; no guest-RAM copy fallback.",
+    "software_cpu_features": "Child-only getauxval shim removes derived SVE/SME bits when their base feature is absent; never adds capabilities.",
+    "shader_cache": "App-private Mesa disk shader cache, bounded to 256M; shared configuration for preflight and guest software workers."
+  },
+  "cache_probe_benchmark": {
+    "label": "observed-one-emulator-authored-probe",
+    "apk_sha256": "af5a2dd38fd4d16c637eae422b43d62feaa05348ee225189186ecc13fc73b17e",
+    "rows": [
+      {
+        "index": 0,
+        "cache": true,
+        "milliseconds": 156.78662504069507,
+        "pixels": 4096
+      },
+      {
+        "index": 1,
+        "cache": false,
+        "milliseconds": 145.9661249537021,
+        "pixels": 4096
+      },
+      {
+        "index": 2,
+        "cache": true,
+        "milliseconds": 72.62341701425612,
+        "pixels": 4096
+      },
+      {
+        "index": 3,
+        "cache": true,
+        "milliseconds": 66.10304198693484,
+        "pixels": 4096
+      },
+      {
+        "index": 4,
+        "cache": false,
+        "milliseconds": 140.70087496656924,
+        "pixels": 4096
+      },
+      {
+        "index": 5,
+        "cache": false,
+        "milliseconds": 145.7455410854891,
+        "pixels": 4096
+      },
+      {
+        "index": 6,
+        "cache": true,
+        "milliseconds": 69.98545792885125,
+        "pixels": 4096
+      },
+      {
+        "index": 7,
+        "cache": true,
+        "milliseconds": 73.90691700857133,
+        "pixels": 4096
+      },
+      {
+        "index": 8,
+        "cache": false,
+        "milliseconds": 143.68858293164521,
+        "pixels": 4096
+      },
+      {
+        "index": 9,
+        "cache": false,
+        "milliseconds": 141.67949999682605,
+        "pixels": 4096
+      },
+      {
+        "index": 10,
+        "cache": true,
+        "milliseconds": 59.31908404454589,
+        "pixels": 4096
+      }
+    ],
+    "medians_ms": {
+      "False": 143.68858293164521,
+      "True": 69.98545792885125
+    },
+    "warm_cache_reduction_percent": 51.29365430366561,
+    "limits": [
+      "one ARM64 Android35 SwiftShader emulator; no macOS guest",
+      "fresh process per probe, includes ADB overhead",
+      "one warmup excluded; five interleaved samples each; warm disk shader cache only"
+    ]
+  },
   "native_packaging": [
     {
       "name": "libandroid-shmem.so",
@@ -121,8 +227,8 @@
     },
     {
       "name": "libhenge_lab.so",
-      "source_sha256": "d6bad51771b2b569ee8e207f1a573e4ea4c84e8b84b911c5c3cdafb1b09e0058",
-      "packaged_sha256": "38c57001081419d87b19ca75b0f5ccb27f2661f999ccd7f7f913f702dd9d5c25",
+      "source_sha256": "358a731e9531bdf4bad065cb9dd4aa09d79f740a21e68da80eec9803fd187230",
+      "packaged_sha256": "5e6408efb53041805723e6c238128d4e002edf85747e476890da9e4d219b2506",
       "strip_unneeded": true
     },
     {
@@ -342,6 +448,12 @@
       "strip_unneeded": true
     },
     {
+      "name": "libnaruvm_cpu_caps.so",
+      "source_sha256": "6994635f22a818936c355ec156684883229ea0a953458870f0099900fd97dd5a",
+      "packaged_sha256": "df5b169b951b0964eab88c037707753c973a418aeb01f7b2c58ac5d2a00e1c26",
+      "strip_unneeded": true
+    },
+    {
       "name": "libnaruvm_rom.so",
       "source_sha256": "fb710d4317bf0feba32dd8d225a82421f296ed6184973b96b3378ec8600a97df",
       "packaged_sha256": "42739d182a38b035d292866f2a20dd45e375e96ded4a892a6e475ce250ecbe9e",
@@ -349,8 +461,8 @@
     },
     {
       "name": "libreims_vgpu_c.so",
-      "source_sha256": "1defa9863dbcb679cc054ecdc480b40b214ef2517e718f5e6a655a80e5ad2126",
-      "packaged_sha256": "9d35fb6c26c08c20fde615e8b341bde09057d69963d1d956a6732ca221ebd57c",
+      "source_sha256": "07377e0234ce7b3fa03cce29e0cc3dc7cf19f32f2278298f348a8adc12e2ea4d",
+      "packaged_sha256": "eed2c1341c1dba2aa91f2647f166790ad9d018a984bd4b5b1397486aa3dba939",
       "strip_unneeded": true
     },
     {
@@ -383,6 +495,5 @@
       "packaged_sha256": "3e6cd0b91cf660cba7b93bca62b5539cf2ddd78c1da91c3a07b6d82c1bd5f50f",
       "strip_unneeded": true
     }
-  ],
-  "source_boundary": "Project source plus version-matched dependency archives, complete recipes/patches and runtime build inputs are supplied together; no historical binary producer attestation or byte-identical dependency source rebuild is claimed."
+  ]
 }

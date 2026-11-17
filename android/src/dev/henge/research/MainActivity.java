@@ -467,7 +467,10 @@ public final class MainActivity extends Activity implements VmService.Observer, 
         synchronized (report) { report.setLength(0); }
         try { liveReport = new FileOutputStream(new File(getFilesDir(), "live-report.txt")); }
         catch (IOException ignored) { liveReport = null; }
-        append("NaruVM 0.1 / upstream e98920c\n" + new Date() + "\n" + Build.FINGERPRINT + "\n\n");
+        String version="unknown";
+        try { version=getPackageManager().getPackageInfo(getPackageName(),0).versionName; }
+        catch (android.content.pm.PackageManager.NameNotFoundException ignored) { }
+        append("NaruVM " + version + " / upstream e98920c\n" + new Date() + "\n" + Build.FINGERPRINT + "\n\n");
     }
     private int run(String name, String... args) throws Exception {
         return runWithEnvironment(name,Collections.emptyMap(),args);
@@ -481,6 +484,7 @@ public final class MainActivity extends Activity implements VmService.Observer, 
         // Unmodified compatibility libraries without SONAME need their original basenames.
         builder.environment().put("LD_LIBRARY_PATH", getApplicationInfo().nativeLibraryDir);
         builder.environment().putAll(environment);
+        GpuEnvironment.configure(builder,getApplicationInfo().nativeLibraryDir,getFilesDir(),GpuEnvironment.softwareArguments(args));
         if (getIntent().getBooleanExtra("restore_debug", false)) {
             builder.environment().put("HV_INSTALL_LOG", "1");
             builder.environment().put("HV_LIBUSB_LOG", "1");
@@ -666,7 +670,8 @@ public final class MainActivity extends Activity implements VmService.Observer, 
                 boolean software = getIntent().getBooleanExtra("reims_software", false);
                 ArrayList<String> arguments = new ArrayList<>();
                 arguments.add(library);
-                if (efi) arguments.add("--efi");
+                if (getIntent().getBooleanExtra("reims_readback_stress", false)) arguments.add("--readback-stress");
+                else if (efi) arguments.add("--efi");
                 if (getIntent().getBooleanExtra("reims_surface", false)) arguments.add("--surface");
                 if (software) arguments.add("--loader=" + getApplicationInfo().nativeLibraryDir + "/libhenge_lvp_loader.so");
                 else if (getIntent().getBooleanExtra("reims_panvk_userptr", false)) arguments.add("--loader=" + getApplicationInfo().nativeLibraryDir + "/libhenge_panvk_userptr_loader.so");

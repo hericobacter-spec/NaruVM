@@ -2,7 +2,7 @@
   "url": "https://github.com/steelbrain/reims-vgpu.git",
   "commit": "1fe0acb68b287db36f1e6c7b9f45383940b8a76f",
   "license": "GPL-2.0-or-later OR LGPL-3.0-or-later",
-  "patch_sha256": "f81a1919a3c7b713095c65fecdf89da7df6aa79c30ba85aa37e25459de35719e",
+  "patch_sha256": "132519c7401df083149fe5f091fb1cb25ca5e1d6f916edd37b91dd93139ccf34",
   "port_files": {
     "crates/reims-vgpu-c/src/ffi/catch.rs": "a89d8a6f282c0e43b0751e4b4ba4aaa723bb0b6e777c1c6fa20af5bcc3c6e630",
     "crates/reims-vgpu-c/src/frame.rs": "e129d202fafde7ed839ce91f5a94612caf2fe36dbd6c6fab3b1a63439c01c40d",
@@ -24,7 +24,7 @@
     "crates/reims-vgpu-vulkan/src/lib.rs": "711af97e31c5a5898c788fdec675cf5ba2c3ffe541d03c39becf78ff567cdfdd",
     "crates/reims-vgpu-vulkan/src/os.rs": "8ed006d226c09140a507d1376ffc0489d6d8f6e9ff8f01560624889bf60c854c",
     "crates/reims-vgpu-vulkan/src/os/android/wsi.rs": "e5f9bb0d48420cf7cd97d5589959cf48446671629473bb61871b14c0d4b6cd04",
-    "crates/reims-vgpu-vulkan/src/platform.rs": "26e8facf73460581fd900b4221af28af5b1582489a4881c24bd603d8ddd9f1a0",
+    "crates/reims-vgpu-vulkan/src/platform.rs": "5ad2912532044b803a19624ff6dc77352950297ccd19fbcc48c1199fc753b40e",
     "crates/reims-vgpu-vulkan/src/remap.rs": "6d656d554456b3c4555da76b8a9a2dfa243a5c7901bdfe6d4b81c63083d2a903",
     "crates/reims-vgpu-window/src/native.rs": "8ad4706c5459c2440f34662c23a52f76656ca05958a8f74d389bdbf700a95b91",
     "crates/reims-vgpu-window/src/native/android.rs": "13007ce803579000b7927a8aafc37e531b94002bc87a371e2e682cf6c38b619a",
@@ -36,6 +36,6 @@
     "crates/reims-vgpu/src/platform/vulkan.rs": "a2643614c0c92d8ab038005e678721e2d8b30a929cae125b6f155176a5e11fdc",
     "crates/reims-vgpu/src/window/vulkan.rs": "5af0116bcbc3d07a3b99a6a47a01598db25c9dc50ff866e610ea32bf7092f79c",
     "docs/accuracy-ledger.md": "565f0ce6bb1226bf2bc69dfbc02044659f11ad417c306c129f681529a94d2772",
-    "docs/android.md": "3d693fc1e893ce0281d6c932743f50eb2542947972011950eeb6a9d062f0f3ab"
+    "docs/android.md": "1feb6ba9285dffdea82f992ab83887fde4a66bb3cd04e8cee463cc9ca7e0c13f"
   }
 }

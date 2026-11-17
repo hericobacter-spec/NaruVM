@@ -28,13 +28,16 @@ def main():
                         ROOT / 'android/native/test_platform_compat.c', ROOT / 'android/native/platform_compat.c',
                         '-o', work / 'platform-test'], check=True)
         subprocess.run([work / 'platform-test'], check=True)
+        subprocess.run([cc, '-std=c11', '-Wall', '-Wextra', '-Werror',
+                        ROOT / 'android/native/test_cpu_caps.c', '-o', work / 'cpu-caps-test'], check=True)
+        subprocess.run([work / 'cpu-caps-test'], check=True)
         subprocess.run([cc, '-std=c11', '-D_GNU_SOURCE', '-Wall', '-Wextra', '-Werror',
                         ROOT / 'android/native/test_installed_guard.c', '-o', work / 'installed-guard'], check=True)
         subprocess.run([work / 'installed-guard'], check=True)
-        sources = [ROOT / 'android/src/dev/henge/research' / (name + '.java') for name in ['VmConfig', 'GpuConfig', 'MacInput', 'MacRelease', 'VerifiedDownload', 'ManagedMachine']]
-        sources += [ROOT / 'android/tests' / (name + '.java') for name in ['VmConfigTest', 'GpuConfigTest', 'MacInputTest', 'InstallerTest']]
+        sources = [ROOT / 'android/src/dev/henge/research' / (name + '.java') for name in ['VmConfig', 'GpuConfig', 'GpuEnvironment', 'MacInput', 'MacRelease', 'VerifiedDownload', 'ManagedMachine']]
+        sources += [ROOT / 'android/tests' / (name + '.java') for name in ['VmConfigTest', 'GpuConfigTest', 'GpuEnvironmentTest', 'MacInputTest', 'InstallerTest']]
         subprocess.run([javac, '--release', '8', '-encoding', 'UTF-8', '-d', work, *sources], check=True)
-        for test in ['VmConfigTest', 'GpuConfigTest', 'MacInputTest', 'InstallerTest']:
+        for test in ['VmConfigTest', 'GpuConfigTest', 'GpuEnvironmentTest', 'MacInputTest', 'InstallerTest']:
             subprocess.run([java, '-cp', work, 'dev.henge.research.' + test], check=True)
         subprocess.run([sys.executable, ROOT / 'android/tests/test_turnip_bundle.py'], check=True)
     print('PORTABILITY_HOST_RESULT failures=0 scope=policy-and-packaging device_tested=0')
