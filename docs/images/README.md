@@ -12,7 +12,8 @@ Guest UI language is Korean; the Android app also has an English interface.
 | [macos-safari.png](macos-safari.png) | Safari displaying example.com | Reliable networking or sustained guest stability |
 | [macos-vscode.png](macos-vscode.png) | VS Code with a small authored Python file, in Restricted Mode | A complete development environment or native-like performance |
 
-Only these three named PNGs are allowed by `PUBLIC_MEDIA` in
+The three named PNGs and the [labeled still-capture video](../videos/README.md)
+are allowed by `PUBLIC_MEDIA` in
 [the exporter](../../tools/export_android_source.py). Other captures, research
 logs, guest images, accounts and signing material remain outside publication.
 `SOURCE-MANIFEST.json` records each included file's bytes and SHA-256.

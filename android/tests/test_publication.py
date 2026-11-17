@@ -68,14 +68,21 @@ class PublicationBoundaryTest(unittest.TestCase):
 
     def test_unreviewed_captures_stay_out(self):
         with self.changed('docs/images/unreviewed.png', b'private capture fixture'), \
-             self.changed('android/artifacts/private-capture.png', b'private capture fixture'):
+             self.changed('android/artifacts/private-capture.png', b'private capture fixture'), \
+             self.changed('docs/videos/unreviewed.mp4', b'private recording fixture'):
             selected = collect(self.tree, [])
             self.assertNotIn('docs/images/unreviewed.png', selected)
             self.assertNotIn('android/artifacts/private-capture.png', selected)
+            self.assertNotIn('docs/videos/unreviewed.mp4', selected)
 
     def test_reviewed_capture_cannot_be_replaced_by_non_image(self):
         with self.changed('docs/images/macos-vscode.png', b'PK\x03\x04not an image'):
             with self.assertRaisesRegex(ValueError, 'screenshot is not a PNG'):
+                self.run_check()
+
+    def test_reviewed_video_cannot_be_replaced_by_non_mp4(self):
+        with self.changed('docs/videos/historical-captures.mp4', b'PK\x03\x04not a video'):
+            with self.assertRaisesRegex(ValueError, 'video is not a bounded ISO MP4'):
                 self.run_check()
 
     def test_credential_shaped_fixture_rejected(self):

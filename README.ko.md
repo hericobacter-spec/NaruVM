@@ -1,6 +1,6 @@
 # NaruVM
 
-[English](README.md) · [스크린샷](#스크린샷) · [설치 안내](docs/installation.ko.md) · [호환성](#현재-상태) · [자주 묻는 질문](#자주-묻는-질문)
+[English](README.md) · [영상](#영상) · [스크린샷](#스크린샷) · [설치 안내](docs/installation.ko.md) · [호환성](#현재-상태) · [자주 묻는 질문](#자주-묻는-질문)
 
 [![Android 소스 검사](https://github.com/hericobacter-spec/NaruVM/actions/workflows/android-source.yml/badge.svg?branch=main)](https://github.com/hericobacter-spec/NaruVM/actions/workflows/android-source.yml)
 
@@ -9,6 +9,17 @@
 Henge의 ARM64 JIT·소프트웨어 MMU·가상 장치를 Android NDK/Bionic 앱으로 옮긴 **독립 실험 포트**입니다. 그래픽은 Reims → metal2vulkan → Vulkan 경로를 사용합니다. 원본 Henge의 공식 Android 지원 제품은 아닙니다.
 
 현재 v0.1은 **소스 미리보기**로 공개했습니다. [릴리스](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1)에는 소스와 체크섬이 있으며 **설치용 APK는 없습니다**. APK·Apple ROM/IPSW·게스트 디스크·계정·서명키는 공개 구성에 포함하지 않습니다. APK 배포에는 별도의 대응 소스·라이선스 검증이 남아 있습니다.
+
+## 영상
+
+**[20초 MP4 보기 / 다운로드](https://raw.githubusercontent.com/hericobacter-spec/NaruVM/main/docs/videos/historical-captures.mp4)** · [장면 설명과 제작 자료](docs/videos/README.ko.md)
+
+[![초기 설정·Safari·VS Code의 기존 캡처 소개 영상 보기](docs/images/macos-vscode.png)](https://raw.githubusercontent.com/hericobacter-spec/NaruVM/main/docs/videos/historical-captures.mp4)
+
+아래 스크린샷 3장을 이어 붙인 무음 소개 영상이며 **실시간 실행 녹화가 아닙니다**.
+확인한 로컬 연구 폴더에서 실행 녹화 원본을 찾지 못했습니다. 조작 속도·연속 설치·
+장기 안정성을 보여 주는 자료는 아닙니다. 미리보기를 누르면 MP4가 열립니다.
+브라우저가 다운로드하면 저장된 파일을 영상 플레이어로 열어 주세요.
 
 ## 스크린샷
 

@@ -181,13 +181,13 @@
     },
     {
       "path": "README.ko.md",
-      "sha256": "61cf20b2a10b207366d5c956ec2af4f47eaab12277aad3536e0034154318a50b",
-      "bytes": 17156
+      "sha256": "d2d680b95af7dd8afa8732bb5148bdc16d3553a9b549a1d3bd3105ca8033b8e5",
+      "bytes": 18028
     },
     {
       "path": "README.md",
-      "sha256": "6f8733a1a07dd21598ff66990286fcb9f0666c5fa02a1264ff615e42ece54bff",
-      "bytes": 16820
+      "sha256": "5ed830fe7742d6e8c5cd7fec7c66b67be5fcfd28d2381fcb58dc39b0f9eb39ed",
+      "bytes": 17664
     },
     {
       "path": "SECURITY.md",
@@ -1051,8 +1051,8 @@
     },
     {
       "path": "android/tests/test_publication.py",
-      "sha256": "b36bf480d86f18e64be03faae9641bea0a644cf8b4a0fdd1b558e3043d9aea46",
-      "bytes": 7077
+      "sha256": "e0e1abebce2f1f87604c0fd3380b4e030f8fc4d76e9ce2b38253967ae65bdb3e",
+      "bytes": 7513
     },
     {
       "path": "android/tests/test_publication_sources.py",
@@ -1416,8 +1416,8 @@
     },
     {
       "path": "docs/images/README.md",
-      "sha256": "4b06c6e30a3abdf30557a86a5a9a4d0989d534e91fadf3b020962f1c0465983b",
-      "bytes": 1367
+      "sha256": "e748a6d77b88a04c7855aa6c6f6ac507b76125a2c54a9bb70ae3627a4b42deef",
+      "bytes": 1419
     },
     {
       "path": "docs/images/macos-safari.png",
@@ -1456,13 +1456,28 @@
     },
     {
       "path": "docs/publication.md",
-      "sha256": "a9776c757c87f992878c4aba315a51466a70b940f842c8d59ab1befecf687c5e",
-      "bytes": 14991
+      "sha256": "53b3300b5b0e48eca931c404429cd9bd73ca8656d3e4e20ef554a2c5b351e970",
+      "bytes": 15070
     },
     {
       "path": "docs/source-correspondence.md",
       "sha256": "cd12efab610ce3262b708c283853de6f9e8639ca2769781b8a8674483a9bb882",
       "bytes": 5492
+    },
+    {
+      "path": "docs/videos/README.ko.md",
+      "sha256": "e5f3441386b2623bc394242ef94f03f84d48d3e7be66af1f0b3b270acded5d01",
+      "bytes": 2882
+    },
+    {
+      "path": "docs/videos/README.md",
+      "sha256": "fcf165c1f75438ba19d5da9017da6602510d97a5d265db418bc990eedfd4d94d",
+      "bytes": 2739
+    },
+    {
+      "path": "docs/videos/historical-captures.mp4",
+      "sha256": "c24bc33fdd461ede8e8931e30e4af2fbcf6d8431da835952ed6cbf36c74bd7c4",
+      "bytes": 299732
     },
     {
       "path": "host/audio_mac.c",
@@ -5641,8 +5656,8 @@
     },
     {
       "path": "tools/export_android_source.py",
-      "sha256": "38155deaec73e10b2749db6d66501cfd6a9916dbd37a8a2bf21ea1e42a222fe1",
-      "bytes": 10009
+      "sha256": "7fe3c2e5d7c0bdcc156771e3ff79aa2dcc026a9a1316568e0242d3909875f4d5",
+      "bytes": 10402
     },
     {
       "path": "tools/prepare_github.py",

@@ -56,8 +56,9 @@ staged diff and attribution before making any public action. In exported Git
 checkouts, the checker also rejects tracked files outside the inspected selection.
 Automated screening
 has finite patterns; it cannot prove the absence of every secret, personal detail
-or copyright issue. Only the three individually reviewed PNGs in `PUBLIC_MEDIA` are included as
-documentation media; see [capture context](images/README.md). Private research
+or copyright issue. Only three individually reviewed PNGs and one explicitly labeled still-capture
+MP4 in `PUBLIC_MEDIA` are included as documentation media; see
+[capture context](images/README.md) and [video context](videos/README.md). Private research
 logs, other captures, guest data, tool caches,
 signing keys, compiled artifacts, the old iOS release workflow and Git history
 are outside the export. Do not replace this isolated tree with a blanket add of

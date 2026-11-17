@@ -1,6 +1,6 @@
 # NaruVM
 
-[Korean guide](README.ko.md) · [Screenshots](#screenshots) · [Install](docs/installation.md) · [Compatibility](#status-and-devices) · [FAQ](#faq)
+[Korean guide](README.ko.md) · [Video](#video) · [Screenshots](#screenshots) · [Install](docs/installation.md) · [Compatibility](#status-and-devices) · [FAQ](#faq)
 
 [![Android source checks](https://github.com/hericobacter-spec/NaruVM/actions/workflows/android-source.yml/badge.svg?branch=main)](https://github.com/hericobacter-spec/NaruVM/actions/workflows/android-source.yml)
 
@@ -15,6 +15,18 @@ Vulkan graphics path. It is not an official Android release from upstream Henge.
 interaction remain unresolved. No near-native performance or everyday stability
 claim is made. The publication set contains source, patches and notices, not an
 APK, Apple image, guest disk, account data or signing key.
+
+## Video
+
+**[Watch / download the 20-second MP4](https://raw.githubusercontent.com/hericobacter-spec/NaruVM/main/docs/videos/historical-captures.mp4)** · [Video transcript and provenance](docs/videos/README.md)
+
+[![Watch the historical still-capture walkthrough: Setup Assistant, Safari and VS Code](docs/images/macos-vscode.png)](https://raw.githubusercontent.com/hericobacter-spec/NaruVM/main/docs/videos/historical-captures.mp4)
+
+A silent walkthrough assembled from the three historical screenshots below,
+**not a live screen recording**. No execution-recording original was found in
+the reviewed local research folders. The video does not demonstrate interaction
+speed, a continuous install or sustained stability. Click the preview to open
+the MP4; if your browser downloads it, open the saved file in a video player.
 
 ## Screenshots
 

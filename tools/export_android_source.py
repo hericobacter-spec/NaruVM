@@ -25,10 +25,11 @@ ROOT_FILES = {'.gitattributes', 'LICENSE', 'NOTICE', 'README.md', 'README.ko.md'
 PUBLIC_DOCS = {'android/DESIGN.md', 'docs/architecture.md', 'docs/licensing.md', 'docs/building.md',
                'docs/publication.md', 'docs/modifications.json', 'docs/source-correspondence.md',
                'docs/installation.md', 'docs/installation.ko.md',
-               'docs/binary-release.md', 'docs/binary-release.ko.md', 'docs/images/README.md'}
-# Individually inspected historical captures only; never glob research images.
+               'docs/binary-release.md', 'docs/binary-release.ko.md', 'docs/images/README.md',
+               'docs/videos/README.md', 'docs/videos/README.ko.md'}
+# Individually inspected historical captures and labeled walkthrough only; never glob research media.
 PUBLIC_MEDIA = {'docs/images/macos-setup.png', 'docs/images/macos-safari.png',
-                'docs/images/macos-vscode.png'}
+                'docs/images/macos-vscode.png', 'docs/videos/historical-captures.mp4'}
 PUBLIC_GITHUB = {'.github/workflows/android-source.yml', '.github/ISSUE_TEMPLATE/bug_report.yml',
                  '.github/ISSUE_TEMPLATE/device_report.yml', '.github/ISSUE_TEMPLATE/config.yml',
                  '.github/pull_request_template.md'}
@@ -48,8 +49,11 @@ def source_name(name):
 
 def source_payload(name, raw, deny_literals=()):
     source_name(name)
-    if name in PUBLIC_MEDIA and not raw.startswith(b'\x89PNG\r\n\x1a\n'):
+    if name in PUBLIC_MEDIA and name.endswith('.png') and not raw.startswith(b'\x89PNG\r\n\x1a\n'):
         raise ValueError('Reviewed screenshot is not a PNG: ' + name)
+    if name in PUBLIC_MEDIA and name.endswith('.mp4') and (
+            len(raw) < 24 or raw[4:8] != b'ftyp' or raw[8:12] != b'isom' or len(raw) > 10_000_000):
+        raise ValueError('Reviewed video is not a bounded ISO MP4: ' + name)
     if raw.startswith((b'\x7fELF', b'PK\x03\x04', b'\xcf\xfa\xed\xfe', b'\xfe\xed\xfa\xcf',
                        b'\xca\xfe\xba\xbe', b'!<arch>\n', b'MZ', b'\0asm')):
         raise ValueError('Unexpected binary: ' + name)
