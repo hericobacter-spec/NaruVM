@@ -8,7 +8,7 @@ as of 2026-11-17. Commands are run on an Apple Silicon Mac unless stated otherwi
 
 ## 1. Understand what is available
 
-The [v0.1.2-preview release](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.2-preview)
+The [v0.1.3-preview release](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.3-preview)
 provides a signed ARM64 APK and both source archives. Follow the
 [APK verification/install guide](apk-release.md) to install without building,
 then continue at [app/resource setup](#6-check-the-app-and-choose-resources).

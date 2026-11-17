@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased — Input and display response — 2026-11-17
+## v0.1.3-preview — Input and display response — 2026-11-17
 
 Observed source changes and authored-test scope:
 
@@ -14,7 +14,12 @@ Observed source changes and authored-test scope:
   support a fresh test install and PATH-only JDKs in the new host checks.
 - Run `python3 android/check_response.py` for authored host regression checks.
   These changes do not establish physical macOS speed, historical reboot repair
-  or long-run stability. Existing published APKs remain unchanged.
+  or long-run stability. These changes are included in the new signed APK,
+  version code 4; all earlier published tags and APKs are preserved.
+- Accept the release on one disposable emulator: same-key v0.1.2 update retained
+  data sentinel/UID; graphics, CPU, authored large-frame/input and service checks
+  passed. Fix the touch fixture to use actual viewport and English/Korean labels.
+  See [artifact-specific verification](docs/response-verification.md).
 
 ## v0.1.2-preview — Graphics preflight repair — 2026-11-17
 

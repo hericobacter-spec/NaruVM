@@ -4,7 +4,7 @@
 
 ## 서명된 실험용 APK
 
-[v0.1.2-preview](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.2-preview)에서 ARM64 APK·두 소스 묶음·체크섬을 제공합니다.
+[v0.1.3-preview](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.3-preview)에서 ARM64 APK·두 소스 묶음·체크섬을 제공합니다.
 [APK 안내](apk-release.ko.md)에서 검증 범위·설치·수정 방법을 확인하세요. 기존 v0.1은 소스 전용입니다.
 
 ## 이전 연구 APK에 대한 기록

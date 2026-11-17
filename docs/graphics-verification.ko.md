@@ -25,7 +25,7 @@ TB373FU의 자동/PanVK 정책은 유지합니다.
 
 검사한 APK는 `NaruVM-v0.1.2-preview-arm64-v8a.apk`, 버전 코드 3이며 SHA-256은
 `af5a2dd38fd4d16c637eae422b43d62feaa05348ee225189186ecc13fc73b17e`입니다.
-[배포 기록](../android/publication/apk-release.json)에 구성·네이티브 해시·측정 원자료를 담았고,
+[배포 기록](../android/publication/apk-release-v0.1.2.json)에 구성·네이티브 해시·측정 원자료를 담았고,
 [v0.1.1 기록](../android/publication/apk-release-v0.1.1.json)은 별도로 보존했습니다.
 
 | 검사 | 관찰 결과 |

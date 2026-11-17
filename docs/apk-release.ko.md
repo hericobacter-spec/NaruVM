@@ -4,14 +4,14 @@
 
 ## 다운로드와 확인
 
-[v0.1.2-preview 릴리스](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.2-preview)는 [그래픽 사전 검사 수정](graphics-verification.ko.md)을 포함한 서명된 `arm64-v8a` 설치용 APK입니다. 기존 v0.1과 v0.1.1-preview 태그·배포 파일은 보존합니다.
+[v0.1.3-preview 릴리스](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.3-preview)는 [입력·프레임 개선](response-verification.ko.md)과 기존 [그래픽 수정](graphics-verification.ko.md)을 포함한 서명된 `arm64-v8a` 설치용 APK입니다. 모든 기존 태그·배포 파일은 보존합니다.
 
 다음 파일을 같은 폴더에 받으세요.
 
-- `NaruVM-v0.1.2-preview-arm64-v8a.apk`
-- `NaruVM-v0.1.2-preview-source.tar.gz`: 프로젝트 소스·패치·빌드·설치 도구
-- `NaruVM-v0.1.2-preview-dependency-sources.tar.gz`: 외부 소스, 고정된 Termux 전체 레시피·패치, NDK 런타임 및 Cargo·Mesa·Rust 입력
-- `NaruVM-v0.1.2-preview-release.json`: 정확한 해시·서명 인증서·구성과 관측 결과
+- `NaruVM-v0.1.3-preview-arm64-v8a.apk`
+- `NaruVM-v0.1.3-preview-source.tar.gz`: 프로젝트 소스·패치·빌드·설치 도구
+- `NaruVM-v0.1.3-preview-dependency-sources.tar.gz`: 외부 소스, 고정된 Termux 전체 레시피·패치, NDK 런타임 및 Cargo·Mesa·Rust 입력
+- `NaruVM-v0.1.3-preview-release.json`: 정확한 해시·서명 인증서·구성과 관측 결과
 - `SHA256SUMS.txt`
 
 모든 파일을 받은 뒤 macOS에서는 `shasum -a 256 -c SHA256SUMS.txt`, Linux에서는 `sha256sum -c SHA256SUMS.txt`로 확인합니다. GitHub의 자동 생성 소스 ZIP은 위 의존성 소스 묶음을 포함하지 않습니다.
@@ -19,7 +19,7 @@
 Android SDK build-tools 36.0.0의 도구로 서명을 확인할 수 있습니다.
 
 ```sh
-apksigner verify --verbose --print-certs NaruVM-v0.1.2-preview-arm64-v8a.apk
+apksigner verify --verbose --print-certs NaruVM-v0.1.3-preview-arm64-v8a.apk
 ```
 
 예상 인증서 SHA-256:
@@ -34,7 +34,7 @@ apksigner verify --verbose --print-certs NaruVM-v0.1.2-preview-arm64-v8a.apk
 Android에서 APK를 열고 해당 설치 앱의 권한을 허용하거나, USB 디버깅과 platform-tools로 설치합니다.
 
 ```sh
-adb install NaruVM-v0.1.2-preview-arm64-v8a.apk
+adb install NaruVM-v0.1.3-preview-arm64-v8a.apk
 ```
 
 **NaruVM**을 열고 권장 시작값 **2코어 / RAM 2048 MiB**와 감지된 그래픽 백엔드를 확인한 뒤 디스크 없는 호환성 검사를 실행하세요. APK에는 macOS나 게스트 디스크가 없습니다. 게스트 다운로드·설치는 별도 명시적 작업입니다. [전체 설치 안내](installation.ko.md)의 자원·저장 공간 조건을 확인하세요. 새 자동 설치 전체 과정과 macOS 26/27은 미검증입니다.
@@ -53,8 +53,8 @@ APK와 같은 릴리스에서 **두 소스 묶음을 모두** 받으세요. 프�
 
 ```sh
 mkdir -p .tools/publication-sources
-tar -xzf /path/to/NaruVM-v0.1.2-preview-dependency-sources.tar.gz -C .tools/publication-sources
-python3 android/package_publication_sources.py --verify /path/to/NaruVM-v0.1.2-preview-dependency-sources.tar.gz --ndk-source --graphics
+tar -xzf /path/to/NaruVM-v0.1.3-preview-dependency-sources.tar.gz -C .tools/publication-sources
+python3 android/package_publication_sources.py --verify /path/to/NaruVM-v0.1.3-preview-dependency-sources.tar.gz --ndk-source --graphics
 ```
 
 검사기는 소스 입력 94개와 원본 Git 스냅샷 4개의 구성·해시를 검사합니다. 기존 `complete_apk_source=0` 표시는 이 입력 묶음 자체의 범위이며 별도 릴리스 전체의 법적 판정이나 실행 결과가 아닙니다.
@@ -70,7 +70,7 @@ Apple Silicon Mac과 [고정된 SDK·NDK·JDK 및 그래픽 빌드 준비](build
 직접 만든 비공개 PKCS12 키 저장소와 암호 텍스트 파일을 준비하세요. 저장소·키 암호는 같아야 하고 두 파일은 소유자만 접근하도록 `chmod 600`을 적용합니다. 소스·배포 파일 밖에 보관하세요.
 
 ```sh
-python3 android/build.py --gpu --reims --software --panvk-userptr-probe --release --version-name 0.1.2-preview --version-code 3 --keystore /private/path/recipient.p12 --ks-pass-file /private/path/password.txt --key-alias recipient --output /private/path/NaruVM-recipient.apk
+python3 android/build.py --gpu --reims --software --panvk-userptr-probe --release --version-name 0.1.3-preview --version-code 4 --keystore /private/path/recipient.p12 --ks-pass-file /private/path/password.txt --key-alias recipient --output /private/path/NaruVM-recipient.apk
 ```
 
 기본 연구 빌드는 기존 별도 디버그키를 사용합니다. 배포 빌드는 서명 입력을 명시해야 하며 기존 출력 덮어쓰기를 거절하고 디버깅을 끄며 컴파일 경로를 치환하고 로컬 네이티브 심볼·디버그 데이터를 제거합니다. 게시자의 개인 키는 필요하지 않습니다.
@@ -88,10 +88,14 @@ cmake --build android/build/native --target henge_lab -j 2
 기존 APK에서 해당 네이티브 파일만 교체하여 자신의 키로 서명할 수도 있습니다. 이 파일은 Android 포장 때문에 `.so` 이름을 가진 ELF 실행 파일입니다.
 
 ```sh
-python3 android/repackage_apk.py --apk /path/to/NaruVM-v0.1.2-preview-arm64-v8a.apk --replace-native libhenge_lab.so=android/build/native/bin/libhenge_lab.so --release --keystore /private/path/recipient.p12 --ks-pass-file /private/path/password.txt --key-alias recipient --output /private/path/NaruVM-modified.apk
+python3 android/repackage_apk.py --apk /path/to/NaruVM-v0.1.3-preview-arm64-v8a.apk --replace-native libhenge_lab.so=android/build/native/bin/libhenge_lab.so --release --keystore /private/path/recipient.p12 --ks-pass-file /private/path/password.txt --key-alias recipient --output /private/path/NaruVM-modified.apk
 adb install /private/path/NaruVM-modified.apk
 ```
 
 도구는 선택한 네이티브 파일·서명 메타데이터만 바꾸고 나머지 앱·고지는 보존합니다. 새 파일명·ARM64가 아닌 교체 파일을 거절하고 정렬·서명을 검사합니다. 별도 SDK는 `--sdk`, 별도 JDK는 `JAVA_HOME`을 지정하세요.
 
 수정 APK에서 `lib/arm64-v8a/libhenge_lab.so`를 추출하여 에뮬레이터 `/data/local/tmp/naruvm-recipient-worker`에 보내고 `chmod 755` 후 `license-probe` 인자로 실행하면 `LGPL_REPLACEMENT_VALUE`와 라이브러리 반환값이 출력됩니다. 단순 재서명이 아닌 소스 동작 변경을 구분하는 검사이며 Apple 이미지·게스트 계정·루트·게시자 키는 필요하지 않습니다. macOS 부팅·안정성 검사는 아닙니다.
+
+## 기존 공개 APK 업데이트
+
+v0.1.1-preview·v0.1.2-preview는 같은 공개 배포 키를 사용합니다. `adb install -r NaruVM-v0.1.3-preview-arm64-v8a.apk`로 업데이트하세요. v0.1.2 → v0.1.3 업데이트에서 앱 UID와 자체 작성 데이터 표식 보존을 한 에뮬레이터에서 확인했습니다(observed). 모든 게스트 데이터의 마이그레이션 검증은 아닙니다. 디버그 키가 다른 기존 연구 앱에는 적용하지 마세요. [추가 프레임·입력·서비스 검증과 수집 방식](response-verification.ko.md).

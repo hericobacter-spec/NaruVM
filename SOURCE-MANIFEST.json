@@ -61,8 +61,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "39991d92739a575d53e77e737caec217ffeeb5b6ec241eedbc3c51d5a525eeb4",
-      "bytes": 5631
+      "sha256": "1f3c69c486e5fc34d47f2e552a68ab7d374596fc7aafa8c4012927d3f05de070",
+      "bytes": 6028
     },
     {
       "path": "CONTRIBUTING.md",
@@ -181,13 +181,13 @@
     },
     {
       "path": "README.ko.md",
-      "sha256": "13612bef5278ae6f70c5ba2bf6ce47e9ab20a3e55c0a4459902e674703e54276",
-      "bytes": 18967
+      "sha256": "432c1a7eea966ddba256fc2a104cdc718d13b24fc8298275ea3858ea6348fca4",
+      "bytes": 19321
     },
     {
       "path": "README.md",
-      "sha256": "609ad63e3fc4e8a09b56c63d20345d7d7c5f978b2d397647bc3c4f05cababd25",
-      "bytes": 18368
+      "sha256": "40c3630c888173faf6ca328e57cb348cf4dcc51b7065f3a0897fb8e4b55f0f83",
+      "bytes": 18672
     },
     {
       "path": "SECURITY.md",
@@ -451,8 +451,8 @@
     },
     {
       "path": "android/input_device_test.py",
-      "sha256": "460eac26fa6caef9efb1a203980ceef919086255635d745e4fa234f4f4418728",
-      "bytes": 5740
+      "sha256": "b7a9eb899db3340098e0283a3092a90208c5fe4b2d76a4317435e25b344cf27d",
+      "bytes": 6989
     },
     {
       "path": "android/installer/dependencies.json",
@@ -875,9 +875,14 @@
       "bytes": 16724
     },
     {
-      "path": "android/publication/apk-release.json",
+      "path": "android/publication/apk-release-v0.1.2.json",
       "sha256": "03355b270ed1fcb239b009bb67e7c5b6eac35329817ca8016ac0eb929ed2dee7",
       "bytes": 19952
+    },
+    {
+      "path": "android/publication/apk-release.json",
+      "sha256": "555e3bfa647ac5cc7971d53cbc122fb657484ce639f2eeacdca2b9781831fba6",
+      "bytes": 18966
     },
     {
       "path": "android/publication/dependencies.json",
@@ -1496,13 +1501,13 @@
     },
     {
       "path": "docs/apk-release.ko.md",
-      "sha256": "fe4ee1dc798b4c245ba84fb12b11a32099fa4125081a57f6fff48ac7e1a97391",
-      "bytes": 9485
+      "sha256": "1b7ddd034c7a167c68134d7745b33096fec83d46fde5bd84f89ec623c5cba154",
+      "bytes": 10097
     },
     {
       "path": "docs/apk-release.md",
-      "sha256": "5eb745f000bc7e9fa357f7fba5f0e7085512bd10a5a9d4f03d93da084e46ae2f",
-      "bytes": 9642
+      "sha256": "b015828bff3446f1673c6c8bfba351bb45d1fa6930e501c4241ef3e1f9aa4e42",
+      "bytes": 10025
     },
     {
       "path": "docs/architecture.md",
@@ -1511,12 +1516,12 @@
     },
     {
       "path": "docs/binary-release.ko.md",
-      "sha256": "a8421d1076fbab47843b78daf33815016e5c7ff2fa2a32aa9decde0454dc5c5b",
+      "sha256": "7c6bac58f018c0a326dec05351a08816d347bd0a23b75600dd8f886d13bd5f74",
       "bytes": 6178
     },
     {
       "path": "docs/binary-release.md",
-      "sha256": "a4dfc5fb77911e3094214e048428b8e2123588a89c9aeed186e14eb2fcdb669e",
+      "sha256": "1fb65532d28fb998832385d4610bbe88e988f0fd5c22ec4af58932a5c40b4b6f",
       "bytes": 6165
     },
     {
@@ -1526,13 +1531,13 @@
     },
     {
       "path": "docs/graphics-verification.ko.md",
-      "sha256": "72e7e3ff16b68aa029f54e3134c07f0368603ed7c9c3d5a58aaf4b399a7a0eb7",
-      "bytes": 7555
+      "sha256": "0b72db923ae762d434cc9dd46ede6897d609d93bc28bdc553781d59a8d548a95",
+      "bytes": 7562
     },
     {
       "path": "docs/graphics-verification.md",
-      "sha256": "93e68b7056721020eb353beffe099ff7060c192b4b4ae994fb0f15f07964f028",
-      "bytes": 6808
+      "sha256": "2cd1609ac067f257501222810f19a98e2c8e58720b23d13d1a92844f98c21f92",
+      "bytes": 6815
     },
     {
       "path": "docs/images/README.md",
@@ -1556,12 +1561,12 @@
     },
     {
       "path": "docs/installation.ko.md",
-      "sha256": "0b1757934e0f54ee9277238aac6f9108b9532302641dce80e06199532b898cbb",
+      "sha256": "116319a276b39ccc80cbce2eb460bc22cef5b10c99f52225685770c5bd2ed25a",
       "bytes": 22139
     },
     {
       "path": "docs/installation.md",
-      "sha256": "32cf3b8b9eea0ecbdace90cb52542cabdbcdf3a3c0145447f5428dd4f7462409",
+      "sha256": "bea5e85521825759d2aa6e92dd9123ff6e3f4bfc7b6537dc94688358ecfd6834",
       "bytes": 19079
     },
     {
@@ -1578,6 +1583,16 @@
       "path": "docs/publication.md",
       "sha256": "300998d7853ecb3c803bbd70421cd478d4d1ceee883bdad1e8134e98d89142ea",
       "bytes": 15739
+    },
+    {
+      "path": "docs/response-verification.ko.md",
+      "sha256": "e8f6f9ac70cd33a0a1e55d3dcb8038050ad7cac23b64816f60fb517df9aee169",
+      "bytes": 5534
+    },
+    {
+      "path": "docs/response-verification.md",
+      "sha256": "db2b11b97e0c3ac11e23617f8c7f368d012a96ead5387f59f388427017719a8c",
+      "bytes": 5236
     },
     {
       "path": "docs/source-correspondence.md",
@@ -5776,8 +5791,8 @@
     },
     {
       "path": "tools/export_android_source.py",
-      "sha256": "f3c923462b6d47e6fd843506b185e0abd1e152429e7a7dc03199d164cf2a8b32",
-      "bytes": 10550
+      "sha256": "84f9c40d6d55f40047d1bc5d5c9258ad5966b598dd3cec0df817f93d7118c167",
+      "bytes": 10634
     },
     {
       "path": "tools/prepare_github.py",

@@ -56,7 +56,28 @@ def main():
         if signature not in r or 'boot-reims' in r:
             raise RuntimeError('Fixture identity changed; no further input allowed')
         return r
-    wait_for(lambda: 'MAC_VIEWPORT width=2944 height=1840' in guarded_report())
+    viewport = wait_for(lambda: re.search(r'MAC_VIEWPORT width=(\d+) height=(\d+)', guarded_report()))
+    if int(viewport[1]) <= 0 or int(viewport[2]) <= 0:
+        raise RuntimeError('Authored guest viewport is invalid')
+    def ui_tree():
+        guarded_report()
+        adb('shell', 'uiautomator', 'dump', '/data/local/tmp/henge-input-fixture.xml')
+        return ET.fromstring(adb('exec-out', 'cat', '/data/local/tmp/henge-input-fixture.xml'))
+    def tap_node(node):
+        x1,y1,x2,y2=map(int,re.findall(r'\d+', node.get('bounds')))
+        adb('shell','input','tap',str((x1+x2)//2),str((y1+y2)//2))
+    tree=ui_tree()
+    # A fresh emulator can show Android's non-binding first-fullscreen notice.
+    if any(n.get('resource-id') == 'android:id/immersive_cling_title' for n in tree.iter('node')):
+        notice=next((n for n in tree.iter('node') if n.get('resource-id') == 'android:id/ok'),None)
+        if notice is None: raise RuntimeError('Fullscreen notice acknowledgement is missing')
+        tap_node(notice); tree=ui_tree()
+    descriptions=('Virtual Mac display. Tap a location to click it.',
+                  '가상 Mac 화면. 원하는 위치를 누르면 해당 위치를 클릭합니다.')
+    display=next((n for n in tree.iter('node') if n.get('content-desc') in descriptions),None)
+    if display is None: raise RuntimeError('Visible authored Mac display is missing')
+    x1,y1,x2,y2=map(int,re.findall(r'\d+',display.get('bounds')))
+    x,y=str(x1+(x2-x1)*3//4),str(y1+(y2-y1)//2)
     def click_count():
         return len(re.findall(r'FRAME_INPUT_BUTTON down=0 matched=1 held_ms=(\d+)', guarded_report()))
     def target_count():
@@ -66,25 +87,21 @@ def main():
         adb('shell', 'input', *command)
         wait_for(lambda: target_count() == expected)
     # The long stationary press previously failed the Activity's <300 ms rule.
-    touch_and_wait(['touchscreen', 'swipe', '1200', '800', '1200', '800', '650'], 1)
-    touch_and_wait(['tap', '1200', '800'], 2)
-    def button(text):
-        guarded_report()
-        adb('shell', 'uiautomator', 'dump', '/data/local/tmp/henge-input-fixture.xml')
-        tree=ET.fromstring(adb('exec-out', 'cat', '/data/local/tmp/henge-input-fixture.xml'))
-        for n in tree.iter('node'):
-            if n.get('text') == text:
-                x1,y1,x2,y2=map(int,re.findall(r'\d+', n.get('bounds')))
-                adb('shell','input','tap',str((x1+x2)//2),str((y1+y2)//2))
+    touch_and_wait(['touchscreen', 'swipe', x, y, x, y, '650'], 1)
+    touch_and_wait(['tap', x, y], 2)
+    def button(*labels):
+        for n in ui_tree().iter('node'):
+            if n.get('text') in labels:
+                tap_node(n)
                 return
-        raise RuntimeError('Visible fixture button missing: '+text)
-    button('도구')
+        raise RuntimeError('Visible fixture button missing: '+repr(labels))
+    button('Tools','도구')
     time.sleep(.3)
-    button('입력: 직접 터치')
+    button('Input: direct touch','입력: 직접 터치')
     touch_report=guarded_report()
-    adb('shell','input','tap','1200','800')
+    adb('shell','input','tap',x,y)
     wait_for(lambda: click_count() == 1)
-    button('클릭')
+    button('Click','클릭')
     wait_for(lambda: click_count() == 2)
     guarded_report()
     (a.output/'authored-tools.png').write_bytes(adb('exec-out','screencap','-p'))
@@ -92,13 +109,15 @@ def main():
     intervals=list(map(int,re.findall(r'FRAME_INPUT_BUTTON down=0 matched=1 held_ms=(\d+)',current)))
     if len(intervals)!=2 or any(ms<80 or ms>2000 for ms in intervals):
         raise RuntimeError('Click edges not separated at authored sink: '+repr(intervals))
-    button('Mac 종료')
+    button('Stop Mac','Mac 종료')
     final=wait_for(lambda: (r if signature in (r := report('last-report.txt')) and 'VM_SERVICE_CLEANUP foreground=0 wake_lock=0' in r and 'EXIT_CODE=0' in r else ''))
     (a.output/'report.txt').write_text(final)
     listing=adb('shell','ps','-A','-o','PID,ARGS').decode()
     if 'libhenge_frames_test.so' in listing: raise RuntimeError('Fixture worker still present')
     result={'label':'observed','date':time.strftime('%Y-%m-%dT%H:%M:%S%z'),'n':1,'serial':a.serial,
             'checks':['650ms_direct_touch','short_direct_tap','trackpad_fallback','toolbar_click','normal_stop'],
+            'guest_viewport':[int(viewport[1]),int(viewport[2])],
+            'host_touch_point':[int(x),int(y)],
             'direct_targets':re.findall(r'FRAME_INPUT_TAP_AT x=(\d+) y=(\d+)',current),
             'held_ms_at_authored_native_sink':intervals,'failures':0,
             'actual_macos_click_verified':False,'macos_disk_opened':False}

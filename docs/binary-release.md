@@ -4,7 +4,7 @@
 
 ## Signed experimental preview
 
-[v0.1.2-preview](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.2-preview) provides the signed ARM64 APK, both source archives and checksums. Follow
+[v0.1.3-preview](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.3-preview) provides the signed ARM64 APK, both source archives and checksums. Follow
 the [APK guide](apk-release.md) for verified scope, installation and modifications.
 The original v0.1 remains source-only.
 

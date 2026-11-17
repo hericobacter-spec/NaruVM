@@ -4,7 +4,7 @@
 
 [![Android source checks](https://github.com/hericobacter-spec/NaruVM/actions/workflows/android-source.yml/badge.svg?branch=main)](https://github.com/hericobacter-spec/NaruVM/actions/workflows/android-source.yml)
 
-**[Download v0.1.2-preview APK](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.2-preview)** · **[APK install / source / checks](docs/apk-release.md)** · [Troubleshooting](docs/installation.md#troubleshooting)
+**[Download v0.1.3-preview APK](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.3-preview)** · **[APK install / source / checks](docs/apk-release.md)** · [Troubleshooting](docs/installation.md#troubleshooting)
 
 An independent, experimental Android port of [Henge](https://github.com/Leviidev/Henge).
 It retains Henge's ARM64-to-ARM64 JIT, software MMU and virtual devices, with
@@ -13,7 +13,7 @@ Vulkan graphics path. It is not an official Android release from upstream Henge.
 
 **Experimental preview.** GPU faults, tablet reboots and slow interaction remain
 unresolved. No near-native performance or everyday stability claim is made.
-The v0.1.2-preview release provides a signed ARM64 APK, project/dependency source
+The v0.1.3-preview release provides a signed ARM64 APK, project/dependency source
 archives, notices and checksums. Apple images, guest disks, accounts and private
 signing keys are excluded. The exact candidate was tested on an emulator; its
 physical-tablet and guest retest was unavailable.
@@ -23,6 +23,8 @@ and unsupported system Vulkan now refuses cleanly. Five Auto checks and 150
 authored readback frames passed. A small warm-cache probe improved from 143.7ms
 to 70.0ms median; this is not a macOS speed measurement.
 [Causes, reproduction and limits](docs/graphics-verification.md).
+
+**v0.1.3-preview input/display update:** bounded input and worker-side frame preparation are now included in the signed APK (version code 4). Same-signer upgrade, authored frame/input and service tests passed on one emulator (observed). [Checks, reproduction and limits](docs/response-verification.md).
 
 ## Video
 
@@ -76,7 +78,7 @@ independent display name is NaruVM.
 
 ## Choose a starting point
 
-Download the **[experimental APK](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.2-preview)** and follow [verification and installation](docs/apk-release.md).
+Download the **[experimental APK](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.3-preview)** and follow [verification and installation](docs/apk-release.md).
 The original [v0.1](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1)
 remains source-only. Existing research installs have a different signing key;
 **preserve their guest data and use a separate device/emulator** for this preview.
@@ -227,7 +229,7 @@ This forwards input events, not arbitrary USB devices. See
 ## FAQ
 
 **Can I download an APK instead of building?** Yes: the experimental
-[v0.1.2-preview](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.2-preview).
+[v0.1.3-preview](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.3-preview).
 Follow the [signer, checksum and installation guide](docs/apk-release.md).
 The original v0.1 is preserved as source-only.
 

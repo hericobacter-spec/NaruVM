@@ -30,13 +30,13 @@
     "other device/GPU execution"
   ],
   "source_boundary": "Project source plus version-matched dependency archives, complete recipes/patches and runtime build inputs are supplied together; no historical binary producer attestation or byte-identical dependency source rebuild is claimed.",
-  "version": "0.1.2-preview",
-  "version_code": 3,
-  "source_reference": "v0.1.2-preview",
+  "version": "0.1.3-preview",
+  "version_code": 4,
+  "source_reference": "v0.1.3-preview",
   "apk": {
-    "file": "NaruVM-v0.1.2-preview-arm64-v8a.apk",
-    "bytes": 85770545,
-    "sha256": "af5a2dd38fd4d16c637eae422b43d62feaa05348ee225189186ecc13fc73b17e",
+    "file": "NaruVM-v0.1.3-preview-arm64-v8a.apk",
+    "bytes": 85778737,
+    "sha256": "004572445072ca760d2ac65f6d8f26123809b606249c3be15c210dda11b4f91c",
     "abi": "arm64-v8a",
     "package": "dev.henge.research",
     "debuggable": false,
@@ -44,8 +44,8 @@
     "certificate_sha256": "d3f0ccbbc25d555d35a2867c2a0848fe7bfde9c0b8cefdd3e0ea3c71b63908be"
   },
   "source_assets": [
-    "NaruVM-v0.1.2-preview-source.tar.gz",
-    "NaruVM-v0.1.2-preview-dependency-sources.tar.gz"
+    "NaruVM-v0.1.3-preview-source.tar.gz",
+    "NaruVM-v0.1.3-preview-dependency-sources.tar.gz"
   ],
   "observed": {
     "signature_v3": true,
@@ -76,7 +76,22 @@
     "native_cpu_mmu_shutdown_suites_passed": 5,
     "android_crash_buffer_bytes": 0,
     "guest": "none",
-    "disk": "none"
+    "disk": "none",
+    "same_signer_upgrade_from": "0.1.2-preview",
+    "upgrade_uid_preserved": true,
+    "authored_data_sentinel_preserved": true,
+    "authored_frame_sequences": 150,
+    "authored_frames_shown": 143,
+    "authored_frame_modes": 6,
+    "authored_frame_max_width": 1280,
+    "service_activity_attachments": 2,
+    "service_worker_pid_preserved": true,
+    "normal_stop_foreground_and_wake_released": true,
+    "authored_touch_and_tools_checks": 5,
+    "authored_click_held_ms": [
+      118,
+      119
+    ]
   },
   "prior_recipient_modification_evidence": {
     "source_reference": "v0.1.1-preview",
@@ -87,88 +102,6 @@
     "system_vulkan": "Reject missing VK_EXT_external_memory_host before device adoption; no guest-RAM copy fallback.",
     "software_cpu_features": "Child-only getauxval shim removes derived SVE/SME bits when their base feature is absent; never adds capabilities.",
     "shader_cache": "App-private Mesa disk shader cache, bounded to 256M; shared configuration for preflight and guest software workers."
-  },
-  "cache_probe_benchmark": {
-    "label": "observed-one-emulator-authored-probe",
-    "apk_sha256": "af5a2dd38fd4d16c637eae422b43d62feaa05348ee225189186ecc13fc73b17e",
-    "rows": [
-      {
-        "index": 0,
-        "cache": true,
-        "milliseconds": 156.78662504069507,
-        "pixels": 4096
-      },
-      {
-        "index": 1,
-        "cache": false,
-        "milliseconds": 145.9661249537021,
-        "pixels": 4096
-      },
-      {
-        "index": 2,
-        "cache": true,
-        "milliseconds": 72.62341701425612,
-        "pixels": 4096
-      },
-      {
-        "index": 3,
-        "cache": true,
-        "milliseconds": 66.10304198693484,
-        "pixels": 4096
-      },
-      {
-        "index": 4,
-        "cache": false,
-        "milliseconds": 140.70087496656924,
-        "pixels": 4096
-      },
-      {
-        "index": 5,
-        "cache": false,
-        "milliseconds": 145.7455410854891,
-        "pixels": 4096
-      },
-      {
-        "index": 6,
-        "cache": true,
-        "milliseconds": 69.98545792885125,
-        "pixels": 4096
-      },
-      {
-        "index": 7,
-        "cache": true,
-        "milliseconds": 73.90691700857133,
-        "pixels": 4096
-      },
-      {
-        "index": 8,
-        "cache": false,
-        "milliseconds": 143.68858293164521,
-        "pixels": 4096
-      },
-      {
-        "index": 9,
-        "cache": false,
-        "milliseconds": 141.67949999682605,
-        "pixels": 4096
-      },
-      {
-        "index": 10,
-        "cache": true,
-        "milliseconds": 59.31908404454589,
-        "pixels": 4096
-      }
-    ],
-    "medians_ms": {
-      "False": 143.68858293164521,
-      "True": 69.98545792885125
-    },
-    "warm_cache_reduction_percent": 51.29365430366561,
-    "limits": [
-      "one ARM64 Android35 SwiftShader emulator; no macOS guest",
-      "fresh process per probe, includes ADB overhead",
-      "one warmup excluded; five interleaved samples each; warm disk shader cache only"
-    ]
   },
   "native_packaging": [
     {
@@ -185,50 +118,50 @@
     },
     {
       "name": "libhenge_ahb_alias_test.so",
-      "source_sha256": "540f1dbd0f50e069df70d01b6a87a97de326c5f16048385503b548a12bd5fcbf",
-      "packaged_sha256": "8c3d1852f689913bd92c1bd855d97a401bb780bb67dad5542c220a226ee585b8",
+      "source_sha256": "78db7c904d3b6fbecc4151685d9c4d64367f6dcf6dbfa0980b03a87a2d2a4398",
+      "packaged_sha256": "467bb947029c120535a21e7d9dadb37011a2dc5114936162921aa249f61c7dec",
       "strip_unneeded": true
     },
     {
       "name": "libhenge_clone.so",
-      "source_sha256": "0b09fa664edac120aaed006d08d3f93bb4f3ccf02047803b969ded7ad5a77b6f",
-      "packaged_sha256": "b0b9483d62aeaec86386cd117c6f59953a6358b004b12f10bee2afd5a7124a6b",
+      "source_sha256": "4e8aceb3de46bf86df290f3189edfbb15b1915b4ffbc8d5759600f762b409278",
+      "packaged_sha256": "2cc8d6d942d77d0b7bbb6ba4403b8a371592e8ea86e93cd219e9d4fd5d0bd6d0",
       "strip_unneeded": true
     },
     {
       "name": "libhenge_counter_test.so",
-      "source_sha256": "f8e74e6da74819661b2c6188f7fa3b2e5e1b52dc888537a58b80524139972559",
-      "packaged_sha256": "b09c1e94ad424f4b672af15e51c9e36fcc14c36212ef890d300c607b8336af34",
+      "source_sha256": "247a2a3ef3739fa5cfb3ff1c0ba5767c2ddac51020e1a036aac37f07c517a635",
+      "packaged_sha256": "f972f4abf1efe9945b11b394607ed3f33e088b1f707d16a64506bc913a848c16",
       "strip_unneeded": true
     },
     {
       "name": "libhenge_cpu_native_bench.so",
-      "source_sha256": "d0baf604797614de534030c580a27bd6f51892baaf1f9c95ad93d973d45e8589",
-      "packaged_sha256": "81494aa86910747abf64de961fe1e126f9ba750fbcf34fc2884389fda7cb4e60",
+      "source_sha256": "ae47947f54c62b5ddea01a3f8837d90db6706cc5c1a9c6f72ed8b18cbfa32fb0",
+      "packaged_sha256": "b504198ae023aa0d4b7c66a3a30e9c636f28de5deaa227e6882d898ba32020c6",
       "strip_unneeded": true
     },
     {
       "name": "libhenge_frame_jni.so",
-      "source_sha256": "9e24ab43bdc602b47e5ad73c49f8608ae635ed0842e19b6edf7b843dfad8161c",
-      "packaged_sha256": "419be51f84be3bc51e333f98d2b7e46ec5b27e2d60175f966dd0e7ca671d6ed9",
+      "source_sha256": "cb4859f1afc15ac1745608c5205c2c7538e2217e93305e6c65ebd690d214e763",
+      "packaged_sha256": "75e44b48bfcdcffa2134e2b1ce87a6eb610e0677ba356e3441a1ecc8e028e693",
       "strip_unneeded": true
     },
     {
       "name": "libhenge_frames_test.so",
-      "source_sha256": "5f7ce0da9c0b4416c4b7cf83204a9e360c14c4becca656717839a171880193d1",
-      "packaged_sha256": "89e9355c864b8b76f4c35aca71b4e09da9d5296355791d6764dce46eb6896c0f",
+      "source_sha256": "8bc5fdb3da3ce7eee0f9408906be47015e1f06be424f5c49e4e8aa3440ef8207",
+      "packaged_sha256": "28f9104c54c97c4ff880d10b79c4aed4d4c40b85b0485452168db175d047afce",
       "strip_unneeded": true
     },
     {
       "name": "libhenge_gpu.so",
-      "source_sha256": "87c82000dc9b8f0afb330e8eff1858a9759ac0cfed21b1b753e3bb96241a5dfb",
-      "packaged_sha256": "3554612bec4d66c68b6ce8e92e60a99b5cd8ba9df963425096e780a9a9799677",
+      "source_sha256": "fa7daf020df57276505ad885456383fdfc824f3d3e9f33aa6b7402891d92dc8e",
+      "packaged_sha256": "cc3ff285c72c49fba8252d899d2be8e9dcb0905c9879632324dac8ef0a3c30ba",
       "strip_unneeded": true
     },
     {
       "name": "libhenge_lab.so",
-      "source_sha256": "358a731e9531bdf4bad065cb9dd4aa09d79f740a21e68da80eec9803fd187230",
-      "packaged_sha256": "5e6408efb53041805723e6c238128d4e002edf85747e476890da9e4d219b2506",
+      "source_sha256": "bc97ce3f47ccf93187523597fc55c3882ea916b81fddc1c7d4a0866c4c4716a2",
+      "packaged_sha256": "d6a762ca34f1f7abe68ffdc9907d5eb92dce75d849514ef09c12aecb8a7d7087",
       "strip_unneeded": true
     },
     {
@@ -365,8 +298,8 @@
     },
     {
       "name": "libhenge_mali_userptr_test.so",
-      "source_sha256": "72088dacecd43937e60725a2fca46ba6906d0439bada2b9ca0cc5a98c852bb63",
-      "packaged_sha256": "5403342c882a13b8dab0fdb83239f512806f1dd5468ac9c69e940436eccdf9ea",
+      "source_sha256": "b26011d47bf96c2d60223e58c943d644ed8fcd1bf8424f8551c06437882aa4c8",
+      "packaged_sha256": "4fe5129084b447113049fc7c93d399d5bc8094ff7b95cf8b0e1d7d69c22e6dc0",
       "strip_unneeded": true
     },
     {
@@ -395,8 +328,8 @@
     },
     {
       "name": "libhenge_network_test.so",
-      "source_sha256": "d901130965989e0f74d0890c047a4175097598cf857bb65c3992d033b57e0c90",
-      "packaged_sha256": "7adc8d3da605511ea6e3d97bc37da61e829ef88062a7aa085d987fda4d15b115",
+      "source_sha256": "4908a1140fba441e2c791a61454f39fc9f3cd5f976772985df0dc4ce9cf23448",
+      "packaged_sha256": "37459d445e60d9055304927f0c18a4d038cee73e598de751396ece382bad2d68",
       "strip_unneeded": true
     },
     {
@@ -413,8 +346,8 @@
     },
     {
       "name": "libhenge_platform_test.so",
-      "source_sha256": "cbf487381c5d69d516adefd675be2153ecac0d3d173f60ccdd8a454bf390b6c4",
-      "packaged_sha256": "2146271b1ac5ee1c70dfd09767306a661ab4df504cf3f73498b15bdf251cd5fd",
+      "source_sha256": "8c47d221732c38b3cf3a6ec45ae00f375820c83e374380e89e2e465a6a95eb72",
+      "packaged_sha256": "c1b839071fedb74c9fee978146cc4354b33ec7dcc3802652faed40ba661b7316",
       "strip_unneeded": true
     },
     {
@@ -425,75 +358,85 @@
     },
     {
       "name": "libhenge_runtime_sampler_check.so",
-      "source_sha256": "e7720f9f12aae075695f70eafa0442219801079d1232762d49ef70db52af86db",
-      "packaged_sha256": "65e576ef8c6ad362fcacc1d883ce55e78534f521642180f4708e8aa13e5cbdea",
+      "source_sha256": "a0c0bd521a3d5be8067b4be15f80061948817f58de92ad7a3c022f9409675512",
+      "packaged_sha256": "dd18e61fd7cd90d3e991ef52a2953f8c14a7068e0bcec7406b7538dd4c43ead8",
       "strip_unneeded": true
     },
     {
       "name": "libhenge_sampler_check.so",
-      "source_sha256": "267deafcc227fa751a2775d16929c5aeb61e427e5110596ebdf469f3fd054d2f",
-      "packaged_sha256": "b0d35fc1ba738b03a084af8cadc16ed15d658d20d29e327b9761dd5280c11089",
+      "source_sha256": "bb9775c219617af7cb5ff155a194b0eaf3f3f791d63031aa3d037d4e04994837",
+      "packaged_sha256": "c9d2a23170f1b5622c03407d9f4bb7107e90bc0cc67017910ab57c2eafcfbbbc",
       "strip_unneeded": true
     },
     {
       "name": "libhenge_scanout_test.so",
-      "source_sha256": "1a6b22ef40469ad24ff82bb882e88b78674320e93bd58f18bfe29440e7eefd22",
-      "packaged_sha256": "b9bb3a6fd54f1d450f0568ce2ba71bfe17dda493ae82a83bf783a26d58302705",
+      "source_sha256": "c0af89839541def98077fdd53185384e2d7bff49795cfbfe4d4cb56e18a61916",
+      "packaged_sha256": "8fa5abaa35bc6771027bee4503ab6bc2ec24da26aeea35f9d438e99de488e4c9",
       "strip_unneeded": true
     },
     {
       "name": "libhenge_turnip_loader.so",
-      "source_sha256": "1833d95be17d54e2a97b805e246b4e6d4a497cad54c2e513c7d489426a579033",
-      "packaged_sha256": "a01f470d504d319148c46511fef7d4bc9840914b304491cfdfa7b02a761b9461",
+      "source_sha256": "8babac4be9b17774ea01c1daf846e2174d1486ab0d46e4cc13c7dc60d67c4534",
+      "packaged_sha256": "9c98abb9e645b6fd7f73a7d67dd5ee12e559c6cdf9e4749c6f2ea63b6573a0a7",
       "strip_unneeded": true
     },
     {
       "name": "libnaruvm_cpu_caps.so",
-      "source_sha256": "6994635f22a818936c355ec156684883229ea0a953458870f0099900fd97dd5a",
-      "packaged_sha256": "df5b169b951b0964eab88c037707753c973a418aeb01f7b2c58ac5d2a00e1c26",
+      "source_sha256": "b2391f51a3a3b5a3fffe9c7f7356df3bf9dcfa1d2828651cfe8d3e395ae9488a",
+      "packaged_sha256": "c61d5caa33a07e0c595e27fc849b96f1503ed3c70ebfa1765d4d6ea03be4b8f6",
       "strip_unneeded": true
     },
     {
       "name": "libnaruvm_rom.so",
-      "source_sha256": "fb710d4317bf0feba32dd8d225a82421f296ed6184973b96b3378ec8600a97df",
-      "packaged_sha256": "42739d182a38b035d292866f2a20dd45e375e96ded4a892a6e475ce250ecbe9e",
+      "source_sha256": "1dc5b193ca2faaedd334c493be0c8b4cb9377b74eab4feadd36462d49a7ad258",
+      "packaged_sha256": "afdb30b0febe6712d5f5c7583555151e61534797bcb227c79a5fc56b9682b5bf",
       "strip_unneeded": true
     },
     {
       "name": "libreims_vgpu_c.so",
-      "source_sha256": "07377e0234ce7b3fa03cce29e0cc3dc7cf19f32f2278298f348a8adc12e2ea4d",
-      "packaged_sha256": "eed2c1341c1dba2aa91f2647f166790ad9d018a984bd4b5b1397486aa3dba939",
+      "source_sha256": "946bed10d685bafa7374c52ed0b60d7788abb34cdcd9b7ff3efd2e2d8602930a",
+      "packaged_sha256": "43a5b5d69d60b6e9a5e99ac1b00dafad0b97b5507c9a35140c202c5a3386b71a",
       "strip_unneeded": true
     },
     {
       "name": "libtest_classify.so",
-      "source_sha256": "91dd23fc6b10cb39f571362c01cbe1f2c38480b0aeb3ecfd3cf92de0a7e75a16",
-      "packaged_sha256": "861584d784d07e3e7859c5fc24098ff994d1534813f984dfe0f079d7759bb976",
+      "source_sha256": "fa8d20f8602bd2911921e584b0f22e93d034bf46bd54b12d03416c87b84f879a",
+      "packaged_sha256": "8626b4a875a5f557f021bdba2842b8014e6fc013c97621ca4963b554329712b3",
       "strip_unneeded": true
     },
     {
       "name": "libtest_mempath.so",
-      "source_sha256": "ed1ba0ba7dc041a1d544012e039836f63b9c089c2e3ea5c8b8f7f82a8314693a",
-      "packaged_sha256": "a1758e0694fcebeeddd131375ede4423724d4252c0c5cdc78c4f72d6edc23e6a",
+      "source_sha256": "48faf903ba1effda50eae17909dc266192fff9c1dda142f0c35fe79c3bfe5b9b",
+      "packaged_sha256": "c921da5e7b20e580d7cae70a37e416e5f64772e3c671f8e0ad9a5cfb8501cdde",
       "strip_unneeded": true
     },
     {
       "name": "libtest_mmu.so",
-      "source_sha256": "76251ad572e2ec31508abdad47acedb282b3983d561eeab6fb1714dc1d464f87",
-      "packaged_sha256": "1538c10a23aab7be655963632097d11432a0da03ed2dce149983ade6175c0c95",
+      "source_sha256": "7275573fdd56a013357bcb1621c7cc4e3c151584e2a5d2d8de2ac70f483a50e5",
+      "packaged_sha256": "e95046b5ec770cd175178d34dbe995e33c64a0d758db847ac35b11c321e1e979",
       "strip_unneeded": true
     },
     {
       "name": "libtest_operands.so",
-      "source_sha256": "bb3656cf50caaea0494d009ed94063dfebc85dc5bacf74afd275eacdb7f16d65",
-      "packaged_sha256": "69e9654afbf23b5ed10b8364174047a09f54534384fa6338832a68c53974e96d",
+      "source_sha256": "85f435aafed9f1dc7ea35e5a6acd23d4adc9c228491095b619a4957990fe7fad",
+      "packaged_sha256": "39d1a885418ac9dfcd0c05d247053d464279b2a30071047a72fca710dd712f5b",
       "strip_unneeded": true
     },
     {
       "name": "libtest_shutdown.so",
-      "source_sha256": "88383e584e38478d92acbed5a7b1de3c2841715294df17739b9b60d02e3942be",
-      "packaged_sha256": "3e6cd0b91cf660cba7b93bca62b5539cf2ddd78c1da91c3a07b6d82c1bd5f50f",
+      "source_sha256": "65eb3a29651e57e3b5ea99845db63277e229712bddbd6216ef010d792f1b4155",
+      "packaged_sha256": "33fc280c0958ec8c808ab2408deacc0bca1c2ef53376e9c905838e8c5fbe84e2",
       "strip_unneeded": true
     }
+  ],
+  "historical_cache_probe": {
+    "source_reference": "v0.1.2-preview",
+    "record": "apk-release-v0.1.2.json",
+    "repeated_on_this_candidate": false
+  },
+  "response_changes": [
+    "Bounded input queues with adjacent-motion aggregation and explicit overflow all-up recovery.",
+    "Worker-side shared-frame preparation with one pending UI handoff and NEON BGRA conversion.",
+    "Normal stop bypasses queued input; an already blocked pipe write cannot be preempted."
   ]
 }

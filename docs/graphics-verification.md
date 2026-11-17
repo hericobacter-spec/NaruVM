@@ -25,7 +25,7 @@ list before a guest starts. TB373FU Auto/PanVK policy is unchanged.
 
 The tested signed APK is `NaruVM-v0.1.2-preview-arm64-v8a.apk`, version code 3,
 SHA-256 `af5a2dd38fd4d16c637eae422b43d62feaa05348ee225189186ecc13fc73b17e`.
-The [artifact record](../android/publication/apk-release.json) contains the
+The [artifact record](../android/publication/apk-release-v0.1.2.json) contains the
 configuration, native hashes and benchmark samples. The
 [v0.1.1 record](../android/publication/apk-release-v0.1.1.json) is retained separately.
 

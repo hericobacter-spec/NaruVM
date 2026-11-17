@@ -4,17 +4,17 @@
 
 ## Download and verify
 
-The **v0.1.2-preview** prerelease provides a signed `arm64-v8a` APK with the
-[graphics preflight repairs](graphics-verification.md). The original v0.1 and
-v0.1.1-preview tags and assets are preserved.
+The **v0.1.3-preview** prerelease provides a signed `arm64-v8a` APK with the
+[input/frame improvements](response-verification.md), retaining the earlier
+[graphics preflight repairs](graphics-verification.md). All earlier tags and assets are preserved.
 
-[Open the release and its exact files](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.2-preview):
+[Open the release and its exact files](https://github.com/hericobacter-spec/NaruVM/releases/tag/v0.1.3-preview):
 
-- `NaruVM-v0.1.2-preview-arm64-v8a.apk`
-- `NaruVM-v0.1.2-preview-source.tar.gz` — project source, patches and build/install tools.
-- `NaruVM-v0.1.2-preview-dependency-sources.tar.gz` — upstream source archives,
+- `NaruVM-v0.1.3-preview-arm64-v8a.apk`
+- `NaruVM-v0.1.3-preview-source.tar.gz` — project source, patches and build/install tools.
+- `NaruVM-v0.1.3-preview-dependency-sources.tar.gz` — upstream source archives,
   full pinned Termux recipes/patches, NDK runtime sources and selected Cargo/Mesa/Rust sources.
-- `NaruVM-v0.1.2-preview-release.json` — exact artifact hashes, certificate, configuration and observed checks.
+- `NaruVM-v0.1.3-preview-release.json` — exact artifact hashes, certificate, configuration and observed checks.
 - `SHA256SUMS.txt`
 
 Keep downloaded files together and run `shasum -a 256 -c SHA256SUMS.txt` on macOS,
@@ -25,7 +25,7 @@ dependency-source archive listed above.
 With Android SDK build-tools 36.0.0:
 
 ```sh
-apksigner verify --verbose --print-certs NaruVM-v0.1.2-preview-arm64-v8a.apk
+apksigner verify --verbose --print-certs NaruVM-v0.1.3-preview-arm64-v8a.apk
 ```
 
 Expected certificate SHA-256:
@@ -42,7 +42,7 @@ Open the APK on Android and permit installation from the app that opened it,
 or use USB debugging with Android platform-tools:
 
 ```sh
-adb install NaruVM-v0.1.2-preview-arm64-v8a.apk
+adb install NaruVM-v0.1.3-preview-arm64-v8a.apk
 ```
 
 Open **NaruVM**. Start with **2 vCPU / 2048 MiB**, review the detected backend,
@@ -55,8 +55,10 @@ apply. The new complete automatic installer and macOS 26/27 remain untested.
 Android will reject an update of `dev.henge.research` with a different signer.
 Do not uninstall or clear your existing app to force an update: that could delete
 its guest data. Use a separate device or disposable emulator for this preview.
-Future APKs signed with this same release key and a higher version code can use
-`adb install -r`; this is not a guest-data migration tool.
+**Existing public release:** v0.1.1-preview and v0.1.2-preview use the same release key.
+Use `adb install -r NaruVM-v0.1.3-preview-arm64-v8a.apk` to update. The v0.1.2 →
+v0.1.3 update retained the app UID and an authored data sentinel on one emulator
+(observed); this does not verify every guest-data migration.
 
 ## What was checked and what remains untested
 
@@ -64,7 +66,8 @@ See the matching [release record](../android/publication/apk-release.json) and
 the downloadable release JSON for dated, artifact-specific results. The test
 scope is host source checks plus a disposable Android 35 ARM64 emulator:
 installation, first launch, repeated authored graphics/surface/readback checks,
-and CPU/MMU/shutdown suites. The earlier v0.1.1-preview recipient-modified LGPL
+and CPU/MMU/shutdown suites, plus large-frame display, touch/tools, service
+reattachment and normal-stop checks. [Exact results and release collection method](response-verification.md). The earlier v0.1.1-preview recipient-modified LGPL
 library and independent-key installation remain separately recorded historical
 evidence; they were not repeated on this candidate. The release
 manifest disables Android debugging and retains `allowBackup=false`.
@@ -87,8 +90,8 @@ For example, after extracting the project archive:
 
 ```sh
 mkdir -p .tools/publication-sources
-tar -xzf /path/to/NaruVM-v0.1.2-preview-dependency-sources.tar.gz -C .tools/publication-sources
-python3 android/package_publication_sources.py --verify /path/to/NaruVM-v0.1.2-preview-dependency-sources.tar.gz --ndk-source --graphics
+tar -xzf /path/to/NaruVM-v0.1.3-preview-dependency-sources.tar.gz -C .tools/publication-sources
+python3 android/package_publication_sources.py --verify /path/to/NaruVM-v0.1.3-preview-dependency-sources.tar.gz --ndk-source --graphics
 ```
 
 The verifier reports 94 source inputs and four original Git snapshots. It checks
@@ -126,7 +129,7 @@ password text file; both must have owner-only permissions (`chmod 600`).
 Keep them outside the source/release assets. Then build the recorded profile:
 
 ```sh
-python3 android/build.py --gpu --reims --software --panvk-userptr-probe --release --version-name 0.1.2-preview --version-code 3 --keystore /private/path/recipient.p12 --ks-pass-file /private/path/password.txt --key-alias recipient --output /private/path/NaruVM-recipient.apk
+python3 android/build.py --gpu --reims --software --panvk-userptr-probe --release --version-name 0.1.3-preview --version-code 4 --keystore /private/path/recipient.p12 --ks-pass-file /private/path/password.txt --key-alias recipient --output /private/path/NaruVM-recipient.apk
 ```
 
 The default research build still uses its separate debug key. Release builds
@@ -154,7 +157,7 @@ For an existing APK, recombine only that rebuilt native payload and sign with
 your own key (the file is an executable ELF with an Android packaging `.so` name):
 
 ```sh
-python3 android/repackage_apk.py --apk /path/to/NaruVM-v0.1.2-preview-arm64-v8a.apk --replace-native libhenge_lab.so=android/build/native/bin/libhenge_lab.so --release --keystore /private/path/recipient.p12 --ks-pass-file /private/path/password.txt --key-alias recipient --output /private/path/NaruVM-modified.apk
+python3 android/repackage_apk.py --apk /path/to/NaruVM-v0.1.3-preview-arm64-v8a.apk --replace-native libhenge_lab.so=android/build/native/bin/libhenge_lab.so --release --keystore /private/path/recipient.p12 --ks-pass-file /private/path/password.txt --key-alias recipient --output /private/path/NaruVM-modified.apk
 adb install /private/path/NaruVM-modified.apk
 ```
 
