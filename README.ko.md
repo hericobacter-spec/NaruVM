@@ -8,7 +8,7 @@
 
 Henge의 ARM64 JIT·소프트웨어 MMU·가상 장치를 Android NDK/Bionic 앱으로 옮긴 **독립 실험 포트**입니다. 그래픽은 Reims → metal2vulkan → Vulkan 경로를 사용합니다. 원본 Henge의 공식 Android 지원 제품은 아닙니다.
 
-**실험용 미리보기**입니다. v0.1.3-preview에는 서명한 ARM64 APK, 프로젝트·의존성 소스와 체크섬을 제공합니다. 기존 v0.1은 소스 전용으로 유지합니다. GPU 오류·태블릿 재부팅·느린 동작은 해결 완료를 주장하지 않습니다. 이번 후보는 에뮬레이터에서 확인했으며 실기기·macOS 게스트 재검증은 하지 못했습니다. Apple 이미지·게스트 디스크·계정·개인 서명키는 포함하지 않습니다.
+**실험용 미리보기**입니다. v0.1.3-preview에는 서명한 ARM64 APK, 프로젝트·의존성 소스와 체크섬을 제공합니다. 기존 v0.1은 소스 전용으로 유지합니다. GPU 오류·태블릿 재부팅·느린 동작은 해결 완료를 주장하지 않습니다. 에뮬레이터 검사 후 2026-11-17 동일한 공개 APK로 실물 TB373FU 한 대의 기존 macOS 15 바탕화면·Safari를 확인했습니다(observed). [촬영 조건과 한계](docs/device-capture.ko.md). Apple 이미지·게스트 디스크·계정·개인 서명키는 포함하지 않습니다.
 
 **v0.1.2-preview 그래픽 수정:** 관찰한 에뮬레이터 셰이더 충돌을 수정하고, 기능이 부족한 시스템 Vulkan은 충돌 없이 거부하도록 바꿨습니다. 자동 검사 5회와 자체 작성 읽기 검사 150프레임을 통과했습니다(observed). 작은 캐시 비교 검사의 중앙값은 143.7ms → 70.0ms였으며 macOS 전체 속도 측정은 아닙니다. [원인·재현·한계](docs/graphics-verification.ko.md).
 
@@ -18,32 +18,41 @@ Henge의 ARM64 JIT·소프트웨어 MMU·가상 장치를 Android NDK/Bionic 앱
 
 ## 영상
 
-**[20초 MP4 보기 / 다운로드](https://raw.githubusercontent.com/hericobacter-spec/NaruVM/main/docs/videos/historical-captures.mp4)** · [장면 설명과 제작 자료](docs/videos/README.ko.md)
+**[실제 태블릿 실행 영상 보기 — 약 95초](https://raw.githubusercontent.com/hericobacter-spec/NaruVM/main/docs/videos/tb373fu-2026-11-17-live.mp4)** · [장면 설명](docs/videos/README.ko.md) · [기기·APK·한계](docs/device-capture.ko.md)
 
-[![초기 설정·Safari·VS Code의 기존 캡처 소개 영상 보기](docs/images/macos-vscode.png)](https://raw.githubusercontent.com/hericobacter-spec/NaruVM/main/docs/videos/historical-captures.mp4)
+[![실물 TB373FU의 v0.1.3-preview에서 바탕화면·Safari·example.com 실제 녹화 보기](docs/images/tb373fu-2026-11-17-safari.png)](https://raw.githubusercontent.com/hericobacter-spec/NaruVM/main/docs/videos/tb373fu-2026-11-17-live.mp4)
 
-아래 스크린샷 3장을 이어 붙인 무음 소개 영상이며 **실시간 실행 녹화가 아닙니다**.
-확인한 로컬 연구 폴더에서 실행 녹화 원본을 찾지 못했습니다. 조작 속도·연속 설치·
-장기 안정성을 보여 주는 자료는 아닙니다. 미리보기를 누르면 MP4가 열립니다.
-브라우저가 다운로드하면 저장된 파일을 영상 플레이어로 열어 주세요.
+**2026-11-17 실물 TB373FU에 정확한 공개 v0.1.3-preview APK를 설치해 촬영**했습니다
+(observed, n=1). 기존 macOS 15 바탕화면, Safari 열기, 주소 입력과 example.com 표시가
+이어지는 무음 원본 녹화입니다. 배속 없이 원래 영상 타임스탬프를 유지했습니다.
+입력은 ADB와 앱 도구로 조작했습니다. 짧은 동작 사례이며 속도 측정·장기 안정성 검사는 아닙니다.
+미리보기를 눌러 MP4를 열거나 내려받을 수 있습니다.
+
+기존 [20초 스크린샷 슬라이드 영상](docs/videos/historical-captures.mp4)도 별도로 유지합니다.
+그 파일은 실제 실행 녹화가 아닙니다.
 
 ## 스크린샷
 
-v0.1 이전 **TB373FU 한 대의 macOS 15 연구 실행**에서 촬영한 기존 화면입니다.
-현재 Android 홈이 아닌 게스트 화면이며, 개별 화면의 관측 사례입니다.
-전체 자동 설치·장기 안정성·네이티브 수준 속도가 검증됐다는 뜻은 아닙니다.
+2026-11-17 관측한 **v0.1.3-preview / TB373FU / Android 16 / macOS 15** 원본입니다.
+홈은 기존에 저장된 4코어·4GB·Mali PanVK 설정이며 추천 시작값은 여전히 2코어·2048 MiB입니다.
+PNG는 수정하지 않았습니다. [촬영 자료와 한계](docs/device-capture.ko.md).
+
+| NaruVM 홈·자원 설정 | 기존 macOS 바탕화면 |
+| --- | --- |
+| ![4코어·4GB·Mali PanVK 설정이 유지된 NaruVM 홈](docs/images/tb373fu-2026-11-17-home.png) | ![공개 v0.1.3-preview APK의 실제 macOS 15 바탕화면](docs/images/tb373fu-2026-11-17-desktop.png) |
+
+<details>
+<summary>이전 연구 화면: 초기 설정·Safari·VS Code</summary>
+
+v0.1 이전의 역사적 자료이며 새 자동 설치기 검증이 아닙니다.
 
 | 게스트에서 연 VS Code | Safari의 example.com 페이지 |
 | --- | --- |
 | ![과거 macOS 15 게스트의 VS Code 제한 모드 화면](docs/images/macos-vscode.png) | ![과거 macOS 15 게스트의 Safari 웹 페이지 화면](docs/images/macos-safari.png) |
 
-<details>
-<summary>초기 설정 화면과 촬영 맥락</summary>
-
 ![과거 macOS 초기 설정의 언어·입력 소스 화면](docs/images/macos-setup.png)
 
-새 Android 원샷 설치기 이전의 화면입니다. 이번 보완에서는 기존 파일을 수정 없이
-복사했으며 새 게스트 실행은 하지 않았습니다. [촬영 자료와 한계](docs/images/README.md).
+[기존 촬영 맥락](docs/images/README.md). 타사 UI·그림·상표의 권리는 각 권리자에게 있습니다.
 
 </details>
 
@@ -88,7 +97,7 @@ NaruVM이며 내부 `henge` 경로와 `dev.henge.research` 패키지는 이력·
 
 ## 현재 상태
 
-2026-11-16에 관측한 실기기는 Lenovo TB373FU 한 대입니다. 바탕화면·개발 도구 실행을 관찰했고, 최근 검사에서는 자동 Mali 경로로 로그인 화면·입력·수동 정상 종료를 확인했습니다. 간헐적 GPU 오류·태블릿 재부팅 원인과 느린 앱 반응은 해결되지 않았습니다. 일상 사용·네이티브 수준 속도·장기 안정성이 완성된 상태가 아닙니다.
+2026-11-17 정확한 공개 v0.1.3-preview APK로 Lenovo TB373FU 한 대의 기존 macOS 15 바탕화면·Safari·example.com 표시와 수동 종료를 관찰했습니다(observed). [현재 촬영 조건](docs/device-capture.ko.md)을 확인하세요. 개발 도구 화면은 이전 연구 실행의 자료입니다. 간헐적 GPU 오류·태블릿 재부팅 원인과 느린 앱 반응은 해결되지 않았습니다. 일상 사용·네이티브 수준 속도·장기 안정성이 완성된 상태가 아닙니다.
 
 Y700·스냅드래곤 갤럭시·다른 ARM64 태블릿과 휴대폰에는 공통 기능 검사·그래픽 선택 경로를 구현했습니다. **다른 실기기의 macOS 실행과 Adreno 가속은 미검증**입니다. 기종별 사양과 1차 출처는 [조사표](android/device-support.json)를 확인하세요. Y700은 세대/지역별 정확한 모델을 확인해야 합니다.
 

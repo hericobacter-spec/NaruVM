@@ -72,9 +72,11 @@ library and independent-key installation remain separately recorded historical
 evidence; they were not repeated on this candidate. The release
 manifest disables Android debugging and retains `allowBackup=false`.
 
-No physical tablet was available for this candidate. Earlier TB373FU guest runs
+No physical tablet was available during initial release acceptance. A later
+[2026-11-17 physical capture](device-capture.md) used this exact APK with an
+existing macOS 15 guest on one TB373FU. Earlier TB373FU guest runs
 are historical evidence, not a retest of this signed APK. No macOS guest was
-installed or booted during release acceptance. GPU compatibility, sustained use,
+installed or booted during initial release acceptance. Other-device GPU compatibility, sustained use,
 physical keyboard/mouse input, 16K runtime pages, the complete new installer and
 macOS 26/27 are unverified. Slow interaction and past GPU faults/reboots remain
 open. The bounded emulator graphics fix and small cache-probe timing improvement

@@ -1,5 +1,14 @@
 # Changelog
 
+## Documentation and physical capture — 2026-11-17
+
+- Add three unedited screenshots and a genuine 95-second screen recording from
+  one TB373FU running the exact public v0.1.3-preview APK and existing macOS 15.
+- Record APK identity, saved resources, ADB-driven inputs, original video
+  timestamps, privacy checks, hashes and bounded evidence in English/Korean.
+- Retain the earlier still-image slideshow as explicitly historical material;
+  no APK/tag/asset replacement or speed/stability claim.
+
 ## v0.1.3-preview — Input and display response — 2026-11-17
 
 Observed source changes and authored-test scope:

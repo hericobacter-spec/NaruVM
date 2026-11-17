@@ -29,10 +29,15 @@ PUBLIC_DOCS = {'android/DESIGN.md', 'docs/architecture.md', 'docs/licensing.md',
                'docs/videos/README.md', 'docs/videos/README.ko.md',
                'docs/apk-release.md', 'docs/apk-release.ko.md',
                'docs/graphics-verification.md', 'docs/graphics-verification.ko.md',
-               'docs/response-verification.md', 'docs/response-verification.ko.md'}
-# Individually inspected historical captures and labeled walkthrough only; never glob research media.
+               'docs/response-verification.md', 'docs/response-verification.ko.md',
+               'docs/device-capture.md', 'docs/device-capture.ko.md'}
+# Individually inspected captures and recordings only; never glob research media.
 PUBLIC_MEDIA = {'docs/images/macos-setup.png', 'docs/images/macos-safari.png',
-                'docs/images/macos-vscode.png', 'docs/videos/historical-captures.mp4'}
+                'docs/images/macos-vscode.png', 'docs/videos/historical-captures.mp4',
+                'docs/images/tb373fu-2026-11-17-home.png',
+                'docs/images/tb373fu-2026-11-17-desktop.png',
+                'docs/images/tb373fu-2026-11-17-safari.png',
+                'docs/videos/tb373fu-2026-11-17-live.mp4'}
 PUBLIC_GITHUB = {'.github/workflows/android-source.yml', '.github/ISSUE_TEMPLATE/bug_report.yml',
                  '.github/ISSUE_TEMPLATE/device_report.yml', '.github/ISSUE_TEMPLATE/config.yml',
                  '.github/pull_request_template.md'}

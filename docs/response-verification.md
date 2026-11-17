@@ -84,8 +84,10 @@ available. Diagnostic deadlines do not impose a timeout on ordinary guest use.
 
 ## Unknown / unverified
 
-No physical tablet or macOS guest was available for this candidate. Historical
-TB373FU screenshots are not a retest. Actual guest speed, sustained stability,
+The initial release acceptance had no physical tablet or macOS guest. A later
+2026-11-17 [bounded physical run and actual recording](device-capture.md) used
+the exact public APK on one TB373FU with an existing macOS 15 guest. It is not
+a new automatic-install or endurance test. Actual guest speed, sustained stability,
 physical USB/Bluetooth input, historical tablet reboot causes, 16K runtime pages,
 other devices/GPUs, a complete new automatic install and macOS26/27 remain
 unverified. Authored emulator passes do not establish everyday usability.

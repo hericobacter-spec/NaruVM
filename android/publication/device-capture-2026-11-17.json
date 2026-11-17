@@ -1,0 +1,98 @@
+{
+  "format": 1,
+  "label": "observed",
+  "date": "2026-11-17",
+  "sample_size": 1,
+  "device": {
+    "model": "TB373FU",
+    "soc": "MediaTek MT8792",
+    "android_version": "16",
+    "api": 36
+  },
+  "apk": {
+    "version": "0.1.3-preview",
+    "version_code": 4,
+    "bytes": 85778737,
+    "sha256": "004572445072ca760d2ac65f6d8f26123809b606249c3be15c210dda11b4f91c",
+    "pulled_installed_apk_matches_public": true,
+    "debuggable": false
+  },
+  "guest": {
+    "major_version": 15,
+    "interface_language": "Korean",
+    "existing_disk_and_local_account": true,
+    "new_install_test": false
+  },
+  "settings": {
+    "vcpus": 4,
+    "memory_mib": 4096,
+    "graphics": "panvk-userptr",
+    "mouse_gain": 1,
+    "saved_settings_preserved": true
+  },
+  "video": {
+    "duration_seconds": 95.309578,
+    "stored_frames": 466,
+    "width": 1280,
+    "height": 800,
+    "codec": "H.264",
+    "variable_frame_rate": true,
+    "audio_streams": 0,
+    "screenrecord_limit_seconds": 120,
+    "all_original_video_packet_hashes_and_timestamps_preserved": true,
+    "editing": "Container remux only; no cuts, speed changes or synthetic frames.",
+    "not_guest_fps_measurement": true
+  },
+  "input": "ADB-driven Android touch/key events and app text tool; not physical external HID testing.",
+  "privacy_review": {
+    "screenshots_visually_reviewed": true,
+    "full_video_decode": true,
+    "one_second_samples_reviewed": 95,
+    "enlarged_input_and_page_scenes": true,
+    "all_encoded_frames_manually_inspected": false,
+    "metadata_reviewed": true,
+    "login_recorded": false
+  },
+  "observed": [
+    "Existing guest reached desktop after local login.",
+    "Safari opened and displayed example.com.",
+    "Session stopped manually using app Stop Mac."
+  ],
+  "limits": [
+    "Single bounded session; no controlled before/after speed measurement or sustained stability acceptance.",
+    "Historical tablet reboot causes not resolved by this demonstration.",
+    "Other devices/GPUs, physical external input, 16K runtime pages, complete new automatic installation and macOS26/27 unverified."
+  ],
+  "files": [
+    {
+      "path": "docs/images/tb373fu-2026-11-17-home.png",
+      "bytes": 239389,
+      "sha256": "d1611891a989312c10fedb0024bc79a9b2575c732ebdd8b46beb70bbf5f79e00"
+    },
+    {
+      "path": "docs/images/tb373fu-2026-11-17-desktop.png",
+      "bytes": 5834417,
+      "sha256": "78dabcdc285e86af8bac0ac58663fc91926367013fcb7c0685d0a3db1586cd32"
+    },
+    {
+      "path": "docs/images/tb373fu-2026-11-17-safari.png",
+      "bytes": 946799,
+      "sha256": "ac085e0e3b90480c42add2c0524f42efab50eb153fdcdf90170aa45abd3e6cde"
+    },
+    {
+      "path": "docs/videos/tb373fu-2026-11-17-live.mp4",
+      "bytes": 2416912,
+      "sha256": "c8df35d6c61ba5a5fff7a10f6a13d9233e88acfe758771e5b16b6e0811d6ab77"
+    }
+  ],
+  "session_result": {
+    "elapsed_seconds_including_boot": 758.8,
+    "normal_manual_stop": true,
+    "timeout": 0,
+    "exit_code": 0,
+    "logged_panic_events": 0,
+    "logged_flush_failures": 0,
+    "foreground_and_wake_lock_released": true,
+    "same_tablet_boot_id_before_and_after": true
+  }
+}

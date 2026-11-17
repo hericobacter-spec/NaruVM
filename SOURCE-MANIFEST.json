@@ -61,8 +61,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "1f3c69c486e5fc34d47f2e552a68ab7d374596fc7aafa8c4012927d3f05de070",
-      "bytes": 6028
+      "sha256": "752449565c7f7909025036af46ab220798d7d9170143967925659d2fa135acb2",
+      "bytes": 6529
     },
     {
       "path": "CONTRIBUTING.md",
@@ -181,13 +181,13 @@
     },
     {
       "path": "README.ko.md",
-      "sha256": "432c1a7eea966ddba256fc2a104cdc718d13b24fc8298275ea3858ea6348fca4",
-      "bytes": 19321
+      "sha256": "0b04702a7b22f81120de264dbc4b318b1276d33c296a55a533147478b91bb1ef",
+      "bytes": 20136
     },
     {
       "path": "README.md",
-      "sha256": "40c3630c888173faf6ca328e57cb348cf4dcc51b7065f3a0897fb8e4b55f0f83",
-      "bytes": 18672
+      "sha256": "4860a5b3cae632510faa8e3ae9f7f6819989350f4b58e26d65169dab8d4d6174",
+      "bytes": 19456
     },
     {
       "path": "SECURITY.md",
@@ -890,6 +890,11 @@
       "bytes": 28704
     },
     {
+      "path": "android/publication/device-capture-2026-11-17.json",
+      "sha256": "f846109f709085a861aca4300bb178e6f6ed7b5325de5ed10594ebcdf2c32baf",
+      "bytes": 3126
+    },
+    {
       "path": "android/publication/graphics-sources.json",
       "sha256": "dc61df5eab01bce3c968d64999c21859e6221a39e755b3afede462e6d5a5fdaf",
       "bytes": 31918
@@ -1501,13 +1506,13 @@
     },
     {
       "path": "docs/apk-release.ko.md",
-      "sha256": "1b7ddd034c7a167c68134d7745b33096fec83d46fde5bd84f89ec623c5cba154",
-      "bytes": 10097
+      "sha256": "363cb670fd1a98f9f7a4ac1be928b0bcc37988cf33571ab298a408615eeb6f33",
+      "bytes": 10220
     },
     {
       "path": "docs/apk-release.md",
-      "sha256": "b015828bff3446f1673c6c8bfba351bb45d1fa6930e501c4241ef3e1f9aa4e42",
-      "bytes": 10025
+      "sha256": "8f1e8bc17911619f68fba9cb9accbcc7751169d28e64b738cc1998c5e2c4f847",
+      "bytes": 10186
     },
     {
       "path": "docs/architecture.md",
@@ -1530,6 +1535,16 @@
       "bytes": 13657
     },
     {
+      "path": "docs/device-capture.ko.md",
+      "sha256": "a2d5752638973f3f817cb2777abc5e4d6251c76f56c8b459f28176980f8b4778",
+      "bytes": 5563
+    },
+    {
+      "path": "docs/device-capture.md",
+      "sha256": "561b02d3689215bfa7b3d37dea809138aef0aad99143e07d78ef05894182fdf4",
+      "bytes": 5126
+    },
+    {
       "path": "docs/graphics-verification.ko.md",
       "sha256": "0b72db923ae762d434cc9dd46ede6897d609d93bc28bdc553781d59a8d548a95",
       "bytes": 7562
@@ -1541,8 +1556,8 @@
     },
     {
       "path": "docs/images/README.md",
-      "sha256": "e748a6d77b88a04c7855aa6c6f6ac507b76125a2c54a9bb70ae3627a4b42deef",
-      "bytes": 1419
+      "sha256": "dead6f5a13e296f64174621b4b58b1a0acde94d31a4d66195a09985ccbd7e43f",
+      "bytes": 2399
     },
     {
       "path": "docs/images/macos-safari.png",
@@ -1558,6 +1573,21 @@
       "path": "docs/images/macos-vscode.png",
       "sha256": "59bd64e82044890ab43c0789c2acbe5d60bd2b297bd15962f94b8bceac513882",
       "bytes": 404045
+    },
+    {
+      "path": "docs/images/tb373fu-2026-11-17-desktop.png",
+      "sha256": "78dabcdc285e86af8bac0ac58663fc91926367013fcb7c0685d0a3db1586cd32",
+      "bytes": 5834417
+    },
+    {
+      "path": "docs/images/tb373fu-2026-11-17-home.png",
+      "sha256": "d1611891a989312c10fedb0024bc79a9b2575c732ebdd8b46beb70bbf5f79e00",
+      "bytes": 239389
+    },
+    {
+      "path": "docs/images/tb373fu-2026-11-17-safari.png",
+      "sha256": "ac085e0e3b90480c42add2c0524f42efab50eb153fdcdf90170aa45abd3e6cde",
+      "bytes": 946799
     },
     {
       "path": "docs/installation.ko.md",
@@ -1586,13 +1616,13 @@
     },
     {
       "path": "docs/response-verification.ko.md",
-      "sha256": "e8f6f9ac70cd33a0a1e55d3dcb8038050ad7cac23b64816f60fb517df9aee169",
-      "bytes": 5534
+      "sha256": "0527f3f2dc64b11e1f2c67132bb1d1edebf492446b63d5290abefb8e51c2025e",
+      "bytes": 5711
     },
     {
       "path": "docs/response-verification.md",
-      "sha256": "db2b11b97e0c3ac11e23617f8c7f368d012a96ead5387f59f388427017719a8c",
-      "bytes": 5236
+      "sha256": "8f84d5075d8b1bed6ea67083cdc3fe6daeb11c9e0178b8552f74f8846959cd16",
+      "bytes": 5398
     },
     {
       "path": "docs/source-correspondence.md",
@@ -1601,18 +1631,23 @@
     },
     {
       "path": "docs/videos/README.ko.md",
-      "sha256": "e5f3441386b2623bc394242ef94f03f84d48d3e7be66af1f0b3b270acded5d01",
-      "bytes": 2882
+      "sha256": "cfa266c57e211f67431a80096eebe6e8b1d79caf6b41b858bc11530b7a307a36",
+      "bytes": 5038
     },
     {
       "path": "docs/videos/README.md",
-      "sha256": "fcf165c1f75438ba19d5da9017da6602510d97a5d265db418bc990eedfd4d94d",
-      "bytes": 2739
+      "sha256": "0bc30df53aa7837afb3ac79e2c641d011597a716a4b2bd793ecf920b61179c61",
+      "bytes": 4696
     },
     {
       "path": "docs/videos/historical-captures.mp4",
       "sha256": "c24bc33fdd461ede8e8931e30e4af2fbcf6d8431da835952ed6cbf36c74bd7c4",
       "bytes": 299732
+    },
+    {
+      "path": "docs/videos/tb373fu-2026-11-17-live.mp4",
+      "sha256": "c8df35d6c61ba5a5fff7a10f6a13d9233e88acfe758771e5b16b6e0811d6ab77",
+      "bytes": 2416912
     },
     {
       "path": "host/audio_mac.c",
@@ -5791,8 +5826,8 @@
     },
     {
       "path": "tools/export_android_source.py",
-      "sha256": "84f9c40d6d55f40047d1bc5d5c9258ad5966b598dd3cec0df817f93d7118c167",
-      "bytes": 10634
+      "sha256": "bf6b5c6e2f37f36bc9a36efef16cf9736246b4af51da3ad5b4487effa171678a",
+      "bytes": 10925
     },
     {
       "path": "tools/prepare_github.py",

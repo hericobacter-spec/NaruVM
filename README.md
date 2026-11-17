@@ -15,8 +15,9 @@ Vulkan graphics path. It is not an official Android release from upstream Henge.
 unresolved. No near-native performance or everyday stability claim is made.
 The v0.1.3-preview release provides a signed ARM64 APK, project/dependency source
 archives, notices and checksums. Apple images, guest disks, accounts and private
-signing keys are excluded. The exact candidate was tested on an emulator; its
-physical-tablet and guest retest was unavailable.
+signing keys are excluded. The exact APK was tested on an emulator and subsequently ran an existing
+macOS 15 guest on one physical TB373FU on 2026-11-17 (observed).
+[Physical capture conditions and limits](docs/device-capture.md).
 
 **v0.1.2-preview graphics repair:** the observed emulator shader crash is fixed,
 and unsupported system Vulkan now refuses cleanly. Five Auto checks and 150
@@ -28,35 +29,44 @@ to 70.0ms median; this is not a macOS speed measurement.
 
 ## Video
 
-**[Watch / download the 20-second MP4](https://raw.githubusercontent.com/hericobacter-spec/NaruVM/main/docs/videos/historical-captures.mp4)** · [Video transcript and provenance](docs/videos/README.md)
+**[Watch the actual tablet recording — 95 seconds](https://raw.githubusercontent.com/hericobacter-spec/NaruVM/main/docs/videos/tb373fu-2026-11-17-live.mp4)** · [Transcript](docs/videos/README.md) · [Device / APK / limits](docs/device-capture.md)
 
-[![Watch the historical still-capture walkthrough: Setup Assistant, Safari and VS Code](docs/images/macos-vscode.png)](https://raw.githubusercontent.com/hericobacter-spec/NaruVM/main/docs/videos/historical-captures.mp4)
+[![Play actual v0.1.3-preview recording on TB373FU: desktop, Safari and example.com](docs/images/tb373fu-2026-11-17-safari.png)](https://raw.githubusercontent.com/hericobacter-spec/NaruVM/main/docs/videos/tb373fu-2026-11-17-live.mp4)
 
-A silent walkthrough assembled from the three historical screenshots below,
-**not a live screen recording**. No execution-recording original was found in
-the reviewed local research folders. The video does not demonstrate interaction
-speed, a continuous install or sustained stability. Click the preview to open
-the MP4; if your browser downloads it, open the saved file in a video player.
+Recorded on **2026-11-17 from a physical TB373FU running the exact public
+v0.1.3-preview APK** (observed, n=1). The silent, continuous recording shows the
+existing macOS 15 desktop, Safari opening, URL entry and example.com loading.
+Original video timestamps are preserved; no speed changes. Inputs were driven
+through ADB and the app's controls. This is a short demonstration, not a speed
+benchmark or sustained-stability test. Click the preview to open/download MP4.
+
+The earlier [20-second historical still-image slideshow](docs/videos/historical-captures.mp4)
+is retained separately; it is not live execution footage.
 
 ## Screenshots
 
-Existing captures from the **single TB373FU macOS 15 research device**, before
-v0.1. These are guest screens, not the current Android home. They demonstrate
-individual observed screens, not complete automatic installation, sustained
-stability or native-like speed. The guest UI in these captures is Korean.
+Current **v0.1.3-preview / TB373FU / Android 16 / macOS 15** captures, observed
+2026-11-17. The home shows the existing saved 4 vCPU / 4 GB / Mali PanVK settings;
+recommended starting defaults remain 2 vCPU / 2048 MiB. Original PNGs are unedited.
+[Capture provenance and limitations](docs/device-capture.md).
+
+| NaruVM home and resource controls | Existing macOS desktop |
+| --- | --- |
+| ![NaruVM mint home with 4-core 4-GB saved allocation and Mali PanVK](docs/images/tb373fu-2026-11-17-home.png) | ![Actual macOS 15 desktop on the public v0.1.3-preview APK](docs/images/tb373fu-2026-11-17-desktop.png) |
+
+<details>
+<summary>Earlier research captures: Setup Assistant, Safari and VS Code</summary>
+
+These pre-v0.1 guest captures are historical, not new tests of the automatic installer.
 
 | VS Code open in the guest | Safari displaying example.com |
 | --- | --- |
 | ![Historical macOS 15 guest displaying VS Code in Restricted Mode](docs/images/macos-vscode.png) | ![Historical macOS 15 guest displaying example.com in Safari](docs/images/macos-safari.png) |
 
-<details>
-<summary>Setup Assistant and capture context</summary>
-
 ![Historical macOS Setup Assistant language and input-source screen](docs/images/macos-setup.png)
 
-The setup capture predates the new one-action Android installer. Existing
-captures were copied without editing; no new guest session was run for this
-update. [Capture provenance and limitations](docs/images/README.md).
+[Historical capture context](docs/images/README.md). All third-party UI/artwork/marks
+retain their respective rights.
 
 </details>
 
@@ -104,10 +114,11 @@ verification and driver/source-reproduction details.
 
 ## Status and devices
 
-Observed on 2026-11-16: one physical Lenovo TB373FU, Android 16, 4K host pages.
-Desktop and local development-tool execution were observed in bounded research
-runs. The latest portability smoke test reached the local login screen, accepted
-input and stopped normally. These observations do not establish sustained use.
+Observed on 2026-11-17: the exact v0.1.3-preview APK on one physical Lenovo
+TB373FU, Android 16, reached the existing macOS 15 desktop, opened Safari and
+displayed example.com, then was stopped manually. See the [current capture](docs/device-capture.md).
+Earlier bounded research runs also showed development tools. These observations
+do not establish sustained use or measured speed gains.
 
 | Target | Current evidence |
 | --- | --- |
